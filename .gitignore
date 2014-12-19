@@ -1,0 +1,5 @@
+# arquivo de ignore de commits
+
+lis_senhas_site.txt
+backup
+backup/*
