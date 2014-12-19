@@ -3,3 +3,7 @@
 lis_senhas_site.txt
 backup
 backup/*
+configuration.php
+*~
+*#
+site/robots.txt
