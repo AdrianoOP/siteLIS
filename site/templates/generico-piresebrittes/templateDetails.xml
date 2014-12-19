@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE install PUBLIC "-//Joomla!3.0//DTD template 1.0//EN" "http://www.joomla.org/xml/dtd/2.5/template-install.dtd">
+<extension version="3.0" type="template" client="site">
+	<name>Generico - Pires e Brittes</name>
+	<version>1.0</version>
+	<creationDate>6/07/2013</creationDate>
+	<author>Adriano Oliveira Pires</author>
+	<authorEmail>oliveira.pires@gmail.com</authorEmail>
+	<author>Marília Brittes</author>
+	<authorEmail>oliveira.pires@gmail.com</authorEmail>
+	<copyright>Um trabalho Evolutt.com</copyright>
+	<description>Tema clean e simples feito para desenvolvimento rápido de sites, com poucas alterações</description>
+	<files>
+		<filename>favicon.ico</filename>
+		<filename>index.php</filename>
+		<filename>posicoes_tema.png</filename>
+		<filename>templateDetails.xml</filename>
+		<folder>css</folder>
+		<folder>html</folder>
+		<folder>images</folder>
+		<folder>script</folder>
+	</files>
+	<positions>
+		<position>header</position>
+		<position>icon</position>
+		<position>menu</position>
+		<position>busca</position>
+		<position>corpo</position>
+		<position>slider</position>
+		<position>inferior</position>
+		<position>inf1</position>
+		<position>inf2</position>
+		<position>inf3</position>
+		<position>inf4</position>
+		<position>footer</position>
+		<position>contato</position>
+		<position>foot2</position>
+		<position>copyright</position>
+	</positions>
+	<config>
+		<fields name="params">
+			<fieldset name="Configuracoes">
+				<field name="logo" class="" type="media" default="templates/Kart/images/logo.png"
+					label="Logotipo:" description="Escolha o logotipo do seu site">
+				</field>
+			</fieldset>
+		</fields>
+	</config>
+</extension>
