@@ -23,18 +23,21 @@
 		<folder>script</folder>
 	</files>
 	<positions>
-		<position>footer</position>
+		<position>mod_header</position>
+		<position>mod_header1</position>
+		<position>mod_header2</position>
+		<position>mod_header3</position>
+		<position>mod_menu</position>
+		<position>mod_main_up</position>
+		<position>mod_main_logo</position>
+		<position>mod_sec_logo</position>
+		<position>mod_main_down</position>
+		<position>mod_footer_up</position>
+		<position>mod_foot1</position>
+		<position>mod_foot2</position>
+		<position>mod_foot3</position>
+		<position>mod_footer_down</position>
+		<position>mod_copyright</position>
+		<position>mod_icons</position>
 	</positions>
-	<config>
-		<fields name="params">
-			<fieldset label="Config"  name="Configuracoes">
-				<field name="logo" class="" type="media" default="templates/images/logo.png"
-					label="Logotipo:" description="Escolha o logotipo do seu site:">
-				</field>
-				<field name="background-image" class="" type="media" default="templates/images/logo.png"
-					label="Imagem de fundo" description="Escolha a imagem de fundo do seu site:">
-				</field>
-			</fieldset>
-		</fields>
-	</config>
 </extension>
