@@ -24,16 +24,57 @@ body{
 
 /**** Modulos do cabecalho ***/
 	/*** static header_main class ***/
-	.header_main{
+	.header{
+	}
+	.mod_header{
+	}
+	.mod_header1{
+	}
+	.mod_header2{
+	}
+	.mod_header3{
 	}
 /**** Modulos do cabecalho ***/
 
 /**** Corpo principal ***/
 	.corpo_main{
 	}
+	/*** mod_main_up ***/
+	.main_up{
+	}
+	.mod_main_up{
+	}
+		.mod_main_logo{
+		}
+		.mod_sec_logo{
+		}
+		
+	/*** mod_main_down ***/
+	.main_down{
+	}
+	.mod_main_down{
+	}
 /**** Corpo principal ***/
 
 /**** Modulos de footer ***/
-	.footer_main{
+	/*** mod_footer_up ***/
+	.footer_up{
 	}
+	.mod_footer_up{
+	}
+		.mod_foot1{
+		}
+		.mod_foot2{
+		}
+		.mod_foot3{
+		}
+	/*** mod_footer_down ***/
+	.footer_down{
+	}
+	.mod_footer_down{
+	}
+		.mod_copyright{
+		}
+		.mod_icons{
+		}
 /**** Modulos de footer ***/
