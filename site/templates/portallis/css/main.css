@@ -30,16 +30,19 @@ body{
 		padding-top:0px; padding-right:0px; padding-bottom:0px; padding-left:0px;
 	}
 	.modHeaderImages{
-		padding-right: 2%;
-		padding-left: 2%;
-		width: 96%;
+		padding-right: 0%;
+		padding-left: 0%;
+		width: 100%;
 	}
 	.modHeaderImages img{
-		padding-left: 1%;
+		padding-left: 1.6%;
 		width: 32%;
 	}
-	.modHeaderImages img first-child{
+	.modHeaderImages img:first-child{
 		padding-left: 0%;
+	}
+	.modHeaderImages img:nth-child(3){
+		float: right;
 	}
 	.modMenu{
 		width: 100%;
@@ -57,6 +60,19 @@ body{
 	}
 	/*** modMainImages ***/
 	.modMainImages{
+		padding-right: 0%;
+		padding-left: 0%;
+		width: 100%;
+	}
+	.modMainImages img{
+		padding-left: 1.6%;
+		width: 32%;
+	}
+	.modMainImages img:first-child{
+		padding-left: 0%;
+	}
+	.modMainImages img:nth-child(3){
+		float: right;
 	}
 /**** Corpo principal ***/
 
@@ -64,5 +80,6 @@ body{
 	footer{
 	}
 	.modFooter{
+		text-align: center;
 	}
 /**** Modulos de footer ***/

@@ -7,7 +7,7 @@
 defined('_JEXEC') or die;
 
 
-$DEBUG_CLASS = "borda";
+$DEBUG_CLASS = "";
 
 ?>
 <!DOCTYPE html>
