@@ -6,10 +6,6 @@
 	<creationDate>20/02/2015</creationDate>
 	<author>Adriano Oliveira Pires</author>
 	<authorEmail>oliveira.pires@gmail.com</authorEmail>
-	<author>Marília Brittes</author>
-	<authorEmail>mbrittes@gmail.com</authorEmail>
-	<author>Aurélio Grott Neto</author>
-	<authorEmail>grott@itsalldata.com.br</authorEmail>
 	<copyright>Um trabalho Evolutt.com</copyright>
 	<description>Tema desenvolvido originalmente para o site www.lis.faed.udesc.br</description>
 	<files>
@@ -23,21 +19,10 @@
 		<folder>script</folder>
 	</files>
 	<positions>
-		<position>mod_header</position>
-		<position>mod_header1</position>
-		<position>mod_header2</position>
-		<position>mod_header3</position>
-		<position>mod_menu</position>
-		<position>mod_main_up</position>
-		<position>mod_main_logo</position>
-		<position>mod_sec_logo</position>
-		<position>mod_main_down</position>
-		<position>mod_footer_up</position>
-		<position>mod_foot1</position>
-		<position>mod_foot2</position>
-		<position>mod_foot3</position>
-		<position>mod_footer_down</position>
-		<position>mod_copyright</position>
-		<position>mod_icons</position>
+		<position>modHeaderImages</position>
+		<position>modMenu</position>
+		<position>modMain</position>
+		<position>modMainImages</position>
+		<position>modFooter</position>
 	</positions>
 </extension>

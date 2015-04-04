@@ -1,3 +1,4 @@
+@import url("menu.css");
 /**** estilos genericos   *****/
 .clearer{
 	clear:both;
@@ -24,57 +25,44 @@ body{
 
 /**** Modulos do cabecalho ***/
 	/*** static header_main class ***/
-	.header{
+	header{
+		margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px;
+		padding-top:0px; padding-right:0px; padding-bottom:0px; padding-left:0px;
 	}
-	.mod_header{
+	.modHeaderImages{
+		padding-right: 2%;
+		padding-left: 2%;
+		width: 96%;
 	}
-	.mod_header1{
+	.modHeaderImages img{
+		padding-left: 1%;
+		width: 32%;
 	}
-	.mod_header2{
+	.modHeaderImages img first-child{
+		padding-left: 0%;
 	}
-	.mod_header3{
+	.modMenu{
+		width: 100%;
+		padding-left: 2%;
+		margin-left: 0%;
 	}
 /**** Modulos do cabecalho ***/
 
 /**** Corpo principal ***/
+	article{
+	}
 	.corpo_main{
 	}
-	/*** mod_main_up ***/
-	.main_up{
+	.modMain{
 	}
-	.mod_main_up{
-	}
-		.mod_main_logo{
-		}
-		.mod_sec_logo{
-		}
-		
-	/*** mod_main_down ***/
-	.main_down{
-	}
-	.mod_main_down{
+	/*** modMainImages ***/
+	.modMainImages{
 	}
 /**** Corpo principal ***/
 
 /**** Modulos de footer ***/
-	/*** mod_footer_up ***/
-	.footer_up{
+	footer{
 	}
-	.mod_footer_up{
+	.modFooter{
 	}
-		.mod_foot1{
-		}
-		.mod_foot2{
-		}
-		.mod_foot3{
-		}
-	/*** mod_footer_down ***/
-	.footer_down{
-	}
-	.mod_footer_down{
-	}
-		.mod_copyright{
-		}
-		.mod_icons{
-		}
 /**** Modulos de footer ***/
