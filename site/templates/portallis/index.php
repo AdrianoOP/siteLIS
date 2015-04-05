@@ -55,6 +55,7 @@ $DEBUG_CLASS = "";
 	<div class="clearer"></div>
 <?php endif; ?>
 <?php if ($this->countModules('modMainImages')) : ?>
+	<div class="modMainBorder"></div>
 	<div <?php echo "class=\"$DEBUG_CLASS"?> modMainImages">
 		<jdoc:include type="modules" name="modMainImages" style="xhtml" />
 	</div>

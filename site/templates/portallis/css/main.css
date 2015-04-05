@@ -33,10 +33,12 @@ body{
 		padding-right: 0%;
 		padding-left: 0%;
 		width: 100%;
+		padding-bottom: 5px;
 	}
 	.modHeaderImages img{
 		padding-left: 1.6%;
 		width: 32%;
+		height: 300px;
 	}
 	.modHeaderImages img:first-child{
 		padding-left: 0%;
@@ -58,6 +60,15 @@ body{
 	}
 	.modMain{
 	}
+	.modMainBorder{
+		border-top-style: solid;
+		border-top-width: 3px;
+		border-top-color: #4D6173;
+		border-radius: 3px;
+		margin-left: 2%;
+		margin-right: 2%;
+		padding-bottom: 10px;
+	}
 	/*** modMainImages ***/
 	.modMainImages{
 		padding-right: 0%;
@@ -67,6 +78,7 @@ body{
 	.modMainImages img{
 		padding-left: 1.6%;
 		width: 32%;
+		height: 300px;
 	}
 	.modMainImages img:first-child{
 		padding-left: 0%;
@@ -78,8 +90,19 @@ body{
 
 /**** Modulos de footer ***/
 	footer{
+		border-top-style: solid;
+		border-top-width: 3px;
+		border-top-color: #4D6173;
+		border-radius: 3px;
+		margin-left: 2%;
+		margin-right: 2%;
+		margin-top: 5px;
 	}
 	.modFooter{
 		text-align: center;
 	}
+	.modFooter	img{
+		height: 65px;
+		padding-right: 2%;
+	}	
 /**** Modulos de footer ***/
