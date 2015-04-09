@@ -38,7 +38,7 @@ body{
 	.modHeaderImages img{
 		padding-left: 1.6%;
 		width: 32%;
-		height: 300px;
+		height: 240px;
 	}
 	.modHeaderImages img:first-child{
 		padding-left: 0%;
@@ -50,6 +50,7 @@ body{
 		width: 100%;
 		padding-left: 2%;
 		margin-left: 0%;
+		margin-bottom: 50px;
 	}
 /**** Modulos do cabecalho ***/
 
@@ -58,7 +59,10 @@ body{
 	}
 	.corpo_main{
 	}
+	/**** Mod Main ***/
 	.modMain{
+		vertical-align: middle;
+		min-height: 450px;
 	}
 	.modMainBorder{
 		border-top-style: solid;
@@ -69,6 +73,26 @@ body{
 		margin-right: 2%;
 		padding-bottom: 10px;
 	}
+	
+	.modMain #logo_principal {
+		padding-top: 25px;
+		float: left;
+		width: 40%;
+		padding-left: 3.5%;
+	}
+	.modMain #logo_video {
+		padding-top: 100px;
+		float: left;
+		width: 22.5%;
+		padding-left: 5%;
+	}
+	.modMain #logo_radio {
+		padding-top: 100px;
+		float: right;
+		width: 22.5%;
+		padding-right: 3.5%;
+	}
+	
 	/*** modMainImages ***/
 	.modMainImages{
 		padding-right: 0%;
@@ -78,7 +102,7 @@ body{
 	.modMainImages img{
 		padding-left: 1.6%;
 		width: 32%;
-		height: 300px;
+		height: 230px;
 	}
 	.modMainImages img:first-child{
 		padding-left: 0%;
@@ -86,6 +110,7 @@ body{
 	.modMainImages img:nth-child(3){
 		float: right;
 	}
+	/*** modMain end ***/
 /**** Corpo principal ***/
 
 /**** Modulos de footer ***/
