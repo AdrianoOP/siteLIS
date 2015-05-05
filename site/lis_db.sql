@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.0.6
+-- version 4.2.10
 -- http://www.phpmyadmin.net
 --
--- Host: localhost
--- Generation Time: Dec 20, 2014 at 12:19 AM
--- Server version: 5.5.33
--- PHP Version: 5.5.3
+-- Host: localhost:3306
+-- Generation Time: May 06, 2015 at 12:08 AM
+-- Server version: 5.5.38
+-- PHP Version: 5.4.34
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -21,78 +21,93 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `joomla_assets` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Primary Key',
+`id` int(10) unsigned NOT NULL COMMENT 'Primary Key',
   `parent_id` int(11) NOT NULL DEFAULT '0' COMMENT 'Nested set parent.',
   `lft` int(11) NOT NULL DEFAULT '0' COMMENT 'Nested set lft.',
   `rgt` int(11) NOT NULL DEFAULT '0' COMMENT 'Nested set rgt.',
   `level` int(10) unsigned NOT NULL COMMENT 'The cached level in the nested tree.',
   `name` varchar(50) NOT NULL COMMENT 'The unique name for the asset.\n',
   `title` varchar(100) NOT NULL COMMENT 'The descriptive title for the asset.',
-  `rules` varchar(5120) NOT NULL COMMENT 'JSON encoded access control.',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `idx_asset_name` (`name`),
-  KEY `idx_lft_rgt` (`lft`,`rgt`),
-  KEY `idx_parent_id` (`parent_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=54 ;
+  `rules` varchar(5120) NOT NULL COMMENT 'JSON encoded access control.'
+) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `joomla_assets`
 --
 
 INSERT INTO `joomla_assets` (`id`, `parent_id`, `lft`, `rgt`, `level`, `name`, `title`, `rules`) VALUES
-(1, 0, 0, 105, 0, 'root.1', 'Root Asset', '{"core.login.site":{"6":1,"2":1},"core.login.admin":{"6":1},"core.login.offline":{"6":1},"core.admin":{"8":1},"core.manage":{"7":1},"core.create":{"6":1,"3":1},"core.delete":{"6":1},"core.edit":{"6":1,"4":1},"core.edit.state":{"6":1,"5":1},"core.edit.own":{"6":1,"3":1}}'),
+(1, 0, 0, 143, 0, 'root.1', 'Root Asset', '{"core.login.site":{"6":1,"2":1},"core.login.admin":{"6":1},"core.login.offline":{"6":1},"core.admin":{"8":1},"core.manage":{"7":1},"core.create":{"6":1,"3":1},"core.delete":{"6":1},"core.edit":{"6":1,"4":1},"core.edit.state":{"6":1,"5":1},"core.edit.own":{"6":1,"3":1}}'),
 (2, 1, 1, 2, 1, 'com_admin', 'com_admin', '{}'),
 (3, 1, 3, 6, 1, 'com_banners', 'com_banners', '{"core.admin":{"7":1},"core.manage":{"6":1},"core.create":[],"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
 (4, 1, 7, 8, 1, 'com_cache', 'com_cache', '{"core.admin":{"7":1},"core.manage":{"7":1}}'),
 (5, 1, 9, 10, 1, 'com_checkin', 'com_checkin', '{"core.admin":{"7":1},"core.manage":{"7":1}}'),
 (6, 1, 11, 12, 1, 'com_config', 'com_config', '{}'),
 (7, 1, 13, 16, 1, 'com_contact', 'com_contact', '{"core.admin":{"7":1},"core.manage":{"6":1},"core.create":[],"core.delete":[],"core.edit":[],"core.edit.state":[],"core.edit.own":[]}'),
-(8, 1, 17, 20, 1, 'com_content', 'com_content', '{"core.admin":{"7":1},"core.manage":{"6":1},"core.create":{"3":1},"core.delete":[],"core.edit":{"4":1},"core.edit.state":{"5":1},"core.edit.own":[]}'),
-(9, 1, 21, 22, 1, 'com_cpanel', 'com_cpanel', '{}'),
-(10, 1, 23, 24, 1, 'com_installer', 'com_installer', '{"core.admin":[],"core.manage":{"7":0},"core.delete":{"7":0},"core.edit.state":{"7":0}}'),
-(11, 1, 25, 26, 1, 'com_languages', 'com_languages', '{"core.admin":{"7":1},"core.manage":[],"core.create":[],"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
-(12, 1, 27, 28, 1, 'com_login', 'com_login', '{}'),
-(13, 1, 29, 30, 1, 'com_mailto', 'com_mailto', '{}'),
-(14, 1, 31, 32, 1, 'com_massmail', 'com_massmail', '{}'),
-(15, 1, 33, 34, 1, 'com_media', 'com_media', '{"core.admin":{"7":1},"core.manage":{"6":1},"core.create":{"3":1},"core.delete":{"5":1}}'),
-(16, 1, 35, 36, 1, 'com_menus', 'com_menus', '{"core.admin":{"7":1},"core.manage":[],"core.create":[],"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
-(17, 1, 37, 38, 1, 'com_messages', 'com_messages', '{"core.admin":{"7":1},"core.manage":{"7":1}}'),
-(18, 1, 39, 70, 1, 'com_modules', 'com_modules', '{"core.admin":{"7":1},"core.manage":[],"core.create":[],"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
-(19, 1, 71, 74, 1, 'com_newsfeeds', 'com_newsfeeds', '{"core.admin":{"7":1},"core.manage":{"6":1},"core.create":[],"core.delete":[],"core.edit":[],"core.edit.state":[],"core.edit.own":[]}'),
-(20, 1, 75, 76, 1, 'com_plugins', 'com_plugins', '{"core.admin":{"7":1},"core.manage":[],"core.edit":[],"core.edit.state":[]}'),
-(21, 1, 77, 78, 1, 'com_redirect', 'com_redirect', '{"core.admin":{"7":1},"core.manage":[]}'),
-(22, 1, 79, 80, 1, 'com_search', 'com_search', '{"core.admin":{"7":1},"core.manage":{"6":1}}'),
-(23, 1, 81, 82, 1, 'com_templates', 'com_templates', '{"core.admin":{"7":1},"core.manage":[],"core.create":[],"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
-(24, 1, 83, 86, 1, 'com_users', 'com_users', '{"core.admin":{"7":1},"core.manage":[],"core.create":[],"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
-(25, 1, 87, 90, 1, 'com_weblinks', 'com_weblinks', '{"core.admin":{"7":1},"core.manage":{"6":1},"core.create":{"3":1},"core.delete":[],"core.edit":{"4":1},"core.edit.state":{"5":1},"core.edit.own":[]}'),
-(26, 1, 91, 92, 1, 'com_wrapper', 'com_wrapper', '{}'),
-(27, 8, 18, 19, 2, 'com_content.category.2', 'Uncategorised', '{"core.create":[],"core.delete":[],"core.edit":[],"core.edit.state":[],"core.edit.own":[]}'),
+(8, 1, 17, 34, 1, 'com_content', 'com_content', '{"core.admin":{"7":1},"core.manage":{"6":1},"core.create":{"3":1},"core.delete":[],"core.edit":{"4":1},"core.edit.state":{"5":1},"core.edit.own":[]}'),
+(9, 1, 35, 36, 1, 'com_cpanel', 'com_cpanel', '{}'),
+(10, 1, 37, 38, 1, 'com_installer', 'com_installer', '{"core.admin":[],"core.manage":{"7":0},"core.delete":{"7":0},"core.edit.state":{"7":0}}'),
+(11, 1, 39, 40, 1, 'com_languages', 'com_languages', '{"core.admin":{"7":1},"core.manage":[],"core.create":[],"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
+(12, 1, 41, 42, 1, 'com_login', 'com_login', '{}'),
+(13, 1, 43, 44, 1, 'com_mailto', 'com_mailto', '{}'),
+(14, 1, 45, 46, 1, 'com_massmail', 'com_massmail', '{}'),
+(15, 1, 47, 48, 1, 'com_media', 'com_media', '{"core.admin":{"7":1},"core.manage":{"6":1},"core.create":{"3":1},"core.delete":{"5":1}}'),
+(16, 1, 49, 50, 1, 'com_menus', 'com_menus', '{"core.admin":{"7":1},"core.manage":[],"core.create":[],"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
+(17, 1, 51, 52, 1, 'com_messages', 'com_messages', '{"core.admin":{"7":1},"core.manage":{"7":1}}'),
+(18, 1, 53, 108, 1, 'com_modules', 'com_modules', '{"core.admin":{"7":1},"core.manage":[],"core.create":[],"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
+(19, 1, 109, 112, 1, 'com_newsfeeds', 'com_newsfeeds', '{"core.admin":{"7":1},"core.manage":{"6":1},"core.create":[],"core.delete":[],"core.edit":[],"core.edit.state":[],"core.edit.own":[]}'),
+(20, 1, 113, 114, 1, 'com_plugins', 'com_plugins', '{"core.admin":{"7":1},"core.manage":[],"core.edit":[],"core.edit.state":[]}'),
+(21, 1, 115, 116, 1, 'com_redirect', 'com_redirect', '{"core.admin":{"7":1},"core.manage":[]}'),
+(22, 1, 117, 118, 1, 'com_search', 'com_search', '{"core.admin":{"7":1},"core.manage":{"6":1}}'),
+(23, 1, 119, 120, 1, 'com_templates', 'com_templates', '{"core.admin":{"7":1},"core.manage":[],"core.create":[],"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
+(24, 1, 121, 124, 1, 'com_users', 'com_users', '{"core.admin":{"7":1},"core.manage":[],"core.create":[],"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
+(25, 1, 125, 128, 1, 'com_weblinks', 'com_weblinks', '{"core.admin":{"7":1},"core.manage":{"6":1},"core.create":{"3":1},"core.delete":[],"core.edit":{"4":1},"core.edit.state":{"5":1},"core.edit.own":[]}'),
+(26, 1, 129, 130, 1, 'com_wrapper', 'com_wrapper', '{}'),
+(27, 8, 18, 33, 2, 'com_content.category.2', 'Uncategorised', '{"core.create":[],"core.delete":[],"core.edit":[],"core.edit.state":[],"core.edit.own":[]}'),
 (28, 3, 4, 5, 2, 'com_banners.category.3', 'Uncategorised', '{"core.create":[],"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
 (29, 7, 14, 15, 2, 'com_contact.category.4', 'Uncategorised', '{"core.create":[],"core.delete":[],"core.edit":[],"core.edit.state":[],"core.edit.own":[]}'),
-(30, 19, 72, 73, 2, 'com_newsfeeds.category.5', 'Uncategorised', '{"core.create":[],"core.delete":[],"core.edit":[],"core.edit.state":[],"core.edit.own":[]}'),
-(31, 25, 88, 89, 2, 'com_weblinks.category.6', 'Uncategorised', '{"core.create":[],"core.delete":[],"core.edit":[],"core.edit.state":[],"core.edit.own":[]}'),
-(32, 24, 84, 85, 1, 'com_users.category.7', 'Uncategorised', '{"core.create":[],"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
-(33, 1, 93, 94, 1, 'com_finder', 'com_finder', '{"core.admin":{"7":1},"core.manage":{"6":1}}'),
-(34, 1, 95, 96, 1, 'com_joomlaupdate', 'com_joomlaupdate', '{"core.admin":[],"core.manage":[],"core.delete":[],"core.edit.state":[]}'),
-(35, 1, 97, 98, 1, 'com_tags', 'com_tags', '{"core.admin":[],"core.manage":[],"core.manage":[],"core.delete":[],"core.edit.state":[]}'),
-(36, 1, 99, 100, 1, 'com_contenthistory', 'com_contenthistory', '{}'),
-(37, 1, 101, 102, 1, 'com_ajax', 'com_ajax', '{}'),
-(38, 1, 103, 104, 1, 'com_postinstall', 'com_postinstall', '{}'),
-(39, 18, 40, 41, 2, 'com_modules.module.1', 'Main Menu', '{"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
-(40, 18, 42, 43, 2, 'com_modules.module.2', 'Login', '{"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
-(41, 18, 44, 45, 2, 'com_modules.module.3', 'Popular Articles', '{"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
-(42, 18, 46, 47, 2, 'com_modules.module.4', 'Recently Added Articles', '{"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
-(43, 18, 48, 49, 2, 'com_modules.module.8', 'Toolbar', '{"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
-(44, 18, 50, 51, 2, 'com_modules.module.9', 'Quick Icons', '{"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
-(45, 18, 52, 53, 2, 'com_modules.module.10', 'Logged-in Users', '{"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
-(46, 18, 54, 55, 2, 'com_modules.module.12', 'Admin Menu', '{"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
-(47, 18, 56, 57, 2, 'com_modules.module.13', 'Admin Submenu', '{"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
-(48, 18, 58, 59, 2, 'com_modules.module.14', 'User Status', '{"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
-(49, 18, 60, 61, 2, 'com_modules.module.15', 'Title', '{"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
-(50, 18, 62, 63, 2, 'com_modules.module.16', 'Login Form', '{"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
-(51, 18, 64, 65, 2, 'com_modules.module.17', 'Breadcrumbs', '{"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
-(52, 18, 66, 67, 2, 'com_modules.module.79', 'Multilanguage status', '{"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
-(53, 18, 68, 69, 2, 'com_modules.module.86', 'Joomla Version', '{"core.delete":[],"core.edit":[],"core.edit.state":[]}');
+(30, 19, 110, 111, 2, 'com_newsfeeds.category.5', 'Uncategorised', '{"core.create":[],"core.delete":[],"core.edit":[],"core.edit.state":[],"core.edit.own":[]}'),
+(31, 25, 126, 127, 2, 'com_weblinks.category.6', 'Uncategorised', '{"core.create":[],"core.delete":[],"core.edit":[],"core.edit.state":[],"core.edit.own":[]}'),
+(32, 24, 122, 123, 1, 'com_users.category.7', 'Uncategorised', '{"core.create":[],"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
+(33, 1, 131, 132, 1, 'com_finder', 'com_finder', '{"core.admin":{"7":1},"core.manage":{"6":1}}'),
+(34, 1, 133, 134, 1, 'com_joomlaupdate', 'com_joomlaupdate', '{"core.admin":[],"core.manage":[],"core.delete":[],"core.edit.state":[]}'),
+(35, 1, 135, 136, 1, 'com_tags', 'com_tags', '{"core.admin":[],"core.manage":[],"core.manage":[],"core.delete":[],"core.edit.state":[]}'),
+(36, 1, 137, 138, 1, 'com_contenthistory', 'com_contenthistory', '{}'),
+(37, 1, 139, 140, 1, 'com_ajax', 'com_ajax', '{}'),
+(38, 1, 141, 142, 1, 'com_postinstall', 'com_postinstall', '{}'),
+(39, 18, 54, 55, 2, 'com_modules.module.1', 'Main Menu', '{"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
+(40, 18, 56, 57, 2, 'com_modules.module.2', 'Login', '{"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
+(41, 18, 58, 59, 2, 'com_modules.module.3', 'Popular Articles', '{"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
+(42, 18, 60, 61, 2, 'com_modules.module.4', 'Recently Added Articles', '{"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
+(43, 18, 62, 63, 2, 'com_modules.module.8', 'Toolbar', '{"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
+(44, 18, 64, 65, 2, 'com_modules.module.9', 'Quick Icons', '{"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
+(45, 18, 66, 67, 2, 'com_modules.module.10', 'Logged-in Users', '{"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
+(46, 18, 68, 69, 2, 'com_modules.module.12', 'Admin Menu', '{"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
+(47, 18, 70, 71, 2, 'com_modules.module.13', 'Admin Submenu', '{"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
+(48, 18, 72, 73, 2, 'com_modules.module.14', 'User Status', '{"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
+(49, 18, 74, 75, 2, 'com_modules.module.15', 'Title', '{"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
+(50, 18, 76, 77, 2, 'com_modules.module.16', 'Login Form', '{"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
+(51, 18, 78, 79, 2, 'com_modules.module.17', 'Breadcrumbs', '{"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
+(52, 18, 80, 81, 2, 'com_modules.module.79', 'Multilanguage status', '{"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
+(53, 18, 82, 83, 2, 'com_modules.module.86', 'Joomla Version', '{"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
+(54, 18, 84, 85, 2, 'com_modules.module.87', 'teste', '{"core.delete":{"6":1},"core.edit":{"6":1,"4":1},"core.edit.state":{"6":1,"5":1}}'),
+(55, 18, 86, 87, 2, 'com_modules.module.88', 'dasasdads', '{"core.delete":{"6":1},"core.edit":{"6":1,"4":1},"core.edit.state":{"6":1,"5":1}}'),
+(56, 27, 19, 20, 3, 'com_content.article.1', 'este', '{"core.delete":{"6":1},"core.edit":{"6":1,"4":1},"core.edit.state":{"6":1,"5":1}}'),
+(57, 18, 88, 89, 2, 'com_modules.module.89', 'mod mian logo', '{"core.delete":{"6":1},"core.edit":{"6":1,"4":1},"core.edit.state":{"6":1,"5":1}}'),
+(58, 18, 90, 91, 2, 'com_modules.module.90', 'mod down main', '{"core.delete":{"6":1},"core.edit":{"6":1,"4":1},"core.edit.state":{"6":1,"5":1}}'),
+(59, 18, 92, 93, 2, 'com_modules.module.91', 'foot3', '{"core.delete":{"6":1},"core.edit":{"6":1,"4":1},"core.edit.state":{"6":1,"5":1}}'),
+(60, 18, 94, 95, 2, 'com_modules.module.92', 'icons', '{"core.delete":{"6":1},"core.edit":{"6":1,"4":1},"core.edit.state":{"6":1,"5":1}}'),
+(61, 18, 96, 97, 2, 'com_modules.module.93', 'Imagens do cabeçalho', '{"core.delete":{"6":1},"core.edit":{"6":1,"4":1},"core.edit.state":{"6":1,"5":1}}'),
+(62, 18, 98, 99, 2, 'com_modules.module.94', 'Imagens do main', '{"core.delete":[],"core.edit":[],"core.edit.state":[]}'),
+(63, 18, 100, 101, 2, 'com_modules.module.95', 'Menu Principal', '{"core.delete":{"6":1},"core.edit":{"6":1,"4":1},"core.edit.state":{"6":1,"5":1}}'),
+(64, 18, 102, 103, 2, 'com_modules.module.96', 'Logos', '{"core.delete":{"6":1},"core.edit":{"6":1,"4":1},"core.edit.state":{"6":1,"5":1}}'),
+(65, 18, 104, 105, 2, 'com_modules.module.97', 'Rodapé', '{"core.delete":{"6":1},"core.edit":{"6":1,"4":1},"core.edit.state":{"6":1,"5":1}}'),
+(66, 27, 21, 22, 3, 'com_content.article.2', 'Quem Somos', '{"core.delete":{"6":1},"core.edit":{"6":1,"4":1},"core.edit.state":{"6":1,"5":1}}'),
+(67, 27, 23, 24, 3, 'com_content.article.3', 'Publicações', '{"core.delete":{"6":1},"core.edit":{"6":1,"4":1},"core.edit.state":{"6":1,"5":1}}'),
+(68, 27, 25, 26, 3, 'com_content.article.4', 'Banco de Dados', '{"core.delete":{"6":1},"core.edit":{"6":1,"4":1},"core.edit.state":{"6":1,"5":1}}'),
+(69, 27, 27, 28, 3, 'com_content.article.5', 'Formulários', '{"core.delete":{"6":1},"core.edit":{"6":1,"4":1},"core.edit.state":{"6":1,"5":1}}'),
+(70, 27, 29, 30, 3, 'com_content.article.6', 'Parceiros', '{"core.delete":{"6":1},"core.edit":{"6":1,"4":1},"core.edit.state":{"6":1,"5":1}}'),
+(71, 27, 31, 32, 3, 'com_content.article.7', 'Home', '{"core.delete":{"6":1},"core.edit":{"6":1,"4":1},"core.edit.state":{"6":1,"5":1}}'),
+(72, 18, 106, 107, 2, 'com_modules.module.98', 'Imagens do main', '{"core.delete":[],"core.edit":[],"core.edit.state":[]}');
 
 -- --------------------------------------------------------
 
@@ -103,9 +118,7 @@ INSERT INTO `joomla_assets` (`id`, `parent_id`, `lft`, `rgt`, `level`, `name`, `
 CREATE TABLE `joomla_associations` (
   `id` int(11) NOT NULL COMMENT 'A reference to the associated item.',
   `context` varchar(50) NOT NULL COMMENT 'The context of the associated item.',
-  `key` char(32) NOT NULL COMMENT 'The key for the association computed from an md5 on associated ids.',
-  PRIMARY KEY (`context`,`id`),
-  KEY `idx_key` (`key`)
+  `key` char(32) NOT NULL COMMENT 'The key for the association computed from an md5 on associated ids.'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -115,7 +128,7 @@ CREATE TABLE `joomla_associations` (
 --
 
 CREATE TABLE `joomla_banners` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+`id` int(11) NOT NULL,
   `cid` int(11) NOT NULL DEFAULT '0',
   `type` int(11) NOT NULL DEFAULT '0',
   `name` varchar(255) NOT NULL DEFAULT '',
@@ -148,14 +161,8 @@ CREATE TABLE `joomla_banners` (
   `created_by_alias` varchar(255) NOT NULL DEFAULT '',
   `modified` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modified_by` int(10) unsigned NOT NULL DEFAULT '0',
-  `version` int(10) unsigned NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id`),
-  KEY `idx_state` (`state`),
-  KEY `idx_own_prefix` (`own_prefix`),
-  KEY `idx_metakey_prefix` (`metakey_prefix`),
-  KEY `idx_banner_catid` (`catid`),
-  KEY `idx_language` (`language`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `version` int(10) unsigned NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -164,7 +171,7 @@ CREATE TABLE `joomla_banners` (
 --
 
 CREATE TABLE `joomla_banner_clients` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+`id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL DEFAULT '',
   `contact` varchar(255) NOT NULL DEFAULT '',
   `email` varchar(255) NOT NULL DEFAULT '',
@@ -177,11 +184,8 @@ CREATE TABLE `joomla_banner_clients` (
   `metakey_prefix` varchar(255) NOT NULL DEFAULT '',
   `purchase_type` tinyint(4) NOT NULL DEFAULT '-1',
   `track_clicks` tinyint(4) NOT NULL DEFAULT '-1',
-  `track_impressions` tinyint(4) NOT NULL DEFAULT '-1',
-  PRIMARY KEY (`id`),
-  KEY `idx_own_prefix` (`own_prefix`),
-  KEY `idx_metakey_prefix` (`metakey_prefix`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `track_impressions` tinyint(4) NOT NULL DEFAULT '-1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -193,11 +197,7 @@ CREATE TABLE `joomla_banner_tracks` (
   `track_date` datetime NOT NULL,
   `track_type` int(10) unsigned NOT NULL,
   `banner_id` int(10) unsigned NOT NULL,
-  `count` int(10) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`track_date`,`track_type`,`banner_id`),
-  KEY `idx_track_date` (`track_date`),
-  KEY `idx_track_type` (`track_type`),
-  KEY `idx_banner_id` (`banner_id`)
+  `count` int(10) unsigned NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -207,7 +207,7 @@ CREATE TABLE `joomla_banner_tracks` (
 --
 
 CREATE TABLE `joomla_categories` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+`id` int(11) NOT NULL,
   `asset_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'FK to the #__assets table.',
   `parent_id` int(10) unsigned NOT NULL DEFAULT '0',
   `lft` int(11) NOT NULL DEFAULT '0',
@@ -233,16 +233,8 @@ CREATE TABLE `joomla_categories` (
   `modified_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `hits` int(10) unsigned NOT NULL DEFAULT '0',
   `language` char(7) NOT NULL,
-  `version` int(10) unsigned NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id`),
-  KEY `cat_idx` (`extension`,`published`,`access`),
-  KEY `idx_access` (`access`),
-  KEY `idx_checkout` (`checked_out`),
-  KEY `idx_path` (`path`),
-  KEY `idx_left_right` (`lft`,`rgt`),
-  KEY `idx_alias` (`alias`),
-  KEY `idx_language` (`language`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
+  `version` int(10) unsigned NOT NULL DEFAULT '1'
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `joomla_categories`
@@ -264,7 +256,7 @@ INSERT INTO `joomla_categories` (`id`, `asset_id`, `parent_id`, `lft`, `rgt`, `l
 --
 
 CREATE TABLE `joomla_contact_details` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+`id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL DEFAULT '',
   `alias` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
   `con_position` varchar(255) DEFAULT NULL,
@@ -306,17 +298,8 @@ CREATE TABLE `joomla_contact_details` (
   `publish_up` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `publish_down` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `version` int(10) unsigned NOT NULL DEFAULT '1',
-  `hits` int(10) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `idx_access` (`access`),
-  KEY `idx_checkout` (`checked_out`),
-  KEY `idx_state` (`published`),
-  KEY `idx_catid` (`catid`),
-  KEY `idx_createdby` (`created_by`),
-  KEY `idx_featured_catid` (`featured`,`catid`),
-  KEY `idx_language` (`language`),
-  KEY `idx_xreference` (`xreference`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `hits` int(10) unsigned NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -325,7 +308,7 @@ CREATE TABLE `joomla_contact_details` (
 --
 
 CREATE TABLE `joomla_content` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+`id` int(10) unsigned NOT NULL,
   `asset_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'FK to the #__assets table.',
   `title` varchar(255) NOT NULL DEFAULT '',
   `alias` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
@@ -354,17 +337,21 @@ CREATE TABLE `joomla_content` (
   `metadata` text NOT NULL,
   `featured` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT 'Set if article is featured.',
   `language` char(7) NOT NULL COMMENT 'The language code for the article.',
-  `xreference` varchar(50) NOT NULL COMMENT 'A reference to enable linkages to external data sets.',
-  PRIMARY KEY (`id`),
-  KEY `idx_access` (`access`),
-  KEY `idx_checkout` (`checked_out`),
-  KEY `idx_state` (`state`),
-  KEY `idx_catid` (`catid`),
-  KEY `idx_createdby` (`created_by`),
-  KEY `idx_featured_catid` (`featured`,`catid`),
-  KEY `idx_language` (`language`),
-  KEY `idx_xreference` (`xreference`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `xreference` varchar(50) NOT NULL COMMENT 'A reference to enable linkages to external data sets.'
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `joomla_content`
+--
+
+INSERT INTO `joomla_content` (`id`, `asset_id`, `title`, `alias`, `introtext`, `fulltext`, `state`, `catid`, `created`, `created_by`, `created_by_alias`, `modified`, `modified_by`, `checked_out`, `checked_out_time`, `publish_up`, `publish_down`, `images`, `urls`, `attribs`, `version`, `ordering`, `metakey`, `metadesc`, `access`, `hits`, `metadata`, `featured`, `language`, `xreference`) VALUES
+(1, 56, 'este', 'este', '<p>teste</p>', '', 1, 2, '2015-02-05 00:13:56', 198, '', '0000-00-00 00:00:00', 0, 0, '0000-00-00 00:00:00', '2015-02-05 00:13:56', '0000-00-00 00:00:00', '{"image_intro":"","float_intro":"","image_intro_alt":"","image_intro_caption":"","image_fulltext":"","float_fulltext":"","image_fulltext_alt":"","image_fulltext_caption":""}', '{"urla":false,"urlatext":"","targeta":"","urlb":false,"urlbtext":"","targetb":"","urlc":false,"urlctext":"","targetc":""}', '{"show_title":"","link_titles":"","show_tags":"","show_intro":"","info_block_position":"","show_category":"","link_category":"","show_parent_category":"","link_parent_category":"","show_author":"","link_author":"","show_create_date":"","show_modify_date":"","show_publish_date":"","show_item_navigation":"","show_icons":"","show_print_icon":"","show_email_icon":"","show_vote":"","show_hits":"","show_noauth":"","urls_position":"","alternative_readmore":"","article_layout":"","show_publishing_options":"","show_article_options":"","show_urls_images_backend":"","show_urls_images_frontend":""}', 1, 6, '', '', 1, 10, '{"robots":"","author":"","rights":"","xreference":""}', 0, '*', ''),
+(2, 66, 'Quem Somos', 'quem-somos', '<p>teste de quem somos</p>', '', 1, 2, '2015-04-04 19:37:26', 198, '', '2015-04-20 12:56:27', 198, 0, '0000-00-00 00:00:00', '2015-04-04 19:37:26', '0000-00-00 00:00:00', '{"image_intro":"","float_intro":"","image_intro_alt":"","image_intro_caption":"","image_fulltext":"","float_fulltext":"","image_fulltext_alt":"","image_fulltext_caption":""}', '{"urla":false,"urlatext":"","targeta":"","urlb":false,"urlbtext":"","targetb":"","urlc":false,"urlctext":"","targetc":""}', '{"show_title":"","link_titles":"","show_tags":"","show_intro":"","info_block_position":"","show_category":"","link_category":"","show_parent_category":"","link_parent_category":"","show_author":"","link_author":"","show_create_date":"","show_modify_date":"","show_publish_date":"","show_item_navigation":"","show_icons":"","show_print_icon":"","show_email_icon":"","show_vote":"","show_hits":"","show_noauth":"","urls_position":"","alternative_readmore":"","article_layout":"","show_publishing_options":"","show_article_options":"","show_urls_images_backend":"","show_urls_images_frontend":""}', 2, 5, '', '', 1, 31, '{"robots":"","author":"","rights":"","xreference":""}', 0, '*', ''),
+(3, 67, 'Publicações', 'publicacoes', '', '', 1, 2, '2015-04-04 19:37:34', 198, '', '0000-00-00 00:00:00', 0, 0, '0000-00-00 00:00:00', '2015-04-04 19:37:34', '0000-00-00 00:00:00', '{"image_intro":"","float_intro":"","image_intro_alt":"","image_intro_caption":"","image_fulltext":"","float_fulltext":"","image_fulltext_alt":"","image_fulltext_caption":""}', '{"urla":false,"urlatext":"","targeta":"","urlb":false,"urlbtext":"","targetb":"","urlc":false,"urlctext":"","targetc":""}', '{"show_title":"","link_titles":"","show_tags":"","show_intro":"","info_block_position":"","show_category":"","link_category":"","show_parent_category":"","link_parent_category":"","show_author":"","link_author":"","show_create_date":"","show_modify_date":"","show_publish_date":"","show_item_navigation":"","show_icons":"","show_print_icon":"","show_email_icon":"","show_vote":"","show_hits":"","show_noauth":"","urls_position":"","alternative_readmore":"","article_layout":"","show_publishing_options":"","show_article_options":"","show_urls_images_backend":"","show_urls_images_frontend":""}', 1, 4, '', '', 1, 11, '{"robots":"","author":"","rights":"","xreference":""}', 0, '*', ''),
+(4, 68, 'Banco de Dados', 'banco-de-dados', '', '', 1, 2, '2015-04-04 19:37:43', 198, '', '0000-00-00 00:00:00', 0, 0, '0000-00-00 00:00:00', '2015-04-04 19:37:43', '0000-00-00 00:00:00', '{"image_intro":"","float_intro":"","image_intro_alt":"","image_intro_caption":"","image_fulltext":"","float_fulltext":"","image_fulltext_alt":"","image_fulltext_caption":""}', '{"urla":false,"urlatext":"","targeta":"","urlb":false,"urlbtext":"","targetb":"","urlc":false,"urlctext":"","targetc":""}', '{"show_title":"","link_titles":"","show_tags":"","show_intro":"","info_block_position":"","show_category":"","link_category":"","show_parent_category":"","link_parent_category":"","show_author":"","link_author":"","show_create_date":"","show_modify_date":"","show_publish_date":"","show_item_navigation":"","show_icons":"","show_print_icon":"","show_email_icon":"","show_vote":"","show_hits":"","show_noauth":"","urls_position":"","alternative_readmore":"","article_layout":"","show_publishing_options":"","show_article_options":"","show_urls_images_backend":"","show_urls_images_frontend":""}', 1, 3, '', '', 1, 12, '{"robots":"","author":"","rights":"","xreference":""}', 0, '*', ''),
+(5, 69, 'Formulários', 'formularios', '', '', 1, 2, '2015-04-04 19:37:49', 198, '', '0000-00-00 00:00:00', 0, 0, '0000-00-00 00:00:00', '2015-04-04 19:37:49', '0000-00-00 00:00:00', '{"image_intro":"","float_intro":"","image_intro_alt":"","image_intro_caption":"","image_fulltext":"","float_fulltext":"","image_fulltext_alt":"","image_fulltext_caption":""}', '{"urla":false,"urlatext":"","targeta":"","urlb":false,"urlbtext":"","targetb":"","urlc":false,"urlctext":"","targetc":""}', '{"show_title":"","link_titles":"","show_tags":"","show_intro":"","info_block_position":"","show_category":"","link_category":"","show_parent_category":"","link_parent_category":"","show_author":"","link_author":"","show_create_date":"","show_modify_date":"","show_publish_date":"","show_item_navigation":"","show_icons":"","show_print_icon":"","show_email_icon":"","show_vote":"","show_hits":"","show_noauth":"","urls_position":"","alternative_readmore":"","article_layout":"","show_publishing_options":"","show_article_options":"","show_urls_images_backend":"","show_urls_images_frontend":""}', 1, 2, '', '', 1, 11, '{"robots":"","author":"","rights":"","xreference":""}', 0, '*', ''),
+(6, 70, 'Parceiros', 'parceiros', '', '', 1, 2, '2015-04-04 19:37:56', 198, '', '0000-00-00 00:00:00', 0, 0, '0000-00-00 00:00:00', '2015-04-04 19:37:56', '0000-00-00 00:00:00', '{"image_intro":"","float_intro":"","image_intro_alt":"","image_intro_caption":"","image_fulltext":"","float_fulltext":"","image_fulltext_alt":"","image_fulltext_caption":""}', '{"urla":false,"urlatext":"","targeta":"","urlb":false,"urlbtext":"","targetb":"","urlc":false,"urlctext":"","targetc":""}', '{"show_title":"","link_titles":"","show_tags":"","show_intro":"","info_block_position":"","show_category":"","link_category":"","show_parent_category":"","link_parent_category":"","show_author":"","link_author":"","show_create_date":"","show_modify_date":"","show_publish_date":"","show_item_navigation":"","show_icons":"","show_print_icon":"","show_email_icon":"","show_vote":"","show_hits":"","show_noauth":"","urls_position":"","alternative_readmore":"","article_layout":"","show_publishing_options":"","show_article_options":"","show_urls_images_backend":"","show_urls_images_frontend":""}', 1, 1, '', '', 1, 10, '{"robots":"","author":"","rights":"","xreference":""}', 0, '*', ''),
+(7, 71, 'Home', 'home', '', '', 1, 2, '2015-04-20 13:02:58', 198, '', '0000-00-00 00:00:00', 0, 0, '0000-00-00 00:00:00', '2015-04-20 13:02:58', '0000-00-00 00:00:00', '{"image_intro":"","float_intro":"","image_intro_alt":"","image_intro_caption":"","image_fulltext":"","float_fulltext":"","image_fulltext_alt":"","image_fulltext_caption":""}', '{"urla":false,"urlatext":"","targeta":"","urlb":false,"urlbtext":"","targetb":"","urlc":false,"urlctext":"","targetc":""}', '{"show_title":"0","link_titles":"0","show_tags":"","show_intro":"","info_block_position":"","show_category":"","link_category":"","show_parent_category":"","link_parent_category":"","show_author":"","link_author":"","show_create_date":"","show_modify_date":"","show_publish_date":"","show_item_navigation":"","show_icons":"","show_print_icon":"","show_email_icon":"","show_vote":"","show_hits":"","show_noauth":"","urls_position":"","alternative_readmore":"","article_layout":"","show_publishing_options":"","show_article_options":"","show_urls_images_backend":"","show_urls_images_frontend":""}', 1, 0, '', '', 1, 196, '{"robots":"","author":"","rights":"","xreference":""}', 0, '*', '');
 
 -- --------------------------------------------------------
 
@@ -378,13 +365,7 @@ CREATE TABLE `joomla_contentitem_tag_map` (
   `content_item_id` int(11) NOT NULL COMMENT 'PK from the content type table',
   `tag_id` int(10) unsigned NOT NULL COMMENT 'PK from the tag table',
   `tag_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Date of most recent save for this tag-item',
-  `type_id` mediumint(8) NOT NULL COMMENT 'PK from the content_type table',
-  UNIQUE KEY `uc_ItemnameTagid` (`type_id`,`content_item_id`,`tag_id`),
-  KEY `idx_tag_type` (`tag_id`,`type_id`),
-  KEY `idx_date_id` (`tag_date`,`tag_id`),
-  KEY `idx_tag` (`tag_id`),
-  KEY `idx_type` (`type_id`),
-  KEY `idx_core_content_id` (`core_content_id`)
+  `type_id` mediumint(8) NOT NULL COMMENT 'PK from the content_type table'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Maps items from content tables to tags';
 
 -- --------------------------------------------------------
@@ -395,8 +376,7 @@ CREATE TABLE `joomla_contentitem_tag_map` (
 
 CREATE TABLE `joomla_content_frontpage` (
   `content_id` int(11) NOT NULL DEFAULT '0',
-  `ordering` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`content_id`)
+  `ordering` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -409,8 +389,7 @@ CREATE TABLE `joomla_content_rating` (
   `content_id` int(11) NOT NULL DEFAULT '0',
   `rating_sum` int(10) unsigned NOT NULL DEFAULT '0',
   `rating_count` int(10) unsigned NOT NULL DEFAULT '0',
-  `lastip` varchar(50) NOT NULL DEFAULT '',
-  PRIMARY KEY (`content_id`)
+  `lastip` varchar(50) NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -420,17 +399,15 @@ CREATE TABLE `joomla_content_rating` (
 --
 
 CREATE TABLE `joomla_content_types` (
-  `type_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+`type_id` int(10) unsigned NOT NULL,
   `type_title` varchar(255) NOT NULL DEFAULT '',
   `type_alias` varchar(255) NOT NULL DEFAULT '',
   `table` varchar(255) NOT NULL DEFAULT '',
   `rules` text NOT NULL,
   `field_mappings` text NOT NULL,
   `router` varchar(255) NOT NULL DEFAULT '',
-  `content_history_options` varchar(5120) DEFAULT NULL COMMENT 'JSON string for com_contenthistory options',
-  PRIMARY KEY (`type_id`),
-  KEY `idx_alias` (`type_alias`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=16 ;
+  `content_history_options` varchar(5120) DEFAULT NULL COMMENT 'JSON string for com_contenthistory options'
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `joomla_content_types`
@@ -471,7 +448,7 @@ CREATE TABLE `joomla_core_log_searches` (
 --
 
 CREATE TABLE `joomla_extensions` (
-  `extension_id` int(11) NOT NULL AUTO_INCREMENT,
+`extension_id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
   `type` varchar(20) NOT NULL,
   `element` varchar(100) NOT NULL,
@@ -487,12 +464,8 @@ CREATE TABLE `joomla_extensions` (
   `checked_out` int(10) unsigned NOT NULL DEFAULT '0',
   `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `ordering` int(11) DEFAULT '0',
-  `state` int(11) DEFAULT '0',
-  PRIMARY KEY (`extension_id`),
-  KEY `element_clientid` (`element`,`client_id`),
-  KEY `element_folder_clientid` (`element`,`folder`,`client_id`),
-  KEY `extension` (`type`,`element`,`folder`,`client_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=706 ;
+  `state` int(11) DEFAULT '0'
+) ENGINE=InnoDB AUTO_INCREMENT=708 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `joomla_extensions`
@@ -520,8 +493,8 @@ INSERT INTO `joomla_extensions` (`extension_id`, `name`, `type`, `element`, `fol
 (19, 'com_search', 'component', 'com_search', '', 1, 1, 1, 0, '{"name":"com_search","type":"component","creationDate":"April 2006","author":"Joomla! Project","copyright":"(C) 2005 - 2014 Open Source Matters. All rights reserved.\\n\\t","authorEmail":"admin@joomla.org","authorUrl":"www.joomla.org","version":"3.0.0","description":"COM_SEARCH_XML_DESCRIPTION","group":""}', '{"enabled":"0","show_date":"1"}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
 (20, 'com_templates', 'component', 'com_templates', '', 1, 1, 1, 1, '{"name":"com_templates","type":"component","creationDate":"April 2006","author":"Joomla! Project","copyright":"(C) 2005 - 2014 Open Source Matters. All rights reserved.\\t","authorEmail":"admin@joomla.org","authorUrl":"www.joomla.org","version":"3.0.0","description":"COM_TEMPLATES_XML_DESCRIPTION","group":""}', '{"template_positions_display":"0","upload_limit":"2","image_formats":"gif,bmp,jpg,jpeg,png","source_formats":"txt,less,ini,xml,js,php,css","font_formats":"woff,ttf,otf","compressed_formats":"zip"}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
 (21, 'com_weblinks', 'component', 'com_weblinks', '', 1, 1, 1, 0, '{"name":"com_weblinks","type":"component","creationDate":"April 2006","author":"Joomla! Project","copyright":"(C) 2005 - 2014 Open Source Matters. All rights reserved.\\n\\t","authorEmail":"admin@joomla.org","authorUrl":"www.joomla.org","version":"3.0.0","description":"COM_WEBLINKS_XML_DESCRIPTION","group":""}', '{"target":"0","save_history":"1","history_limit":5,"count_clicks":"1","icons":1,"link_icons":"","float_first":"right","float_second":"right","show_tags":"1","category_layout":"_:default","show_category_title":"1","show_description":"1","show_description_image":"1","maxLevel":"-1","show_empty_categories":"0","show_subcat_desc":"1","show_cat_num_links":"1","show_cat_tags":"1","show_base_description":"1","maxLevelcat":"-1","show_empty_categories_cat":"0","show_subcat_desc_cat":"1","show_cat_num_links_cat":"1","filter_field":"1","show_pagination_limit":"1","show_headings":"0","show_link_description":"1","show_link_hits":"1","show_pagination":"2","show_pagination_results":"1","show_feed_link":"1"}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
-(22, 'com_content', 'component', 'com_content', '', 1, 1, 0, 1, '{"name":"com_content","type":"component","creationDate":"April 2006","author":"Joomla! Project","copyright":"(C) 2005 - 2014 Open Source Matters. All rights reserved.\\t","authorEmail":"admin@joomla.org","authorUrl":"www.joomla.org","version":"3.0.0","description":"COM_CONTENT_XML_DESCRIPTION","group":""}', '{"article_layout":"_:default","show_title":"1","link_titles":"1","show_intro":"1","show_category":"1","link_category":"1","show_parent_category":"0","link_parent_category":"0","show_author":"1","link_author":"0","show_create_date":"0","show_modify_date":"0","show_publish_date":"1","show_item_navigation":"1","show_vote":"0","show_readmore":"1","show_readmore_title":"1","readmore_limit":"100","show_icons":"1","show_print_icon":"1","show_email_icon":"1","show_hits":"1","show_noauth":"0","show_publishing_options":"1","show_article_options":"1","save_history":"1","history_limit":10,"show_urls_images_frontend":"0","show_urls_images_backend":"1","targeta":0,"targetb":0,"targetc":0,"float_intro":"left","float_fulltext":"left","category_layout":"_:blog","show_category_title":"0","show_description":"0","show_description_image":"0","maxLevel":"1","show_empty_categories":"0","show_no_articles":"1","show_subcat_desc":"1","show_cat_num_articles":"0","show_base_description":"1","maxLevelcat":"-1","show_empty_categories_cat":"0","show_subcat_desc_cat":"1","show_cat_num_articles_cat":"1","num_leading_articles":"1","num_intro_articles":"4","num_columns":"2","num_links":"4","multi_column_order":"0","show_subcategory_content":"0","show_pagination_limit":"1","filter_field":"hide","show_headings":"1","list_show_date":"0","date_format":"","list_show_hits":"1","list_show_author":"1","orderby_pri":"order","orderby_sec":"rdate","order_date":"published","show_pagination":"2","show_pagination_results":"1","show_feed_link":"1","feed_summary":"0"}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
-(23, 'com_config', 'component', 'com_config', '', 1, 1, 0, 1, '{"name":"com_config","type":"component","creationDate":"April 2006","author":"Joomla! Project","copyright":"(C) 2005 - 2014 Open Source Matters. All rights reserved.","authorEmail":"admin@joomla.org","authorUrl":"www.joomla.org","version":"3.0.0","description":"COM_CONFIG_XML_DESCRIPTION","group":""}', '{"filters":{"1":{"filter_type":"NH","filter_tags":"","filter_attributes":""},"6":{"filter_type":"BL","filter_tags":"","filter_attributes":""},"7":{"filter_type":"NONE","filter_tags":"","filter_attributes":""},"2":{"filter_type":"NH","filter_tags":"","filter_attributes":""},"3":{"filter_type":"BL","filter_tags":"","filter_attributes":""},"4":{"filter_type":"BL","filter_tags":"","filter_attributes":""},"5":{"filter_type":"BL","filter_tags":"","filter_attributes":""},"10":{"filter_type":"BL","filter_tags":"","filter_attributes":""},"12":{"filter_type":"BL","filter_tags":"","filter_attributes":""},"8":{"filter_type":"NONE","filter_tags":"","filter_attributes":""}}}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
+(22, 'com_content', 'component', 'com_content', '', 1, 1, 0, 1, '{"name":"com_content","type":"component","creationDate":"April 2006","author":"Joomla! Project","copyright":"(C) 2005 - 2014 Open Source Matters. All rights reserved.\\t","authorEmail":"admin@joomla.org","authorUrl":"www.joomla.org","version":"3.0.0","description":"COM_CONTENT_XML_DESCRIPTION","group":""}', '{"article_layout":"_:default","show_title":"1","link_titles":"0","show_intro":"0","info_block_position":"0","show_category":"0","link_category":"0","show_parent_category":"0","link_parent_category":"0","show_author":"0","link_author":"0","show_create_date":"0","show_modify_date":"0","show_publish_date":"0","show_item_navigation":"0","show_vote":"0","show_readmore":"0","show_readmore_title":"0","readmore_limit":"100","show_tags":"0","show_icons":"0","show_print_icon":"0","show_email_icon":"0","show_hits":"0","show_noauth":"0","urls_position":"0","show_publishing_options":"1","show_article_options":"1","save_history":"1","history_limit":10,"show_urls_images_frontend":"0","show_urls_images_backend":"1","targeta":0,"targetb":0,"targetc":0,"float_intro":"left","float_fulltext":"left","category_layout":"_:blog","show_category_heading_title_text":"1","show_category_title":"0","show_description":"0","show_description_image":"0","maxLevel":"1","show_empty_categories":"0","show_no_articles":"1","show_subcat_desc":"1","show_cat_num_articles":"0","show_cat_tags":"1","show_base_description":"1","maxLevelcat":"-1","show_empty_categories_cat":"0","show_subcat_desc_cat":"1","show_cat_num_articles_cat":"1","num_leading_articles":"1","num_intro_articles":"4","num_columns":"2","num_links":"4","multi_column_order":"0","show_subcategory_content":"0","show_pagination_limit":"1","filter_field":"hide","show_headings":"1","list_show_date":"0","date_format":"","list_show_hits":"1","list_show_author":"1","orderby_pri":"order","orderby_sec":"rdate","order_date":"published","show_pagination":"2","show_pagination_results":"1","show_feed_link":"1","feed_summary":"0","feed_show_readmore":"0"}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
+(23, 'com_config', 'component', 'com_config', '', 1, 1, 0, 1, '{"name":"com_config","type":"component","creationDate":"April 2006","author":"Joomla! Project","copyright":"(C) 2005 - 2014 Open Source Matters. All rights reserved.","authorEmail":"admin@joomla.org","authorUrl":"www.joomla.org","version":"3.0.0","description":"COM_CONFIG_XML_DESCRIPTION","group":""}', '{"filters":{"1":{"filter_type":"NH","filter_tags":"","filter_attributes":""},"9":{"filter_type":"BL","filter_tags":"","filter_attributes":""},"6":{"filter_type":"BL","filter_tags":"","filter_attributes":""},"7":{"filter_type":"NONE","filter_tags":"","filter_attributes":""},"2":{"filter_type":"NH","filter_tags":"","filter_attributes":""},"3":{"filter_type":"BL","filter_tags":"","filter_attributes":""},"4":{"filter_type":"BL","filter_tags":"","filter_attributes":""},"5":{"filter_type":"BL","filter_tags":"","filter_attributes":""},"8":{"filter_type":"NONE","filter_tags":"","filter_attributes":""}}}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
 (24, 'com_redirect', 'component', 'com_redirect', '', 1, 1, 0, 1, '{"name":"com_redirect","type":"component","creationDate":"April 2006","author":"Joomla! Project","copyright":"(C) 2005 - 2014 Open Source Matters. All rights reserved.\\t","authorEmail":"admin@joomla.org","authorUrl":"www.joomla.org","version":"3.0.0","description":"COM_REDIRECT_XML_DESCRIPTION","group":""}', '', '', '', 0, '0000-00-00 00:00:00', 0, 0),
 (25, 'com_users', 'component', 'com_users', '', 1, 1, 0, 1, '{"name":"com_users","type":"component","creationDate":"April 2006","author":"Joomla! Project","copyright":"(C) 2005 - 2014 Open Source Matters. All rights reserved.\\t","authorEmail":"admin@joomla.org","authorUrl":"www.joomla.org","version":"3.0.0","description":"COM_USERS_XML_DESCRIPTION","group":""}', '{"allowUserRegistration":"1","new_usertype":"2","guest_usergroup":"9","sendpassword":"1","useractivation":"1","mail_to_admin":"0","captcha":"","frontend_userparams":"1","site_language":"0","change_login_name":"0","reset_count":"10","reset_time":"1","minimum_length":"4","minimum_integers":"0","minimum_symbols":"0","minimum_uppercase":"0","save_history":"1","history_limit":5,"mailSubjectPrefix":"","mailBodySuffix":""}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
 (27, 'com_finder', 'component', 'com_finder', '', 1, 1, 0, 0, '{"name":"com_finder","type":"component","creationDate":"August 2011","author":"Joomla! Project","copyright":"(C) 2005 - 2014 Open Source Matters. All rights reserved.","authorEmail":"admin@joomla.org","authorUrl":"www.joomla.org","version":"3.0.0","description":"COM_FINDER_XML_DESCRIPTION","group":""}', '{"show_description":"1","description_length":255,"allow_empty_query":"0","show_url":"1","show_advanced":"1","expand_advanced":"0","show_date_filters":"0","highlight_terms":"1","opensearch_name":"","opensearch_description":"","batch_size":"50","memory_table_limit":30000,"title_multiplier":"1.7","text_multiplier":"0.7","meta_multiplier":"1.2","path_multiplier":"2.0","misc_multiplier":"0.3","stemmer":"snowball"}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
@@ -533,7 +506,7 @@ INSERT INTO `joomla_extensions` (`extension_id`, `name`, `type`, `element`, `fol
 (100, 'PHPMailer', 'library', 'phpmailer', '', 0, 1, 1, 1, '{"name":"PHPMailer","type":"library","creationDate":"2001","author":"PHPMailer","copyright":"(c) 2001-2003, Brent R. Matzelle, (c) 2004-2009, Andy Prevost. All Rights Reserved., (c) 2010-2013, Jim Jagielski. All Rights Reserved.","authorEmail":"jimjag@gmail.com","authorUrl":"https:\\/\\/github.com\\/PHPMailer\\/PHPMailer","version":"5.2.6","description":"LIB_PHPMAILER_XML_DESCRIPTION","group":""}', '', '', '', 0, '0000-00-00 00:00:00', 0, 0),
 (101, 'SimplePie', 'library', 'simplepie', '', 0, 1, 1, 1, '{"name":"SimplePie","type":"library","creationDate":"2004","author":"SimplePie","copyright":"Copyright (c) 2004-2009, Ryan Parman and Geoffrey Sneddon","authorEmail":"","authorUrl":"http:\\/\\/simplepie.org\\/","version":"1.2","description":"LIB_SIMPLEPIE_XML_DESCRIPTION","group":""}', '', '', '', 0, '0000-00-00 00:00:00', 0, 0),
 (102, 'phputf8', 'library', 'phputf8', '', 0, 1, 1, 1, '{"name":"phputf8","type":"library","creationDate":"2006","author":"Harry Fuecks","copyright":"Copyright various authors","authorEmail":"hfuecks@gmail.com","authorUrl":"http:\\/\\/sourceforge.net\\/projects\\/phputf8","version":"0.5","description":"LIB_PHPUTF8_XML_DESCRIPTION","group":""}', '', '', '', 0, '0000-00-00 00:00:00', 0, 0),
-(103, 'Joomla! Platform', 'library', 'joomla', '', 0, 1, 1, 1, '{"name":"Joomla! Platform","type":"library","creationDate":"2008","author":"Joomla! Project","copyright":"Copyright (C) 2005 - 2014 Open Source Matters. All rights reserved.","authorEmail":"admin@joomla.org","authorUrl":"http:\\/\\/www.joomla.org","version":"13.1","description":"LIB_JOOMLA_XML_DESCRIPTION","group":""}', '{"mediaversion":"bb3fbee12f3dbae54bfbe403f54272d3"}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
+(103, 'Joomla! Platform', 'library', 'joomla', '', 0, 1, 1, 1, '{"name":"Joomla! Platform","type":"library","creationDate":"2008","author":"Joomla! Project","copyright":"Copyright (C) 2005 - 2014 Open Source Matters. All rights reserved.","authorEmail":"admin@joomla.org","authorUrl":"http:\\/\\/www.joomla.org","version":"13.1","description":"LIB_JOOMLA_XML_DESCRIPTION","group":""}', '{"mediaversion":"d6c9bcd37137d4bbe9a09a35ba26e3bc"}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
 (104, 'IDNA Convert', 'library', 'idna_convert', '', 0, 1, 1, 1, '{"name":"IDNA Convert","type":"library","creationDate":"2004","author":"phlyLabs","copyright":"2004-2011 phlyLabs Berlin, http:\\/\\/phlylabs.de","authorEmail":"phlymail@phlylabs.de","authorUrl":"http:\\/\\/phlylabs.de","version":"0.8.0","description":"LIB_IDNA_XML_DESCRIPTION","group":""}', '', '', '', 0, '0000-00-00 00:00:00', 0, 0),
 (105, 'FOF', 'library', 'fof', '', 0, 1, 1, 1, '{"name":"FOF","type":"library","creationDate":"2014-03-09 12:54:48","author":"Nicholas K. Dionysopoulos \\/ Akeeba Ltd","copyright":"(C)2011-2014 Nicholas K. Dionysopoulos","authorEmail":"nicholas@akeebabackup.com","authorUrl":"https:\\/\\/www.akeebabackup.com","version":"2.2.1","description":"LIB_FOF_XML_DESCRIPTION","group":""}', '', '', '', 0, '0000-00-00 00:00:00', 0, 0),
 (106, 'PHPass', 'library', 'phpass', '', 0, 1, 1, 1, '{"name":"PHPass","type":"library","creationDate":"2004-2006","author":"Solar Designer","copyright":"","authorEmail":"solar@openwall.com","authorUrl":"http:\\/\\/www.openwall.com\\/phpass\\/","version":"0.3","description":"LIB_PHPASS_XML_DESCRIPTION","group":""}', '', '', '', 0, '0000-00-00 00:00:00', 0, 0),
@@ -589,7 +562,7 @@ INSERT INTO `joomla_extensions` (`extension_id`, `name`, `type`, `element`, `fol
 (409, 'plg_content_vote', 'plugin', 'vote', 'content', 0, 1, 1, 0, '{"name":"plg_content_vote","type":"plugin","creationDate":"November 2005","author":"Joomla! Project","copyright":"Copyright (C) 2005 - 2014 Open Source Matters. All rights reserved.","authorEmail":"admin@joomla.org","authorUrl":"www.joomla.org","version":"3.0.0","description":"PLG_VOTE_XML_DESCRIPTION","group":""}', '', '', '', 0, '0000-00-00 00:00:00', 6, 0),
 (410, 'plg_editors_codemirror', 'plugin', 'codemirror', 'editors', 0, 1, 1, 1, '{"name":"plg_editors_codemirror","type":"plugin","creationDate":"28 March 2011","author":"Marijn Haverbeke","copyright":"","authorEmail":"N\\/A","authorUrl":"","version":"3.15","description":"PLG_CODEMIRROR_XML_DESCRIPTION","group":""}', '{"lineNumbers":"1","lineWrapping":"1","matchTags":"1","matchBrackets":"1","marker-gutter":"1","autoCloseTags":"1","autoCloseBrackets":"1","autoFocus":"1","theme":"default","tabmode":"indent"}', '', '', 0, '0000-00-00 00:00:00', 1, 0),
 (411, 'plg_editors_none', 'plugin', 'none', 'editors', 0, 1, 1, 1, '{"name":"plg_editors_none","type":"plugin","creationDate":"August 2004","author":"Unknown","copyright":"","authorEmail":"N\\/A","authorUrl":"","version":"3.0.0","description":"PLG_NONE_XML_DESCRIPTION","group":""}', '', '', '', 0, '0000-00-00 00:00:00', 2, 0),
-(412, 'plg_editors_tinymce', 'plugin', 'tinymce', 'editors', 0, 1, 1, 0, '{"name":"plg_editors_tinymce","type":"plugin","creationDate":"2005-2014","author":"Moxiecode Systems AB","copyright":"Moxiecode Systems AB","authorEmail":"N\\/A","authorUrl":"tinymce.moxiecode.com","version":"4.1.2","description":"PLG_TINY_XML_DESCRIPTION","group":""}', '{"mode":"1","skin":"0","mobile":"0","entity_encoding":"raw","lang_mode":"1","text_direction":"ltr","content_css":"1","content_css_custom":"","relative_urls":"1","newlines":"0","invalid_elements":"script,applet,iframe","extended_elements":"","html_height":"550","html_width":"750","resizing":"1","element_path":"1","fonts":"1","paste":"1","searchreplace":"1","insertdate":"1","colors":"1","table":"1","smilies":"1","hr":"1","link":"1","media":"1","print":"1","directionality":"1","fullscreen":"1","alignment":"1","visualchars":"1","visualblocks":"1","nonbreaking":"1","template":"1","blockquote":"1","wordcount":"1","advlist":"1","autosave":"1","contextmenu":"1","inlinepopups":"1","custom_plugin":"","custom_button":""}', '', '', 0, '0000-00-00 00:00:00', 3, 0),
+(412, 'plg_editors_tinymce', 'plugin', 'tinymce', 'editors', 0, 1, 1, 0, '{"name":"plg_editors_tinymce","type":"plugin","creationDate":"2005-2014","author":"Moxiecode Systems AB","copyright":"Moxiecode Systems AB","authorEmail":"N\\/A","authorUrl":"tinymce.moxiecode.com","version":"4.1.2","description":"PLG_TINY_XML_DESCRIPTION","group":""}', '{"mode":"2","skin":"0","mobile":"0","entity_encoding":"raw","lang_mode":"1","text_direction":"ltr","content_css":"1","content_css_custom":"","relative_urls":"1","newlines":"0","invalid_elements":"script,applet,iframe","valid_elements":"","extended_elements":"","html_height":"550","html_width":"750","resizing":"1","element_path":"1","fonts":"1","paste":"1","searchreplace":"1","insertdate":"1","colors":"1","table":"1","smilies":"1","hr":"1","link":"1","media":"1","print":"1","directionality":"1","fullscreen":"1","alignment":"1","visualchars":"1","visualblocks":"1","nonbreaking":"1","template":"1","blockquote":"1","wordcount":"1","image_advtab":"1","advlist":"1","autosave":"1","contextmenu":"1","inlinepopups":"1","custom_plugin":"","custom_button":""}', '', '', 0, '0000-00-00 00:00:00', 3, 0),
 (413, 'plg_editors-xtd_article', 'plugin', 'article', 'editors-xtd', 0, 1, 1, 1, '{"name":"plg_editors-xtd_article","type":"plugin","creationDate":"October 2009","author":"Joomla! Project","copyright":"Copyright (C) 2005 - 2014 Open Source Matters. All rights reserved.","authorEmail":"admin@joomla.org","authorUrl":"www.joomla.org","version":"3.0.0","description":"PLG_ARTICLE_XML_DESCRIPTION","group":""}', '', '', '', 0, '0000-00-00 00:00:00', 1, 0),
 (414, 'plg_editors-xtd_image', 'plugin', 'image', 'editors-xtd', 0, 1, 1, 0, '{"name":"plg_editors-xtd_image","type":"plugin","creationDate":"August 2004","author":"Joomla! Project","copyright":"Copyright (C) 2005 - 2014 Open Source Matters. All rights reserved.","authorEmail":"admin@joomla.org","authorUrl":"www.joomla.org","version":"3.0.0","description":"PLG_IMAGE_XML_DESCRIPTION","group":""}', '', '', '', 0, '0000-00-00 00:00:00', 2, 0),
 (415, 'plg_editors-xtd_pagebreak', 'plugin', 'pagebreak', 'editors-xtd', 0, 1, 1, 0, '{"name":"plg_editors-xtd_pagebreak","type":"plugin","creationDate":"August 2004","author":"Joomla! Project","copyright":"Copyright (C) 2005 - 2014 Open Source Matters. All rights reserved.","authorEmail":"admin@joomla.org","authorUrl":"www.joomla.org","version":"3.0.0","description":"PLG_EDITORSXTD_PAGEBREAK_XML_DESCRIPTION","group":""}', '', '', '', 0, '0000-00-00 00:00:00', 3, 0),
@@ -641,7 +614,9 @@ INSERT INTO `joomla_extensions` (`extension_id`, `name`, `type`, `element`, `fol
 (702, 'PortugusBrasil', 'language', 'pt-BR', '', 1, 1, 0, 0, '{"name":"Portugu\\u00eas(Brasil)","type":"language","creationDate":"2014-07-25","author":"Projeto Joomla pt-BR","copyright":"Copyright (C) 2005 - 2014 Open Source Matters. All rights reserved.","authorEmail":"admin@joomla.org","authorUrl":"http:\\/\\/www.joomla.org","version":"3.3.3","description":"Pacote de idioma em Portugu\\u00eas Brasileiro para a administra\\u00e7\\u00e3o (backend) do Joomla!","group":""}', '{}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
 (703, 'pt-BR', 'package', 'pkg_pt-BR', '', 0, 1, 1, 0, '{"name":"Pacote de Idiomas em Portugu\\u00eas Brasileiro","type":"package","creationDate":"Unknown","author":"Unknown","copyright":"","authorEmail":"","authorUrl":"","version":"3.3.3","description":"Arquivos de Idioma em Portugu\\u00eas Brasileiro para Joomla! 3.0<br\\/>\\n\\t\\t\\t\\t Copyrights: (C) 2005 - 2014 Open Source Matters. All rights reserved.<br\\/>\\n\\t\\t\\t\\t Copyrights: (C) 2005 - 2014 Projeto Joomla! pt-BR.<br\\/>\\t\\t\\t\\t \\n\\t\\t\\t\\t Todos os direitos reservados.<br\\/><br\\/>\\n\\t","group":""}', '{}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
 (704, 'Generico-PireseBrittes', 'template', 'generico-piresebrittes', '', 0, 1, 1, 0, '{"name":"Generico - Pires e Brittes","type":"template","creationDate":"6\\/07\\/2013","author":"Adriano Oliveira Pires","copyright":"Um trabalho Evolutt.com","authorEmail":"oliveira.pires@gmail.com","authorUrl":"","version":"1.0","description":"Tema clean e simples feito para desenvolvimento r\\u00e1pido de sites, com poucas altera\\u00e7\\u00f5es","group":""}', '{"logo":"templates\\/Kart\\/images\\/logo.png"}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
-(705, 'portalLIS', 'template', 'portallis', '', 0, 1, 1, 0, '{"name":"portalLIS","type":"template","creationDate":"20\\/02\\/2015","author":"Adriano Oliveira Pires","copyright":"Um trabalho Evolutt.com","authorEmail":"oliveira.pires@gmail.com","authorUrl":"","version":"1.0","description":"Tema desenvolvido originalmente para o site www.lis.faed.udesc.br","group":""}', '{"logo":"templates\\/images\\/logo.png","background-image":"templates\\/images\\/logo.png"}', '', '', 0, '0000-00-00 00:00:00', 0, 0);
+(705, 'portalLIS', 'template', 'portallis', '', 0, 1, 1, 0, '{"name":"portalLIS","type":"template","creationDate":"20\\/02\\/2015","author":"Adriano Oliveira Pires","copyright":"Um trabalho Evolutt.com","authorEmail":"oliveira.pires@gmail.com","authorUrl":"","version":"1.0","description":"Tema desenvolvido originalmente para o site www.lis.faed.udesc.br","group":""}', '{"logo":"templates\\/images\\/logo.png","background-image":"templates\\/images\\/logo.png"}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
+(706, 'portalLIS', 'template', 'portallis', '', 0, 1, 1, 0, '{"name":"portalLIS","type":"template","creationDate":"20\\/02\\/2015","author":"Adriano Oliveira Pires","copyright":"Um trabalho Evolutt.com","authorEmail":"oliveira.pires@gmail.com","authorUrl":"","version":"1.0","description":"Tema desenvolvido originalmente para o site www.lis.faed.udesc.br","group":""}', '{}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
+(707, 'portalLIS', 'template', 'portallis', '', 0, 1, 1, 0, '{"name":"portalLIS","type":"template","creationDate":"20\\/02\\/2015","author":"Adriano Oliveira Pires","copyright":"Um trabalho Evolutt.com","authorEmail":"oliveira.pires@gmail.com","authorUrl":"","version":"1.0","description":"Tema desenvolvido originalmente para o site www.lis.faed.udesc.br","group":""}', '{}', '', '', 0, '0000-00-00 00:00:00', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -650,7 +625,7 @@ INSERT INTO `joomla_extensions` (`extension_id`, `name`, `type`, `element`, `fol
 --
 
 CREATE TABLE `joomla_finder_filters` (
-  `filter_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+`filter_id` int(10) unsigned NOT NULL,
   `title` varchar(255) NOT NULL,
   `alias` varchar(255) NOT NULL,
   `state` tinyint(1) NOT NULL DEFAULT '1',
@@ -663,9 +638,8 @@ CREATE TABLE `joomla_finder_filters` (
   `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `map_count` int(10) unsigned NOT NULL DEFAULT '0',
   `data` text NOT NULL,
-  `params` mediumtext,
-  PRIMARY KEY (`filter_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `params` mediumtext
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -674,7 +648,7 @@ CREATE TABLE `joomla_finder_filters` (
 --
 
 CREATE TABLE `joomla_finder_links` (
-  `link_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+`link_id` int(10) unsigned NOT NULL,
   `url` varchar(255) NOT NULL,
   `route` varchar(255) NOT NULL,
   `title` varchar(255) DEFAULT NULL,
@@ -692,15 +666,8 @@ CREATE TABLE `joomla_finder_links` (
   `list_price` double unsigned NOT NULL DEFAULT '0',
   `sale_price` double unsigned NOT NULL DEFAULT '0',
   `type_id` int(11) NOT NULL,
-  `object` mediumblob NOT NULL,
-  PRIMARY KEY (`link_id`),
-  KEY `idx_type` (`type_id`),
-  KEY `idx_title` (`title`),
-  KEY `idx_md5` (`md5sum`),
-  KEY `idx_url` (`url`(75)),
-  KEY `idx_published_list` (`published`,`state`,`access`,`publish_start_date`,`publish_end_date`,`list_price`),
-  KEY `idx_published_sale` (`published`,`state`,`access`,`publish_start_date`,`publish_end_date`,`sale_price`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `object` mediumblob NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -711,10 +678,7 @@ CREATE TABLE `joomla_finder_links` (
 CREATE TABLE `joomla_finder_links_terms0` (
   `link_id` int(10) unsigned NOT NULL,
   `term_id` int(10) unsigned NOT NULL,
-  `weight` float unsigned NOT NULL,
-  PRIMARY KEY (`link_id`,`term_id`),
-  KEY `idx_term_weight` (`term_id`,`weight`),
-  KEY `idx_link_term_weight` (`link_id`,`term_id`,`weight`)
+  `weight` float unsigned NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -726,10 +690,7 @@ CREATE TABLE `joomla_finder_links_terms0` (
 CREATE TABLE `joomla_finder_links_terms1` (
   `link_id` int(10) unsigned NOT NULL,
   `term_id` int(10) unsigned NOT NULL,
-  `weight` float unsigned NOT NULL,
-  PRIMARY KEY (`link_id`,`term_id`),
-  KEY `idx_term_weight` (`term_id`,`weight`),
-  KEY `idx_link_term_weight` (`link_id`,`term_id`,`weight`)
+  `weight` float unsigned NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -741,10 +702,7 @@ CREATE TABLE `joomla_finder_links_terms1` (
 CREATE TABLE `joomla_finder_links_terms2` (
   `link_id` int(10) unsigned NOT NULL,
   `term_id` int(10) unsigned NOT NULL,
-  `weight` float unsigned NOT NULL,
-  PRIMARY KEY (`link_id`,`term_id`),
-  KEY `idx_term_weight` (`term_id`,`weight`),
-  KEY `idx_link_term_weight` (`link_id`,`term_id`,`weight`)
+  `weight` float unsigned NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -756,10 +714,7 @@ CREATE TABLE `joomla_finder_links_terms2` (
 CREATE TABLE `joomla_finder_links_terms3` (
   `link_id` int(10) unsigned NOT NULL,
   `term_id` int(10) unsigned NOT NULL,
-  `weight` float unsigned NOT NULL,
-  PRIMARY KEY (`link_id`,`term_id`),
-  KEY `idx_term_weight` (`term_id`,`weight`),
-  KEY `idx_link_term_weight` (`link_id`,`term_id`,`weight`)
+  `weight` float unsigned NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -771,10 +726,7 @@ CREATE TABLE `joomla_finder_links_terms3` (
 CREATE TABLE `joomla_finder_links_terms4` (
   `link_id` int(10) unsigned NOT NULL,
   `term_id` int(10) unsigned NOT NULL,
-  `weight` float unsigned NOT NULL,
-  PRIMARY KEY (`link_id`,`term_id`),
-  KEY `idx_term_weight` (`term_id`,`weight`),
-  KEY `idx_link_term_weight` (`link_id`,`term_id`,`weight`)
+  `weight` float unsigned NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -786,10 +738,7 @@ CREATE TABLE `joomla_finder_links_terms4` (
 CREATE TABLE `joomla_finder_links_terms5` (
   `link_id` int(10) unsigned NOT NULL,
   `term_id` int(10) unsigned NOT NULL,
-  `weight` float unsigned NOT NULL,
-  PRIMARY KEY (`link_id`,`term_id`),
-  KEY `idx_term_weight` (`term_id`,`weight`),
-  KEY `idx_link_term_weight` (`link_id`,`term_id`,`weight`)
+  `weight` float unsigned NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -801,10 +750,7 @@ CREATE TABLE `joomla_finder_links_terms5` (
 CREATE TABLE `joomla_finder_links_terms6` (
   `link_id` int(10) unsigned NOT NULL,
   `term_id` int(10) unsigned NOT NULL,
-  `weight` float unsigned NOT NULL,
-  PRIMARY KEY (`link_id`,`term_id`),
-  KEY `idx_term_weight` (`term_id`,`weight`),
-  KEY `idx_link_term_weight` (`link_id`,`term_id`,`weight`)
+  `weight` float unsigned NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -816,10 +762,7 @@ CREATE TABLE `joomla_finder_links_terms6` (
 CREATE TABLE `joomla_finder_links_terms7` (
   `link_id` int(10) unsigned NOT NULL,
   `term_id` int(10) unsigned NOT NULL,
-  `weight` float unsigned NOT NULL,
-  PRIMARY KEY (`link_id`,`term_id`),
-  KEY `idx_term_weight` (`term_id`,`weight`),
-  KEY `idx_link_term_weight` (`link_id`,`term_id`,`weight`)
+  `weight` float unsigned NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -831,10 +774,7 @@ CREATE TABLE `joomla_finder_links_terms7` (
 CREATE TABLE `joomla_finder_links_terms8` (
   `link_id` int(10) unsigned NOT NULL,
   `term_id` int(10) unsigned NOT NULL,
-  `weight` float unsigned NOT NULL,
-  PRIMARY KEY (`link_id`,`term_id`),
-  KEY `idx_term_weight` (`term_id`,`weight`),
-  KEY `idx_link_term_weight` (`link_id`,`term_id`,`weight`)
+  `weight` float unsigned NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -846,10 +786,7 @@ CREATE TABLE `joomla_finder_links_terms8` (
 CREATE TABLE `joomla_finder_links_terms9` (
   `link_id` int(10) unsigned NOT NULL,
   `term_id` int(10) unsigned NOT NULL,
-  `weight` float unsigned NOT NULL,
-  PRIMARY KEY (`link_id`,`term_id`),
-  KEY `idx_term_weight` (`term_id`,`weight`),
-  KEY `idx_link_term_weight` (`link_id`,`term_id`,`weight`)
+  `weight` float unsigned NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -861,10 +798,7 @@ CREATE TABLE `joomla_finder_links_terms9` (
 CREATE TABLE `joomla_finder_links_termsa` (
   `link_id` int(10) unsigned NOT NULL,
   `term_id` int(10) unsigned NOT NULL,
-  `weight` float unsigned NOT NULL,
-  PRIMARY KEY (`link_id`,`term_id`),
-  KEY `idx_term_weight` (`term_id`,`weight`),
-  KEY `idx_link_term_weight` (`link_id`,`term_id`,`weight`)
+  `weight` float unsigned NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -876,10 +810,7 @@ CREATE TABLE `joomla_finder_links_termsa` (
 CREATE TABLE `joomla_finder_links_termsb` (
   `link_id` int(10) unsigned NOT NULL,
   `term_id` int(10) unsigned NOT NULL,
-  `weight` float unsigned NOT NULL,
-  PRIMARY KEY (`link_id`,`term_id`),
-  KEY `idx_term_weight` (`term_id`,`weight`),
-  KEY `idx_link_term_weight` (`link_id`,`term_id`,`weight`)
+  `weight` float unsigned NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -891,10 +822,7 @@ CREATE TABLE `joomla_finder_links_termsb` (
 CREATE TABLE `joomla_finder_links_termsc` (
   `link_id` int(10) unsigned NOT NULL,
   `term_id` int(10) unsigned NOT NULL,
-  `weight` float unsigned NOT NULL,
-  PRIMARY KEY (`link_id`,`term_id`),
-  KEY `idx_term_weight` (`term_id`,`weight`),
-  KEY `idx_link_term_weight` (`link_id`,`term_id`,`weight`)
+  `weight` float unsigned NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -906,10 +834,7 @@ CREATE TABLE `joomla_finder_links_termsc` (
 CREATE TABLE `joomla_finder_links_termsd` (
   `link_id` int(10) unsigned NOT NULL,
   `term_id` int(10) unsigned NOT NULL,
-  `weight` float unsigned NOT NULL,
-  PRIMARY KEY (`link_id`,`term_id`),
-  KEY `idx_term_weight` (`term_id`,`weight`),
-  KEY `idx_link_term_weight` (`link_id`,`term_id`,`weight`)
+  `weight` float unsigned NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -921,10 +846,7 @@ CREATE TABLE `joomla_finder_links_termsd` (
 CREATE TABLE `joomla_finder_links_termse` (
   `link_id` int(10) unsigned NOT NULL,
   `term_id` int(10) unsigned NOT NULL,
-  `weight` float unsigned NOT NULL,
-  PRIMARY KEY (`link_id`,`term_id`),
-  KEY `idx_term_weight` (`term_id`,`weight`),
-  KEY `idx_link_term_weight` (`link_id`,`term_id`,`weight`)
+  `weight` float unsigned NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -936,10 +858,7 @@ CREATE TABLE `joomla_finder_links_termse` (
 CREATE TABLE `joomla_finder_links_termsf` (
   `link_id` int(10) unsigned NOT NULL,
   `term_id` int(10) unsigned NOT NULL,
-  `weight` float unsigned NOT NULL,
-  PRIMARY KEY (`link_id`,`term_id`),
-  KEY `idx_term_weight` (`term_id`,`weight`),
-  KEY `idx_link_term_weight` (`link_id`,`term_id`,`weight`)
+  `weight` float unsigned NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -949,19 +868,13 @@ CREATE TABLE `joomla_finder_links_termsf` (
 --
 
 CREATE TABLE `joomla_finder_taxonomy` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+`id` int(10) unsigned NOT NULL,
   `parent_id` int(10) unsigned NOT NULL DEFAULT '0',
   `title` varchar(255) NOT NULL,
   `state` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `access` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `ordering` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `parent_id` (`parent_id`),
-  KEY `state` (`state`),
-  KEY `ordering` (`ordering`),
-  KEY `access` (`access`),
-  KEY `idx_parent_published` (`parent_id`,`state`,`access`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+  `ordering` tinyint(1) unsigned NOT NULL DEFAULT '0'
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `joomla_finder_taxonomy`
@@ -978,10 +891,7 @@ INSERT INTO `joomla_finder_taxonomy` (`id`, `parent_id`, `title`, `state`, `acce
 
 CREATE TABLE `joomla_finder_taxonomy_map` (
   `link_id` int(10) unsigned NOT NULL,
-  `node_id` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`link_id`,`node_id`),
-  KEY `link_id` (`link_id`),
-  KEY `node_id` (`node_id`)
+  `node_id` int(10) unsigned NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -991,7 +901,7 @@ CREATE TABLE `joomla_finder_taxonomy_map` (
 --
 
 CREATE TABLE `joomla_finder_terms` (
-  `term_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+`term_id` int(10) unsigned NOT NULL,
   `term` varchar(75) NOT NULL,
   `stem` varchar(75) NOT NULL,
   `common` tinyint(1) unsigned NOT NULL DEFAULT '0',
@@ -999,13 +909,8 @@ CREATE TABLE `joomla_finder_terms` (
   `weight` float unsigned NOT NULL DEFAULT '0',
   `soundex` varchar(75) NOT NULL,
   `links` int(10) NOT NULL DEFAULT '0',
-  `language` char(3) NOT NULL DEFAULT '',
-  PRIMARY KEY (`term_id`),
-  UNIQUE KEY `idx_term` (`term`),
-  KEY `idx_term_phrase` (`term`,`phrase`),
-  KEY `idx_stem_phrase` (`stem`,`phrase`),
-  KEY `idx_soundex_phrase` (`soundex`,`phrase`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `language` char(3) NOT NULL DEFAULT ''
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1015,9 +920,7 @@ CREATE TABLE `joomla_finder_terms` (
 
 CREATE TABLE `joomla_finder_terms_common` (
   `term` varchar(75) NOT NULL,
-  `language` varchar(3) NOT NULL,
-  KEY `idx_word_lang` (`term`,`language`),
-  KEY `idx_lang` (`language`)
+  `language` varchar(3) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1154,9 +1057,7 @@ CREATE TABLE `joomla_finder_tokens` (
   `phrase` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `weight` float unsigned NOT NULL DEFAULT '1',
   `context` tinyint(1) unsigned NOT NULL DEFAULT '2',
-  `language` char(3) NOT NULL DEFAULT '',
-  KEY `idx_word` (`term`),
-  KEY `idx_context` (`context`)
+  `language` char(3) NOT NULL DEFAULT ''
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -1176,9 +1077,7 @@ CREATE TABLE `joomla_finder_tokens_aggregate` (
   `context` tinyint(1) unsigned NOT NULL DEFAULT '2',
   `context_weight` float unsigned NOT NULL,
   `total_weight` float unsigned NOT NULL,
-  `language` char(3) NOT NULL DEFAULT '',
-  KEY `token` (`term`),
-  KEY `keyword_id` (`term_id`)
+  `language` char(3) NOT NULL DEFAULT ''
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -1188,12 +1087,10 @@ CREATE TABLE `joomla_finder_tokens_aggregate` (
 --
 
 CREATE TABLE `joomla_finder_types` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+`id` int(10) unsigned NOT NULL,
   `title` varchar(100) NOT NULL,
-  `mime` varchar(100) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `title` (`title`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `mime` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1202,7 +1099,7 @@ CREATE TABLE `joomla_finder_types` (
 --
 
 CREATE TABLE `joomla_languages` (
-  `lang_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+`lang_id` int(11) unsigned NOT NULL,
   `lang_code` char(7) NOT NULL,
   `title` varchar(50) NOT NULL,
   `title_native` varchar(50) NOT NULL,
@@ -1214,14 +1111,8 @@ CREATE TABLE `joomla_languages` (
   `sitename` varchar(1024) NOT NULL DEFAULT '',
   `published` int(11) NOT NULL DEFAULT '0',
   `access` int(10) unsigned NOT NULL DEFAULT '0',
-  `ordering` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`lang_id`),
-  UNIQUE KEY `idx_sef` (`sef`),
-  UNIQUE KEY `idx_image` (`image`),
-  UNIQUE KEY `idx_langcode` (`lang_code`),
-  KEY `idx_access` (`access`),
-  KEY `idx_ordering` (`ordering`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+  `ordering` int(11) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `joomla_languages`
@@ -1237,7 +1128,7 @@ INSERT INTO `joomla_languages` (`lang_id`, `lang_code`, `title`, `title_native`,
 --
 
 CREATE TABLE `joomla_menu` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+`id` int(11) NOT NULL,
   `menutype` varchar(24) NOT NULL COMMENT 'The type of menu this item belongs to. FK to #__menu_types.menutype',
   `title` varchar(255) NOT NULL COMMENT 'The display title of the menu item.',
   `alias` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL COMMENT 'The SEF alias of the menu item.',
@@ -1260,23 +1151,15 @@ CREATE TABLE `joomla_menu` (
   `rgt` int(11) NOT NULL DEFAULT '0' COMMENT 'Nested set rgt.',
   `home` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT 'Indicates if this menu item is the home or default page.',
   `language` char(7) NOT NULL DEFAULT '',
-  `client_id` tinyint(4) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `idx_client_id_parent_id_alias_language` (`client_id`,`parent_id`,`alias`,`language`),
-  KEY `idx_componentid` (`component_id`,`menutype`,`published`,`access`),
-  KEY `idx_menutype` (`menutype`),
-  KEY `idx_left_right` (`lft`,`rgt`),
-  KEY `idx_alias` (`alias`),
-  KEY `idx_path` (`path`(255)),
-  KEY `idx_language` (`language`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=102 ;
+  `client_id` tinyint(4) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB AUTO_INCREMENT=107 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `joomla_menu`
 --
 
 INSERT INTO `joomla_menu` (`id`, `menutype`, `title`, `alias`, `note`, `path`, `link`, `type`, `published`, `parent_id`, `level`, `component_id`, `checked_out`, `checked_out_time`, `browserNav`, `access`, `img`, `template_style_id`, `params`, `lft`, `rgt`, `home`, `language`, `client_id`) VALUES
-(1, '', 'Menu_Item_Root', 'root', '', '', '', '', 1, 0, 0, 0, 0, '0000-00-00 00:00:00', 0, 0, '', 0, '', 0, 49, 0, '*', 0),
+(1, '', 'Menu_Item_Root', 'root', '', '', '', '', 1, 0, 0, 0, 0, '0000-00-00 00:00:00', 0, 0, '', 0, '', 0, 59, 0, '*', 0),
 (2, 'menu', 'com_banners', 'Banners', '', 'Banners', 'index.php?option=com_banners', 'component', 0, 1, 1, 4, 0, '0000-00-00 00:00:00', 0, 0, 'class:banners', 0, '', 1, 10, 0, '*', 1),
 (3, 'menu', 'com_banners', 'Banners', '', 'Banners/Banners', 'index.php?option=com_banners', 'component', 0, 2, 2, 4, 0, '0000-00-00 00:00:00', 0, 0, 'class:banners', 0, '', 2, 3, 0, '*', 1),
 (4, 'menu', 'com_banners_categories', 'Categories', '', 'Banners/Categories', 'index.php?option=com_categories&extension=com_banners', 'component', 0, 2, 2, 6, 0, '0000-00-00 00:00:00', 0, 0, 'class:banners-cat', 0, '', 4, 5, 0, '*', 1),
@@ -1300,7 +1183,12 @@ INSERT INTO `joomla_menu` (`id`, `menutype`, `title`, `alias`, `note`, `path`, `
 (22, 'menu', 'com_joomlaupdate', 'Joomla! Update', '', 'Joomla! Update', 'index.php?option=com_joomlaupdate', 'component', 1, 1, 1, 28, 0, '0000-00-00 00:00:00', 0, 0, 'class:joomlaupdate', 0, '', 41, 42, 0, '*', 1),
 (23, 'main', 'com_tags', 'Tags', '', 'Tags', 'index.php?option=com_tags', 'component', 0, 1, 1, 29, 0, '0000-00-00 00:00:00', 0, 1, 'class:tags', 0, '', 43, 44, 0, '', 1),
 (24, 'main', 'com_postinstall', 'Post-installation messages', '', 'Post-installation messages', 'index.php?option=com_postinstall', 'component', 0, 1, 1, 32, 0, '0000-00-00 00:00:00', 0, 1, 'class:postinstall', 0, '', 45, 46, 0, '*', 1),
-(101, 'mainmenu', 'Home', 'home', '', 'home', 'index.php?option=com_content&view=featured', 'component', 1, 1, 1, 22, 0, '0000-00-00 00:00:00', 0, 1, '', 0, '{"featured_categories":[""],"layout_type":"blog","num_leading_articles":"1","num_intro_articles":"3","num_columns":"3","num_links":"0","multi_column_order":"1","orderby_pri":"","orderby_sec":"front","order_date":"","show_pagination":"2","show_pagination_results":"1","show_title":"","link_titles":"","show_intro":"","info_block_position":"","show_category":"","link_category":"","show_parent_category":"","link_parent_category":"","show_author":"","link_author":"","show_create_date":"","show_modify_date":"","show_publish_date":"","show_item_navigation":"","show_vote":"","show_readmore":"","show_readmore_title":"","show_icons":"","show_print_icon":"","show_email_icon":"","show_hits":"","show_noauth":"","show_feed_link":"1","feed_summary":"","menu-anchor_title":"","menu-anchor_css":"","menu_image":"","menu_text":1,"page_title":"","show_page_heading":1,"page_heading":"","pageclass_sfx":"","menu-meta_description":"","menu-meta_keywords":"","robots":"","secure":0}', 47, 48, 1, '*', 0);
+(101, 'mainmenu', 'Home', 'home', '', 'home', 'index.php?option=com_content&view=article&id=7', 'component', 1, 1, 1, 22, 0, '0000-00-00 00:00:00', 0, 1, '', 0, '{"show_title":"0","link_titles":"0","show_intro":"","info_block_position":"","show_category":"","link_category":"","show_parent_category":"","link_parent_category":"","show_author":"","link_author":"","show_create_date":"","show_modify_date":"","show_publish_date":"","show_item_navigation":"","show_vote":"","show_icons":"","show_print_icon":"","show_email_icon":"","show_hits":"","show_tags":"","show_noauth":"","urls_position":"","menu-anchor_title":"","menu-anchor_css":"","menu_image":"","menu_text":1,"page_title":"","show_page_heading":0,"page_heading":"","pageclass_sfx":"","menu-meta_description":"","menu-meta_keywords":"","robots":"","secure":0}', 47, 48, 1, '*', 0),
+(102, 'mainmenu', 'Quem Somos', 'segundo-menu', '', 'segundo-menu', 'index.php?option=com_content&view=article&id=2', 'component', 1, 1, 1, 22, 0, '0000-00-00 00:00:00', 0, 1, '', 0, '{"show_title":"","link_titles":"","show_intro":"","info_block_position":"","show_category":"","link_category":"","show_parent_category":"","link_parent_category":"","show_author":"","link_author":"","show_create_date":"","show_modify_date":"","show_publish_date":"","show_item_navigation":"","show_vote":"","show_icons":"","show_print_icon":"","show_email_icon":"","show_hits":"","show_tags":"","show_noauth":"","urls_position":"","menu-anchor_title":"","menu-anchor_css":"","menu_image":"","menu_text":1,"page_title":"","show_page_heading":0,"page_heading":"","pageclass_sfx":"","menu-meta_description":"","menu-meta_keywords":"","robots":"","secure":0}', 49, 50, 0, '*', 0),
+(103, 'mainmenu', 'Publicações', 'publicacoes', '', 'publicacoes', 'index.php?option=com_content&view=article&id=3', 'component', 1, 1, 1, 22, 0, '0000-00-00 00:00:00', 0, 1, '', 0, '{"show_title":"","link_titles":"","show_intro":"","info_block_position":"","show_category":"","link_category":"","show_parent_category":"","link_parent_category":"","show_author":"","link_author":"","show_create_date":"","show_modify_date":"","show_publish_date":"","show_item_navigation":"","show_vote":"","show_icons":"","show_print_icon":"","show_email_icon":"","show_hits":"","show_tags":"","show_noauth":"","urls_position":"","menu-anchor_title":"","menu-anchor_css":"","menu_image":"","menu_text":1,"page_title":"","show_page_heading":0,"page_heading":"","pageclass_sfx":"","menu-meta_description":"","menu-meta_keywords":"","robots":"","secure":0}', 51, 52, 0, '*', 0),
+(104, 'mainmenu', 'Banco de dados', 'banco-de-dados', '', 'banco-de-dados', 'index.php?option=com_content&view=article&id=4', 'component', 1, 1, 1, 22, 0, '0000-00-00 00:00:00', 0, 1, '', 0, '{"show_title":"","link_titles":"","show_intro":"","info_block_position":"","show_category":"","link_category":"","show_parent_category":"","link_parent_category":"","show_author":"","link_author":"","show_create_date":"","show_modify_date":"","show_publish_date":"","show_item_navigation":"","show_vote":"","show_icons":"","show_print_icon":"","show_email_icon":"","show_hits":"","show_tags":"","show_noauth":"","urls_position":"","menu-anchor_title":"","menu-anchor_css":"","menu_image":"","menu_text":1,"page_title":"","show_page_heading":0,"page_heading":"","pageclass_sfx":"","menu-meta_description":"","menu-meta_keywords":"","robots":"","secure":0}', 53, 54, 0, '*', 0),
+(105, 'mainmenu', 'Formulários', 'formularios', '', 'formularios', 'index.php?option=com_content&view=article&id=5', 'component', 1, 1, 1, 22, 0, '0000-00-00 00:00:00', 0, 1, '', 0, '{"show_title":"","link_titles":"","show_intro":"","info_block_position":"","show_category":"","link_category":"","show_parent_category":"","link_parent_category":"","show_author":"","link_author":"","show_create_date":"","show_modify_date":"","show_publish_date":"","show_item_navigation":"","show_vote":"","show_icons":"","show_print_icon":"","show_email_icon":"","show_hits":"","show_tags":"","show_noauth":"","urls_position":"","menu-anchor_title":"","menu-anchor_css":"","menu_image":"","menu_text":1,"page_title":"","show_page_heading":0,"page_heading":"","pageclass_sfx":"","menu-meta_description":"","menu-meta_keywords":"","robots":"","secure":0}', 55, 56, 0, '*', 0),
+(106, 'mainmenu', 'Parceiros', 'parceiros', '', 'parceiros', 'index.php?option=com_content&view=article&id=6', 'component', 1, 1, 1, 22, 0, '0000-00-00 00:00:00', 0, 1, '', 0, '{"show_title":"","link_titles":"","show_intro":"","info_block_position":"","show_category":"","link_category":"","show_parent_category":"","link_parent_category":"","show_author":"","link_author":"","show_create_date":"","show_modify_date":"","show_publish_date":"","show_item_navigation":"","show_vote":"","show_icons":"","show_print_icon":"","show_email_icon":"","show_hits":"","show_tags":"","show_noauth":"","urls_position":"","menu-anchor_title":"","menu-anchor_css":"","menu_image":"","menu_text":1,"page_title":"","show_page_heading":0,"page_heading":"","pageclass_sfx":"","menu-meta_description":"","menu-meta_keywords":"","robots":"","secure":0}', 57, 58, 0, '*', 0);
 
 -- --------------------------------------------------------
 
@@ -1309,13 +1197,11 @@ INSERT INTO `joomla_menu` (`id`, `menutype`, `title`, `alias`, `note`, `path`, `
 --
 
 CREATE TABLE `joomla_menu_types` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+`id` int(10) unsigned NOT NULL,
   `menutype` varchar(24) NOT NULL,
   `title` varchar(48) NOT NULL,
-  `description` varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `idx_menutype` (`menutype`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+  `description` varchar(255) NOT NULL DEFAULT ''
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `joomla_menu_types`
@@ -1331,7 +1217,7 @@ INSERT INTO `joomla_menu_types` (`id`, `menutype`, `title`, `description`) VALUE
 --
 
 CREATE TABLE `joomla_messages` (
-  `message_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+`message_id` int(10) unsigned NOT NULL,
   `user_id_from` int(10) unsigned NOT NULL DEFAULT '0',
   `user_id_to` int(10) unsigned NOT NULL DEFAULT '0',
   `folder_id` tinyint(3) unsigned NOT NULL DEFAULT '0',
@@ -1339,10 +1225,8 @@ CREATE TABLE `joomla_messages` (
   `state` tinyint(1) NOT NULL DEFAULT '0',
   `priority` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `subject` varchar(255) NOT NULL DEFAULT '',
-  `message` text NOT NULL,
-  PRIMARY KEY (`message_id`),
-  KEY `useridto_state` (`user_id_to`,`state`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `message` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1353,8 +1237,7 @@ CREATE TABLE `joomla_messages` (
 CREATE TABLE `joomla_messages_cfg` (
   `user_id` int(10) unsigned NOT NULL DEFAULT '0',
   `cfg_name` varchar(100) NOT NULL DEFAULT '',
-  `cfg_value` varchar(255) NOT NULL DEFAULT '',
-  UNIQUE KEY `idx_user_var_name` (`user_id`,`cfg_name`)
+  `cfg_value` varchar(255) NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -1364,7 +1247,7 @@ CREATE TABLE `joomla_messages_cfg` (
 --
 
 CREATE TABLE `joomla_modules` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+`id` int(11) NOT NULL,
   `asset_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'FK to the #__assets table.',
   `title` varchar(100) NOT NULL DEFAULT '',
   `note` varchar(255) NOT NULL DEFAULT '',
@@ -1381,19 +1264,15 @@ CREATE TABLE `joomla_modules` (
   `showtitle` tinyint(3) unsigned NOT NULL DEFAULT '1',
   `params` text NOT NULL,
   `client_id` tinyint(4) NOT NULL DEFAULT '0',
-  `language` char(7) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `published` (`published`,`access`),
-  KEY `newsfeeds` (`module`,`published`),
-  KEY `idx_language` (`language`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=87 ;
+  `language` char(7) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=99 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `joomla_modules`
 --
 
 INSERT INTO `joomla_modules` (`id`, `asset_id`, `title`, `note`, `content`, `ordering`, `position`, `checked_out`, `checked_out_time`, `publish_up`, `publish_down`, `published`, `module`, `access`, `showtitle`, `params`, `client_id`, `language`) VALUES
-(1, 39, 'Main Menu', '', '', 1, 'position-7', 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 1, 'mod_menu', 1, 1, '{"menutype":"mainmenu","startLevel":"0","endLevel":"0","showAllChildren":"0","tag_id":"","class_sfx":"","window_open":"","layout":"","moduleclass_sfx":"_menu","cache":"1","cache_time":"900","cachemode":"itemid"}', 0, '*'),
+(1, 39, 'Main Menu', '', '', 1, 'position-7', 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', -2, 'mod_menu', 1, 1, '{"menutype":"mainmenu","startLevel":"0","endLevel":"0","showAllChildren":"0","tag_id":"","class_sfx":"","window_open":"","layout":"","moduleclass_sfx":"_menu","cache":"1","cache_time":"900","cachemode":"itemid"}', 0, '*'),
 (2, 40, 'Login', '', '', 1, 'login', 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 1, 'mod_login', 1, 1, '', 1, '*'),
 (3, 41, 'Popular Articles', '', '', 3, 'cpanel', 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 1, 'mod_popular', 3, 1, '{"count":"5","catid":"","user_id":"0","layout":"_:default","moduleclass_sfx":"","cache":"0","automatic_title":"1"}', 1, '*'),
 (4, 42, 'Recently Added Articles', '', '', 4, 'cpanel', 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 1, 'mod_latest', 3, 1, '{"count":"5","ordering":"c_dsc","catid":"","user_id":"0","layout":"_:default","moduleclass_sfx":"","cache":"0","automatic_title":"1"}', 1, '*'),
@@ -1404,10 +1283,22 @@ INSERT INTO `joomla_modules` (`id`, `asset_id`, `title`, `note`, `content`, `ord
 (13, 47, 'Admin Submenu', '', '', 1, 'submenu', 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 1, 'mod_submenu', 3, 1, '', 1, '*'),
 (14, 48, 'User Status', '', '', 2, 'status', 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 1, 'mod_status', 3, 1, '', 1, '*'),
 (15, 49, 'Title', '', '', 1, 'title', 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 1, 'mod_title', 3, 1, '', 1, '*'),
-(16, 50, 'Login Form', '', '', 7, 'position-7', 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 1, 'mod_login', 1, 1, '{"greeting":"1","name":"0"}', 0, '*'),
-(17, 51, 'Breadcrumbs', '', '', 1, 'position-2', 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 1, 'mod_breadcrumbs', 1, 1, '{"moduleclass_sfx":"","showHome":"1","homeText":"","showComponent":"1","separator":"","cache":"1","cache_time":"900","cachemode":"itemid"}', 0, '*'),
+(16, 50, 'Login Form', '', '', 7, 'position-7', 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', -2, 'mod_login', 1, 1, '{"greeting":"1","name":"0"}', 0, '*'),
+(17, 51, 'Breadcrumbs', '', '', 1, 'position-2', 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', -2, 'mod_breadcrumbs', 1, 1, '{"moduleclass_sfx":"","showHome":"1","homeText":"","showComponent":"1","separator":"","cache":"1","cache_time":"900","cachemode":"itemid"}', 0, '*'),
 (79, 52, 'Multilanguage status', '', '', 1, 'status', 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 0, 'mod_multilangstatus', 3, 1, '{"layout":"_:default","moduleclass_sfx":"","cache":"0"}', 1, '*'),
-(86, 53, 'Joomla Version', '', '', 1, 'footer', 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 1, 'mod_version', 3, 1, '{"format":"short","product":"1","layout":"_:default","moduleclass_sfx":"","cache":"0"}', 1, '*');
+(86, 53, 'Joomla Version', '', '', 1, 'footer', 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 1, 'mod_version', 3, 1, '{"format":"short","product":"1","layout":"_:default","moduleclass_sfx":"","cache":"0"}', 1, '*'),
+(87, 54, 'teste', '', '', 1, 'mod_header', 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', -2, 'mod_custom', 1, 1, '{"prepare_content":"0","backgroundimage":"","layout":"_:default","moduleclass_sfx":"","cache":"1","cache_time":"900","cachemode":"static","module_tag":"div","bootstrap_size":"0","header_tag":"h3","header_class":"","style":"0"}', 0, '*'),
+(88, 55, 'dasasdads', '', '<p>xcdsa</p>', 0, 'mod_header3', 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', -2, 'mod_custom', 1, 1, '{"prepare_content":"0","backgroundimage":"","layout":"_:default","moduleclass_sfx":"","cache":"1","cache_time":"900","cachemode":"static","module_tag":"div","bootstrap_size":"0","header_tag":"h3","header_class":"","style":"0"}', 0, '*'),
+(89, 57, 'mod mian logo', '', '', 0, 'mod_main_logo', 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', -2, 'mod_custom', 1, 1, '{"prepare_content":"0","backgroundimage":"","layout":"_:default","moduleclass_sfx":"","cache":"1","cache_time":"900","cachemode":"static","module_tag":"div","bootstrap_size":"0","header_tag":"h3","header_class":"","style":"0"}', 0, '*'),
+(90, 58, 'mod down main', '', '', 0, 'mod_main_down', 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', -2, 'mod_custom', 1, 1, '{"prepare_content":"0","backgroundimage":"","layout":"_:default","moduleclass_sfx":"","cache":"1","cache_time":"900","cachemode":"static","module_tag":"div","bootstrap_size":"0","header_tag":"h3","header_class":"","style":"0"}', 0, '*'),
+(91, 59, 'foot3', '', '', 0, 'mod_foot3', 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', -2, 'mod_custom', 1, 1, '{"prepare_content":"0","backgroundimage":"","layout":"_:default","moduleclass_sfx":"","cache":"1","cache_time":"900","cachemode":"static","module_tag":"div","bootstrap_size":"0","header_tag":"h3","header_class":"","style":"0"}', 0, '*'),
+(92, 60, 'icons', '', '', 0, 'mod_icons', 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', -2, 'mod_custom', 1, 1, '{"prepare_content":"0","backgroundimage":"","layout":"_:default","moduleclass_sfx":"","cache":"1","cache_time":"900","cachemode":"static","module_tag":"div","bootstrap_size":"0","header_tag":"h3","header_class":"","style":"0"}', 0, '*'),
+(93, 61, 'Imagens do cabeçalho', '', '<div><a href="#"><img src="images/pesquisa.jpg" alt="PESQUISA" /></a> <a href="#"><img src="images/ensino.jpg" alt="ENSINO" /></a> <a href="#"><img src="images/extensao.jpg" alt="EXTENSÃO" /></a></div>', 1, 'modHeaderImages', 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 1, 'mod_custom', 1, 0, '{"prepare_content":"0","backgroundimage":"","layout":"_:default","moduleclass_sfx":"","cache":"1","cache_time":"900","cachemode":"static","module_tag":"div","bootstrap_size":"0","header_tag":"h3","header_class":"","style":"0"}', 0, '*'),
+(94, 62, 'Imagens do main', '', '<p><img src="images/pesquisa.png" alt="" /><img src="images/mestrado.png" alt="" /><img src="images/grupo.png" alt="" /></p>', 1, 'modMainImages', 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', -2, 'mod_custom', 1, 0, '{"prepare_content":"0","backgroundimage":"","layout":"_:default","moduleclass_sfx":"","cache":"1","cache_time":"900","cachemode":"static","module_tag":"div","bootstrap_size":"0","header_tag":"h3","header_class":"","style":"0"}', 0, '*'),
+(95, 63, 'Menu Principal', '', '', 0, 'modMenu', 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 1, 'mod_menu', 1, 0, '{"menutype":"mainmenu","base":"","startLevel":"1","endLevel":"0","showAllChildren":"0","tag_id":"","class_sfx":"","window_open":"","layout":"_:default","moduleclass_sfx":"","cache":"1","cache_time":"900","cachemode":"itemid","module_tag":"div","bootstrap_size":"0","header_tag":"h3","header_class":"","style":"0"}', 0, '*'),
+(96, 64, 'Logos', '', '<p><a href="#"><img id="logo_principal" src="images/logo_azul.png" alt="" /> </a><img id="logo_video" src="images/logo_video.png" alt="" /><img id="logo_radio" src="images/logos_radio.png" alt="" /></p>', 1, 'modMain', 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 1, 'mod_custom', 1, 0, '{"prepare_content":"0","backgroundimage":"","layout":"_:default","moduleclass_sfx":"","cache":"1","cache_time":"900","cachemode":"static","module_tag":"div","bootstrap_size":"0","header_tag":"h3","header_class":"","style":"0"}', 0, '*'),
+(97, 65, 'Rodapé', '', '<p><img src="images/udesc_reduzida.png" alt="" /><img src="images/faed_reduzida.png" alt="" /></p>', 1, 'modFooter', 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 1, 'mod_custom', 1, 0, '{"prepare_content":"0","backgroundimage":"","layout":"_:default","moduleclass_sfx":"","cache":"1","cache_time":"900","cachemode":"static","module_tag":"div","bootstrap_size":"0","header_tag":"h3","header_class":"","style":"0"}', 0, '*'),
+(98, 72, 'Imagens do main', '', '<div><a href="#"><img src="images/pesquisa.jpg" alt="PESQUISA" /></a> <a href="#"><img src="images/ensino.jpg" alt="ENSINO" /></a> <a href="#"><img src="images/extensao.jpg" alt="EXTENSÃO" /></a></div>', 1, 'modMainImages', 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 1, 'mod_custom', 1, 0, '{"prepare_content":"0","backgroundimage":"","layout":"_:default","moduleclass_sfx":"","cache":"1","cache_time":"900","cachemode":"static","module_tag":"div","bootstrap_size":"0","header_tag":"h3","header_class":"","style":"0"}', 0, '*');
 
 -- --------------------------------------------------------
 
@@ -1417,8 +1308,7 @@ INSERT INTO `joomla_modules` (`id`, `asset_id`, `title`, `note`, `content`, `ord
 
 CREATE TABLE `joomla_modules_menu` (
   `moduleid` int(11) NOT NULL DEFAULT '0',
-  `menuid` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`moduleid`,`menuid`)
+  `menuid` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1442,7 +1332,19 @@ INSERT INTO `joomla_modules_menu` (`moduleid`, `menuid`) VALUES
 (16, 0),
 (17, 0),
 (79, 0),
-(86, 0);
+(86, 0),
+(87, 0),
+(88, 0),
+(89, 0),
+(90, 0),
+(91, 0),
+(92, 0),
+(93, 0),
+(94, 101),
+(95, 0),
+(96, 101),
+(97, 0),
+(98, 0);
 
 -- --------------------------------------------------------
 
@@ -1452,7 +1354,7 @@ INSERT INTO `joomla_modules_menu` (`moduleid`, `menuid`) VALUES
 
 CREATE TABLE `joomla_newsfeeds` (
   `catid` int(11) NOT NULL DEFAULT '0',
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+`id` int(10) unsigned NOT NULL,
   `name` varchar(100) NOT NULL DEFAULT '',
   `alias` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
   `link` varchar(200) NOT NULL DEFAULT '',
@@ -1480,16 +1382,8 @@ CREATE TABLE `joomla_newsfeeds` (
   `description` text NOT NULL,
   `version` int(10) unsigned NOT NULL DEFAULT '1',
   `hits` int(10) unsigned NOT NULL DEFAULT '0',
-  `images` text NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `idx_access` (`access`),
-  KEY `idx_checkout` (`checked_out`),
-  KEY `idx_state` (`published`),
-  KEY `idx_catid` (`catid`),
-  KEY `idx_createdby` (`created_by`),
-  KEY `idx_language` (`language`),
-  KEY `idx_xreference` (`xreference`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `images` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1498,12 +1392,11 @@ CREATE TABLE `joomla_newsfeeds` (
 --
 
 CREATE TABLE `joomla_overrider` (
-  `id` int(10) NOT NULL AUTO_INCREMENT COMMENT 'Primary Key',
+`id` int(10) NOT NULL COMMENT 'Primary Key',
   `constant` varchar(255) NOT NULL,
   `string` text NOT NULL,
-  `file` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `file` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1512,7 +1405,7 @@ CREATE TABLE `joomla_overrider` (
 --
 
 CREATE TABLE `joomla_postinstall_messages` (
-  `postinstall_message_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+`postinstall_message_id` bigint(20) unsigned NOT NULL,
   `extension_id` bigint(20) NOT NULL DEFAULT '700' COMMENT 'FK to #__extensions',
   `title_key` varchar(255) NOT NULL DEFAULT '' COMMENT 'Lang key for the title',
   `description_key` varchar(255) NOT NULL DEFAULT '' COMMENT 'Lang key for description',
@@ -1525,9 +1418,8 @@ CREATE TABLE `joomla_postinstall_messages` (
   `condition_file` varchar(255) DEFAULT NULL COMMENT 'RAD URI to file holding display condition method',
   `condition_method` varchar(255) DEFAULT NULL COMMENT 'Display condition method, must return boolean',
   `version_introduced` varchar(50) NOT NULL DEFAULT '3.2.0' COMMENT 'Version when this message was introduced',
-  `enabled` tinyint(3) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`postinstall_message_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+  `enabled` tinyint(3) NOT NULL DEFAULT '1'
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `joomla_postinstall_messages`
@@ -1546,7 +1438,7 @@ INSERT INTO `joomla_postinstall_messages` (`postinstall_message_id`, `extension_
 --
 
 CREATE TABLE `joomla_redirect_links` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+`id` int(10) unsigned NOT NULL,
   `old_url` varchar(255) NOT NULL,
   `new_url` varchar(255) NOT NULL,
   `referer` varchar(150) NOT NULL,
@@ -1554,11 +1446,8 @@ CREATE TABLE `joomla_redirect_links` (
   `hits` int(10) unsigned NOT NULL DEFAULT '0',
   `published` tinyint(4) NOT NULL,
   `created_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modified_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `idx_link_old` (`old_url`),
-  KEY `idx_link_modifed` (`modified_date`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `modified_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1568,8 +1457,7 @@ CREATE TABLE `joomla_redirect_links` (
 
 CREATE TABLE `joomla_schemas` (
   `extension_id` int(11) NOT NULL,
-  `version_id` varchar(20) NOT NULL,
-  PRIMARY KEY (`extension_id`,`version_id`)
+  `version_id` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1592,10 +1480,7 @@ CREATE TABLE `joomla_session` (
   `time` varchar(14) DEFAULT '',
   `data` mediumtext,
   `userid` int(11) DEFAULT '0',
-  `username` varchar(150) DEFAULT '',
-  PRIMARY KEY (`session_id`),
-  KEY `userid` (`userid`),
-  KEY `time` (`time`)
+  `username` varchar(150) DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1603,8 +1488,8 @@ CREATE TABLE `joomla_session` (
 --
 
 INSERT INTO `joomla_session` (`session_id`, `client_id`, `guest`, `time`, `data`, `userid`, `username`) VALUES
-('342b123c970ab1c9eba0adb9b6354f95', 1, 0, '1419031138', '__default|a:8:{s:15:"session.counter";i:60;s:19:"session.timer.start";i:1419028978;s:18:"session.timer.last";i:1419031137;s:17:"session.timer.now";i:1419031138;s:22:"session.client.browser";s:116:"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/600.2.5 (KHTML, like Gecko) Version/8.0.2 Safari/600.2.5";s:8:"registry";O:24:"Joomla\\Registry\\Registry":1:{s:7:"\\0\\0\\0data";O:8:"stdClass":6:{s:11:"application";O:8:"stdClass":1:{s:4:"lang";s:5:"en-GB";}s:13:"com_installer";O:8:"stdClass":4:{s:7:"message";s:0:"";s:17:"extension_message";s:0:"";s:12:"redirect_url";N;s:7:"install";O:8:"stdClass":1:{s:17:"install_directory";s:99:"/Users/sites/Dropbox/Evolutt/sites/Utilitarios/Joomla/templates/Meus_templates/portal_lis/portalLis";}}s:13:"com_languages";O:8:"stdClass":2:{s:9:"installed";O:8:"stdClass":2:{s:8:"ordercol";s:6:"a.name";s:10:"limitstart";s:1:"0";}s:9:"overrides";O:8:"stdClass":2:{s:6:"filter";O:8:"stdClass":2:{s:6:"client";s:1:"0";s:8:"language";s:5:"pt-BR";}s:10:"limitstart";i:0;}}s:9:"com_admin";O:8:"stdClass":1:{s:4:"edit";O:8:"stdClass":1:{s:7:"profile";O:8:"stdClass":2:{s:2:"id";a:0:{}s:4:"data";N;}}}s:10:"com_config";O:8:"stdClass":1:{s:6:"config";O:8:"stdClass":1:{s:6:"global";O:8:"stdClass":1:{s:4:"data";N;}}}s:11:"com_modules";O:8:"stdClass":1:{s:7:"modules";O:8:"stdClass":1:{s:6:"filter";O:8:"stdClass":1:{s:18:"client_id_previous";i:0;}}}}}s:4:"user";O:5:"JUser":29:{s:9:"\\0\\0\\0isRoot";b:1;s:2:"id";i:198;s:4:"name";s:10:"Super User";s:8:"username";s:5:"Admin";s:5:"email";s:24:"oliveira.pires@gmail.com";s:8:"password";s:60:"$2y$10$CY9FcnZ63Vi.gWClb7C2F.0K56fb0.9yzLrBgYRDfc3l5385apgkW";s:14:"password_clear";s:0:"";s:5:"block";s:1:"0";s:9:"sendEmail";s:1:"1";s:12:"registerDate";s:19:"2014-12-19 22:01:34";s:13:"lastvisitDate";s:19:"2014-12-19 22:43:05";s:10:"activation";s:1:"0";s:6:"params";s:102:"{"admin_style":"","admin_language":"pt-BR","language":"pt-BR","editor":"","helpsite":"","timezone":""}";s:6:"groups";N;s:5:"guest";i:0;s:13:"lastResetTime";s:19:"0000-00-00 00:00:00";s:10:"resetCount";s:1:"0";s:12:"requireReset";s:1:"0";s:10:"\\0\\0\\0_params";O:24:"Joomla\\Registry\\Registry":1:{s:7:"\\0\\0\\0data";O:8:"stdClass":6:{s:11:"admin_style";s:0:"";s:14:"admin_language";s:5:"pt-BR";s:8:"language";s:5:"pt-BR";s:6:"editor";s:0:"";s:8:"helpsite";s:0:"";s:8:"timezone";s:0:"";}}s:14:"\\0\\0\\0_authGroups";a:2:{i:0;i:1;i:1;i:8;}s:14:"\\0\\0\\0_authLevels";a:5:{i:0;i:1;i:1;i:1;i:2;i:2;i:3;i:3;i:4;i:6;}s:15:"\\0\\0\\0_authActions";N;s:12:"\\0\\0\\0_errorMsg";N;s:10:"\\0\\0\\0_errors";a:0:{}s:3:"aid";i:0;s:6:"otpKey";s:0:"";s:4:"otep";s:0:"";s:9:"password2";s:0:"";s:4:"tags";N;}s:13:"session.token";s:32:"5118ab03d16a9455ebc0c365834c57bf";}', 198, 'Admin'),
-('c66e92b655119c9f1363d459d2775fac', 0, 1, '1419031144', '__default|a:7:{s:15:"session.counter";i:1;s:19:"session.timer.start";i:1419031144;s:18:"session.timer.last";i:1419031144;s:17:"session.timer.now";i:1419031144;s:22:"session.client.browser";s:116:"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/600.2.5 (KHTML, like Gecko) Version/8.0.2 Safari/600.2.5";s:8:"registry";O:24:"Joomla\\Registry\\Registry":1:{s:7:"\\0\\0\\0data";O:8:"stdClass":0:{}}s:4:"user";O:5:"JUser":25:{s:9:"\\0\\0\\0isRoot";b:0;s:2:"id";i:0;s:4:"name";N;s:8:"username";N;s:5:"email";N;s:8:"password";N;s:14:"password_clear";s:0:"";s:5:"block";N;s:9:"sendEmail";i:0;s:12:"registerDate";N;s:13:"lastvisitDate";N;s:10:"activation";N;s:6:"params";N;s:6:"groups";a:1:{i:0;s:1:"9";}s:5:"guest";i:1;s:13:"lastResetTime";N;s:10:"resetCount";N;s:12:"requireReset";N;s:10:"\\0\\0\\0_params";O:24:"Joomla\\Registry\\Registry":1:{s:7:"\\0\\0\\0data";O:8:"stdClass":0:{}}s:14:"\\0\\0\\0_authGroups";a:2:{i:0;i:1;i:1;i:9;}s:14:"\\0\\0\\0_authLevels";a:3:{i:0;i:1;i:1;i:1;i:2;i:5;}s:15:"\\0\\0\\0_authActions";N;s:12:"\\0\\0\\0_errorMsg";N;s:10:"\\0\\0\\0_errors";a:0:{}s:3:"aid";i:0;}}', 0, '');
+('f53f5e456feb50b37dd7f1ca73c0fe89', 0, 1, '1430863572', '__default|a:7:{s:15:"session.counter";i:84;s:19:"session.timer.start";i:1430779005;s:18:"session.timer.last";i:1430863571;s:17:"session.timer.now";i:1430863572;s:22:"session.client.browser";s:118:"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/600.5.17 (KHTML, like Gecko) Version/8.0.5 Safari/600.5.17";s:8:"registry";O:24:"Joomla\\Registry\\Registry":1:{s:7:"\\0\\0\\0data";O:8:"stdClass":0:{}}s:4:"user";O:5:"JUser":25:{s:9:"\\0\\0\\0isRoot";b:0;s:2:"id";i:0;s:4:"name";N;s:8:"username";N;s:5:"email";N;s:8:"password";N;s:14:"password_clear";s:0:"";s:5:"block";N;s:9:"sendEmail";i:0;s:12:"registerDate";N;s:13:"lastvisitDate";N;s:10:"activation";N;s:6:"params";N;s:6:"groups";a:1:{i:0;s:1:"9";}s:5:"guest";i:1;s:13:"lastResetTime";N;s:10:"resetCount";N;s:12:"requireReset";N;s:10:"\\0\\0\\0_params";O:24:"Joomla\\Registry\\Registry":1:{s:7:"\\0\\0\\0data";O:8:"stdClass":0:{}}s:14:"\\0\\0\\0_authGroups";a:2:{i:0;i:1;i:1;i:9;}s:14:"\\0\\0\\0_authLevels";a:3:{i:0;i:1;i:1;i:1;i:2;i:5;}s:15:"\\0\\0\\0_authActions";N;s:12:"\\0\\0\\0_errorMsg";N;s:10:"\\0\\0\\0_errors";a:0:{}s:3:"aid";i:0;}}', 0, ''),
+('fb732d5bf4b7892e74b4e9f7dd6fed64', 1, 0, '1430863585', '__default|a:8:{s:15:"session.counter";i:16;s:19:"session.timer.start";i:1430863260;s:18:"session.timer.last";i:1430863584;s:17:"session.timer.now";i:1430863584;s:22:"session.client.browser";s:118:"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/600.5.17 (KHTML, like Gecko) Version/8.0.5 Safari/600.5.17";s:8:"registry";O:24:"Joomla\\Registry\\Registry":1:{s:7:"\\0\\0\\0data";O:8:"stdClass":2:{s:11:"application";O:8:"stdClass":1:{s:4:"lang";s:0:"";}s:11:"com_modules";O:8:"stdClass":3:{s:4:"edit";O:8:"stdClass":1:{s:6:"module";O:8:"stdClass":2:{s:2:"id";a:0:{}s:4:"data";N;}}s:3:"add";O:8:"stdClass":1:{s:6:"module";O:8:"stdClass":2:{s:12:"extension_id";N;s:6:"params";N;}}s:7:"modules";O:8:"stdClass":1:{s:6:"filter";O:8:"stdClass":1:{s:18:"client_id_previous";i:0;}}}}}s:4:"user";O:5:"JUser":27:{s:9:"\\0\\0\\0isRoot";b:1;s:2:"id";s:3:"198";s:4:"name";s:10:"Super User";s:8:"username";s:5:"Admin";s:5:"email";s:24:"oliveira.pires@gmail.com";s:8:"password";s:60:"$2y$10$CY9FcnZ63Vi.gWClb7C2F.0K56fb0.9yzLrBgYRDfc3l5385apgkW";s:14:"password_clear";s:0:"";s:5:"block";s:1:"0";s:9:"sendEmail";s:1:"1";s:12:"registerDate";s:19:"2014-12-19 22:01:34";s:13:"lastvisitDate";s:19:"2015-05-05 21:16:01";s:10:"activation";s:1:"0";s:6:"params";s:102:"{"admin_style":"","admin_language":"pt-BR","language":"pt-BR","editor":"","helpsite":"","timezone":""}";s:6:"groups";a:1:{i:8;s:1:"8";}s:5:"guest";i:0;s:13:"lastResetTime";s:19:"0000-00-00 00:00:00";s:10:"resetCount";s:1:"0";s:12:"requireReset";s:1:"0";s:10:"\\0\\0\\0_params";O:24:"Joomla\\Registry\\Registry":1:{s:7:"\\0\\0\\0data";O:8:"stdClass":6:{s:11:"admin_style";s:0:"";s:14:"admin_language";s:5:"pt-BR";s:8:"language";s:5:"pt-BR";s:6:"editor";s:0:"";s:8:"helpsite";s:0:"";s:8:"timezone";s:0:"";}}s:14:"\\0\\0\\0_authGroups";a:2:{i:0;i:1;i:1;i:8;}s:14:"\\0\\0\\0_authLevels";a:5:{i:0;i:1;i:1;i:1;i:2;i:2;i:3;i:3;i:4;i:6;}s:15:"\\0\\0\\0_authActions";N;s:12:"\\0\\0\\0_errorMsg";N;s:10:"\\0\\0\\0_errors";a:0:{}s:3:"aid";i:0;s:6:"otpKey";s:0:"";s:4:"otep";s:0:"";}s:13:"session.token";s:32:"fca26c3f6e2e9e2bfaf9902b332a3179";}', 198, 'Admin');
 
 -- --------------------------------------------------------
 
@@ -1613,7 +1498,7 @@ INSERT INTO `joomla_session` (`session_id`, `client_id`, `guest`, `time`, `data`
 --
 
 CREATE TABLE `joomla_tags` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+`id` int(10) unsigned NOT NULL,
   `parent_id` int(10) unsigned NOT NULL DEFAULT '0',
   `lft` int(11) NOT NULL DEFAULT '0',
   `rgt` int(11) NOT NULL DEFAULT '0',
@@ -1642,16 +1527,8 @@ CREATE TABLE `joomla_tags` (
   `language` char(7) NOT NULL,
   `version` int(10) unsigned NOT NULL DEFAULT '1',
   `publish_up` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `publish_down` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`),
-  KEY `tag_idx` (`published`,`access`),
-  KEY `idx_access` (`access`),
-  KEY `idx_checkout` (`checked_out`),
-  KEY `idx_path` (`path`),
-  KEY `idx_left_right` (`lft`,`rgt`),
-  KEY `idx_alias` (`alias`),
-  KEY `idx_language` (`language`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+  `publish_down` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `joomla_tags`
@@ -1667,16 +1544,13 @@ INSERT INTO `joomla_tags` (`id`, `parent_id`, `lft`, `rgt`, `level`, `path`, `ti
 --
 
 CREATE TABLE `joomla_template_styles` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+`id` int(10) unsigned NOT NULL,
   `template` varchar(50) NOT NULL DEFAULT '',
   `client_id` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `home` char(7) NOT NULL DEFAULT '0',
   `title` varchar(255) NOT NULL DEFAULT '',
-  `params` text NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `idx_template` (`template`),
-  KEY `idx_home` (`home`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
+  `params` text NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `joomla_template_styles`
@@ -1688,7 +1562,8 @@ INSERT INTO `joomla_template_styles` (`id`, `template`, `client_id`, `home`, `ti
 (7, 'protostar', 0, '0', 'protostar - Default', '{"templateColor":"","logoFile":"","googleFont":"1","googleFontName":"Open+Sans","fluidContainer":"0"}'),
 (8, 'isis', 1, '1', 'isis - Default', '{"templateColor":"","logoFile":""}'),
 (9, 'generico-piresebrittes', 0, '0', 'Generico-PireseBrittes - Default', '{"logo":"templates\\/Kart\\/images\\/logo.png"}'),
-(10, 'portallis', 0, '1', 'portalLIS - Default', '{"logo":"templates\\/images\\/logo.png","background-image":"templates\\/images\\/logo.png"}');
+(11, 'portallis', 0, '0', 'outos', ''),
+(13, 'portallis', 0, '1', 'portalLIS - Padrão', '{}');
 
 -- --------------------------------------------------------
 
@@ -1700,11 +1575,7 @@ CREATE TABLE `joomla_ucm_base` (
   `ucm_id` int(10) unsigned NOT NULL,
   `ucm_item_id` int(10) NOT NULL,
   `ucm_type_id` int(11) NOT NULL,
-  `ucm_language_id` int(11) NOT NULL,
-  PRIMARY KEY (`ucm_id`),
-  KEY `idx_ucm_item_id` (`ucm_item_id`),
-  KEY `idx_ucm_type_id` (`ucm_type_id`),
-  KEY `idx_ucm_language_id` (`ucm_language_id`)
+  `ucm_language_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -1714,7 +1585,7 @@ CREATE TABLE `joomla_ucm_base` (
 --
 
 CREATE TABLE `joomla_ucm_content` (
-  `core_content_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+`core_content_id` int(10) unsigned NOT NULL,
   `core_type_alias` varchar(255) NOT NULL DEFAULT '' COMMENT 'FK to the content types table',
   `core_title` varchar(255) NOT NULL,
   `core_alias` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
@@ -1745,21 +1616,8 @@ CREATE TABLE `joomla_ucm_content` (
   `core_metadesc` text NOT NULL,
   `core_catid` int(10) unsigned NOT NULL DEFAULT '0',
   `core_xreference` varchar(50) NOT NULL COMMENT 'A reference to enable linkages to external data sets.',
-  `core_type_id` int(10) unsigned DEFAULT NULL,
-  PRIMARY KEY (`core_content_id`),
-  KEY `tag_idx` (`core_state`,`core_access`),
-  KEY `idx_access` (`core_access`),
-  KEY `idx_alias` (`core_alias`),
-  KEY `idx_language` (`core_language`),
-  KEY `idx_title` (`core_title`),
-  KEY `idx_modified_time` (`core_modified_time`),
-  KEY `idx_created_time` (`core_created_time`),
-  KEY `idx_content_type` (`core_type_alias`),
-  KEY `idx_core_modified_user_id` (`core_modified_user_id`),
-  KEY `idx_core_checked_out_user_id` (`core_checked_out_user_id`),
-  KEY `idx_core_created_user_id` (`core_created_user_id`),
-  KEY `idx_core_type_id` (`core_type_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Contains core content data in name spaced fields' AUTO_INCREMENT=1 ;
+  `core_type_id` int(10) unsigned DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Contains core content data in name spaced fields';
 
 -- --------------------------------------------------------
 
@@ -1768,7 +1626,7 @@ CREATE TABLE `joomla_ucm_content` (
 --
 
 CREATE TABLE `joomla_ucm_history` (
-  `version_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+`version_id` int(10) unsigned NOT NULL,
   `ucm_item_id` int(10) unsigned NOT NULL,
   `ucm_type_id` int(10) unsigned NOT NULL,
   `version_note` varchar(255) NOT NULL DEFAULT '' COMMENT 'Optional version name',
@@ -1777,11 +1635,22 @@ CREATE TABLE `joomla_ucm_history` (
   `character_count` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Number of characters in this version.',
   `sha1_hash` varchar(50) NOT NULL DEFAULT '' COMMENT 'SHA1 hash of the version_data column.',
   `version_data` mediumtext NOT NULL COMMENT 'json-encoded string of version data',
-  `keep_forever` tinyint(4) NOT NULL DEFAULT '0' COMMENT '0=auto delete; 1=keep',
-  PRIMARY KEY (`version_id`),
-  KEY `idx_ucm_item_id` (`ucm_type_id`,`ucm_item_id`),
-  KEY `idx_save_date` (`save_date`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `keep_forever` tinyint(4) NOT NULL DEFAULT '0' COMMENT '0=auto delete; 1=keep'
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `joomla_ucm_history`
+--
+
+INSERT INTO `joomla_ucm_history` (`version_id`, `ucm_item_id`, `ucm_type_id`, `version_note`, `save_date`, `editor_user_id`, `character_count`, `sha1_hash`, `version_data`, `keep_forever`) VALUES
+(1, 1, 1, '', '2015-02-05 00:13:56', 198, 1642, 'c56ae720fffd10e456493b02db53abb228ac3d4b', '{"id":1,"asset_id":56,"title":"este","alias":"este","introtext":"<p>teste<\\/p>","fulltext":"","state":1,"catid":"2","created":"2015-02-05 00:13:56","created_by":"198","created_by_alias":"","modified":"","modified_by":null,"checked_out":null,"checked_out_time":null,"publish_up":"2015-02-05 00:13:56","publish_down":"0000-00-00 00:00:00","images":"{\\"image_intro\\":\\"\\",\\"float_intro\\":\\"\\",\\"image_intro_alt\\":\\"\\",\\"image_intro_caption\\":\\"\\",\\"image_fulltext\\":\\"\\",\\"float_fulltext\\":\\"\\",\\"image_fulltext_alt\\":\\"\\",\\"image_fulltext_caption\\":\\"\\"}","urls":"{\\"urla\\":false,\\"urlatext\\":\\"\\",\\"targeta\\":\\"\\",\\"urlb\\":false,\\"urlbtext\\":\\"\\",\\"targetb\\":\\"\\",\\"urlc\\":false,\\"urlctext\\":\\"\\",\\"targetc\\":\\"\\"}","attribs":"{\\"show_title\\":\\"\\",\\"link_titles\\":\\"\\",\\"show_tags\\":\\"\\",\\"show_intro\\":\\"\\",\\"info_block_position\\":\\"\\",\\"show_category\\":\\"\\",\\"link_category\\":\\"\\",\\"show_parent_category\\":\\"\\",\\"link_parent_category\\":\\"\\",\\"show_author\\":\\"\\",\\"link_author\\":\\"\\",\\"show_create_date\\":\\"\\",\\"show_modify_date\\":\\"\\",\\"show_publish_date\\":\\"\\",\\"show_item_navigation\\":\\"\\",\\"show_icons\\":\\"\\",\\"show_print_icon\\":\\"\\",\\"show_email_icon\\":\\"\\",\\"show_vote\\":\\"\\",\\"show_hits\\":\\"\\",\\"show_noauth\\":\\"\\",\\"urls_position\\":\\"\\",\\"alternative_readmore\\":\\"\\",\\"article_layout\\":\\"\\",\\"show_publishing_options\\":\\"\\",\\"show_article_options\\":\\"\\",\\"show_urls_images_backend\\":\\"\\",\\"show_urls_images_frontend\\":\\"\\"}","version":1,"ordering":null,"metakey":"","metadesc":"","access":"1","hits":null,"metadata":"{\\"robots\\":\\"\\",\\"author\\":\\"\\",\\"rights\\":\\"\\",\\"xreference\\":\\"\\"}","featured":"0","language":"*","xreference":""}', 0),
+(2, 2, 1, '', '2015-04-04 19:37:26', 198, 1641, 'd322fb3e1a1fa512624cc2a2b4bcc4611b66085f', '{"id":2,"asset_id":66,"title":"Quem Somos","alias":"quem-somos","introtext":"","fulltext":"","state":1,"catid":"2","created":"2015-04-04 19:37:26","created_by":"198","created_by_alias":"","modified":"","modified_by":null,"checked_out":null,"checked_out_time":null,"publish_up":"2015-04-04 19:37:26","publish_down":"0000-00-00 00:00:00","images":"{\\"image_intro\\":\\"\\",\\"float_intro\\":\\"\\",\\"image_intro_alt\\":\\"\\",\\"image_intro_caption\\":\\"\\",\\"image_fulltext\\":\\"\\",\\"float_fulltext\\":\\"\\",\\"image_fulltext_alt\\":\\"\\",\\"image_fulltext_caption\\":\\"\\"}","urls":"{\\"urla\\":false,\\"urlatext\\":\\"\\",\\"targeta\\":\\"\\",\\"urlb\\":false,\\"urlbtext\\":\\"\\",\\"targetb\\":\\"\\",\\"urlc\\":false,\\"urlctext\\":\\"\\",\\"targetc\\":\\"\\"}","attribs":"{\\"show_title\\":\\"\\",\\"link_titles\\":\\"\\",\\"show_tags\\":\\"\\",\\"show_intro\\":\\"\\",\\"info_block_position\\":\\"\\",\\"show_category\\":\\"\\",\\"link_category\\":\\"\\",\\"show_parent_category\\":\\"\\",\\"link_parent_category\\":\\"\\",\\"show_author\\":\\"\\",\\"link_author\\":\\"\\",\\"show_create_date\\":\\"\\",\\"show_modify_date\\":\\"\\",\\"show_publish_date\\":\\"\\",\\"show_item_navigation\\":\\"\\",\\"show_icons\\":\\"\\",\\"show_print_icon\\":\\"\\",\\"show_email_icon\\":\\"\\",\\"show_vote\\":\\"\\",\\"show_hits\\":\\"\\",\\"show_noauth\\":\\"\\",\\"urls_position\\":\\"\\",\\"alternative_readmore\\":\\"\\",\\"article_layout\\":\\"\\",\\"show_publishing_options\\":\\"\\",\\"show_article_options\\":\\"\\",\\"show_urls_images_backend\\":\\"\\",\\"show_urls_images_frontend\\":\\"\\"}","version":1,"ordering":null,"metakey":"","metadesc":"","access":"1","hits":null,"metadata":"{\\"robots\\":\\"\\",\\"author\\":\\"\\",\\"rights\\":\\"\\",\\"xreference\\":\\"\\"}","featured":"0","language":"*","xreference":""}', 0),
+(3, 3, 1, '', '2015-04-04 19:37:34', 198, 1653, '706c771d98a29a47f96e522c57b4e9c1a1dd3445', '{"id":3,"asset_id":67,"title":"Publica\\u00e7\\u00f5es","alias":"publicacoes","introtext":"","fulltext":"","state":1,"catid":"2","created":"2015-04-04 19:37:34","created_by":"198","created_by_alias":"","modified":"","modified_by":null,"checked_out":null,"checked_out_time":null,"publish_up":"2015-04-04 19:37:34","publish_down":"0000-00-00 00:00:00","images":"{\\"image_intro\\":\\"\\",\\"float_intro\\":\\"\\",\\"image_intro_alt\\":\\"\\",\\"image_intro_caption\\":\\"\\",\\"image_fulltext\\":\\"\\",\\"float_fulltext\\":\\"\\",\\"image_fulltext_alt\\":\\"\\",\\"image_fulltext_caption\\":\\"\\"}","urls":"{\\"urla\\":false,\\"urlatext\\":\\"\\",\\"targeta\\":\\"\\",\\"urlb\\":false,\\"urlbtext\\":\\"\\",\\"targetb\\":\\"\\",\\"urlc\\":false,\\"urlctext\\":\\"\\",\\"targetc\\":\\"\\"}","attribs":"{\\"show_title\\":\\"\\",\\"link_titles\\":\\"\\",\\"show_tags\\":\\"\\",\\"show_intro\\":\\"\\",\\"info_block_position\\":\\"\\",\\"show_category\\":\\"\\",\\"link_category\\":\\"\\",\\"show_parent_category\\":\\"\\",\\"link_parent_category\\":\\"\\",\\"show_author\\":\\"\\",\\"link_author\\":\\"\\",\\"show_create_date\\":\\"\\",\\"show_modify_date\\":\\"\\",\\"show_publish_date\\":\\"\\",\\"show_item_navigation\\":\\"\\",\\"show_icons\\":\\"\\",\\"show_print_icon\\":\\"\\",\\"show_email_icon\\":\\"\\",\\"show_vote\\":\\"\\",\\"show_hits\\":\\"\\",\\"show_noauth\\":\\"\\",\\"urls_position\\":\\"\\",\\"alternative_readmore\\":\\"\\",\\"article_layout\\":\\"\\",\\"show_publishing_options\\":\\"\\",\\"show_article_options\\":\\"\\",\\"show_urls_images_backend\\":\\"\\",\\"show_urls_images_frontend\\":\\"\\"}","version":1,"ordering":null,"metakey":"","metadesc":"","access":"1","hits":null,"metadata":"{\\"robots\\":\\"\\",\\"author\\":\\"\\",\\"rights\\":\\"\\",\\"xreference\\":\\"\\"}","featured":"0","language":"*","xreference":""}', 0),
+(4, 4, 1, '', '2015-04-04 19:37:43', 198, 1649, '7227fa7e2831d20112959b765414ccaa7628cb96', '{"id":4,"asset_id":68,"title":"Banco de Dados","alias":"banco-de-dados","introtext":"","fulltext":"","state":1,"catid":"2","created":"2015-04-04 19:37:43","created_by":"198","created_by_alias":"","modified":"","modified_by":null,"checked_out":null,"checked_out_time":null,"publish_up":"2015-04-04 19:37:43","publish_down":"0000-00-00 00:00:00","images":"{\\"image_intro\\":\\"\\",\\"float_intro\\":\\"\\",\\"image_intro_alt\\":\\"\\",\\"image_intro_caption\\":\\"\\",\\"image_fulltext\\":\\"\\",\\"float_fulltext\\":\\"\\",\\"image_fulltext_alt\\":\\"\\",\\"image_fulltext_caption\\":\\"\\"}","urls":"{\\"urla\\":false,\\"urlatext\\":\\"\\",\\"targeta\\":\\"\\",\\"urlb\\":false,\\"urlbtext\\":\\"\\",\\"targetb\\":\\"\\",\\"urlc\\":false,\\"urlctext\\":\\"\\",\\"targetc\\":\\"\\"}","attribs":"{\\"show_title\\":\\"\\",\\"link_titles\\":\\"\\",\\"show_tags\\":\\"\\",\\"show_intro\\":\\"\\",\\"info_block_position\\":\\"\\",\\"show_category\\":\\"\\",\\"link_category\\":\\"\\",\\"show_parent_category\\":\\"\\",\\"link_parent_category\\":\\"\\",\\"show_author\\":\\"\\",\\"link_author\\":\\"\\",\\"show_create_date\\":\\"\\",\\"show_modify_date\\":\\"\\",\\"show_publish_date\\":\\"\\",\\"show_item_navigation\\":\\"\\",\\"show_icons\\":\\"\\",\\"show_print_icon\\":\\"\\",\\"show_email_icon\\":\\"\\",\\"show_vote\\":\\"\\",\\"show_hits\\":\\"\\",\\"show_noauth\\":\\"\\",\\"urls_position\\":\\"\\",\\"alternative_readmore\\":\\"\\",\\"article_layout\\":\\"\\",\\"show_publishing_options\\":\\"\\",\\"show_article_options\\":\\"\\",\\"show_urls_images_backend\\":\\"\\",\\"show_urls_images_frontend\\":\\"\\"}","version":1,"ordering":null,"metakey":"","metadesc":"","access":"1","hits":null,"metadata":"{\\"robots\\":\\"\\",\\"author\\":\\"\\",\\"rights\\":\\"\\",\\"xreference\\":\\"\\"}","featured":"0","language":"*","xreference":""}', 0),
+(5, 5, 1, '', '2015-04-04 19:37:49', 198, 1648, 'a622231566f774b3d1ec7563860a00e7e8bd991f', '{"id":5,"asset_id":69,"title":"Formul\\u00e1rios","alias":"formularios","introtext":"","fulltext":"","state":1,"catid":"2","created":"2015-04-04 19:37:49","created_by":"198","created_by_alias":"","modified":"","modified_by":null,"checked_out":null,"checked_out_time":null,"publish_up":"2015-04-04 19:37:49","publish_down":"0000-00-00 00:00:00","images":"{\\"image_intro\\":\\"\\",\\"float_intro\\":\\"\\",\\"image_intro_alt\\":\\"\\",\\"image_intro_caption\\":\\"\\",\\"image_fulltext\\":\\"\\",\\"float_fulltext\\":\\"\\",\\"image_fulltext_alt\\":\\"\\",\\"image_fulltext_caption\\":\\"\\"}","urls":"{\\"urla\\":false,\\"urlatext\\":\\"\\",\\"targeta\\":\\"\\",\\"urlb\\":false,\\"urlbtext\\":\\"\\",\\"targetb\\":\\"\\",\\"urlc\\":false,\\"urlctext\\":\\"\\",\\"targetc\\":\\"\\"}","attribs":"{\\"show_title\\":\\"\\",\\"link_titles\\":\\"\\",\\"show_tags\\":\\"\\",\\"show_intro\\":\\"\\",\\"info_block_position\\":\\"\\",\\"show_category\\":\\"\\",\\"link_category\\":\\"\\",\\"show_parent_category\\":\\"\\",\\"link_parent_category\\":\\"\\",\\"show_author\\":\\"\\",\\"link_author\\":\\"\\",\\"show_create_date\\":\\"\\",\\"show_modify_date\\":\\"\\",\\"show_publish_date\\":\\"\\",\\"show_item_navigation\\":\\"\\",\\"show_icons\\":\\"\\",\\"show_print_icon\\":\\"\\",\\"show_email_icon\\":\\"\\",\\"show_vote\\":\\"\\",\\"show_hits\\":\\"\\",\\"show_noauth\\":\\"\\",\\"urls_position\\":\\"\\",\\"alternative_readmore\\":\\"\\",\\"article_layout\\":\\"\\",\\"show_publishing_options\\":\\"\\",\\"show_article_options\\":\\"\\",\\"show_urls_images_backend\\":\\"\\",\\"show_urls_images_frontend\\":\\"\\"}","version":1,"ordering":null,"metakey":"","metadesc":"","access":"1","hits":null,"metadata":"{\\"robots\\":\\"\\",\\"author\\":\\"\\",\\"rights\\":\\"\\",\\"xreference\\":\\"\\"}","featured":"0","language":"*","xreference":""}', 0),
+(6, 6, 1, '', '2015-04-04 19:37:56', 198, 1639, 'c0910c2079b16c10d029f7ca90b2e092b01d1718', '{"id":6,"asset_id":70,"title":"Parceiros","alias":"parceiros","introtext":"","fulltext":"","state":1,"catid":"2","created":"2015-04-04 19:37:56","created_by":"198","created_by_alias":"","modified":"","modified_by":null,"checked_out":null,"checked_out_time":null,"publish_up":"2015-04-04 19:37:56","publish_down":"0000-00-00 00:00:00","images":"{\\"image_intro\\":\\"\\",\\"float_intro\\":\\"\\",\\"image_intro_alt\\":\\"\\",\\"image_intro_caption\\":\\"\\",\\"image_fulltext\\":\\"\\",\\"float_fulltext\\":\\"\\",\\"image_fulltext_alt\\":\\"\\",\\"image_fulltext_caption\\":\\"\\"}","urls":"{\\"urla\\":false,\\"urlatext\\":\\"\\",\\"targeta\\":\\"\\",\\"urlb\\":false,\\"urlbtext\\":\\"\\",\\"targetb\\":\\"\\",\\"urlc\\":false,\\"urlctext\\":\\"\\",\\"targetc\\":\\"\\"}","attribs":"{\\"show_title\\":\\"\\",\\"link_titles\\":\\"\\",\\"show_tags\\":\\"\\",\\"show_intro\\":\\"\\",\\"info_block_position\\":\\"\\",\\"show_category\\":\\"\\",\\"link_category\\":\\"\\",\\"show_parent_category\\":\\"\\",\\"link_parent_category\\":\\"\\",\\"show_author\\":\\"\\",\\"link_author\\":\\"\\",\\"show_create_date\\":\\"\\",\\"show_modify_date\\":\\"\\",\\"show_publish_date\\":\\"\\",\\"show_item_navigation\\":\\"\\",\\"show_icons\\":\\"\\",\\"show_print_icon\\":\\"\\",\\"show_email_icon\\":\\"\\",\\"show_vote\\":\\"\\",\\"show_hits\\":\\"\\",\\"show_noauth\\":\\"\\",\\"urls_position\\":\\"\\",\\"alternative_readmore\\":\\"\\",\\"article_layout\\":\\"\\",\\"show_publishing_options\\":\\"\\",\\"show_article_options\\":\\"\\",\\"show_urls_images_backend\\":\\"\\",\\"show_urls_images_frontend\\":\\"\\"}","version":1,"ordering":null,"metakey":"","metadesc":"","access":"1","hits":null,"metadata":"{\\"robots\\":\\"\\",\\"author\\":\\"\\",\\"rights\\":\\"\\",\\"xreference\\":\\"\\"}","featured":"0","language":"*","xreference":""}', 0),
+(7, 2, 1, '', '2015-04-20 12:56:27', 198, 1706, '446a542539f2d03a2f6c14a5290ffde9e9ec4129', '{"id":2,"asset_id":"66","title":"Quem Somos","alias":"quem-somos","introtext":"<p>teste de quem somos<\\/p>","fulltext":"","state":1,"catid":"2","created":"2015-04-04 19:37:26","created_by":"198","created_by_alias":"","modified":"2015-04-20 12:56:27","modified_by":"198","checked_out":"198","checked_out_time":"2015-04-20 12:56:19","publish_up":"2015-04-04 19:37:26","publish_down":"0000-00-00 00:00:00","images":"{\\"image_intro\\":\\"\\",\\"float_intro\\":\\"\\",\\"image_intro_alt\\":\\"\\",\\"image_intro_caption\\":\\"\\",\\"image_fulltext\\":\\"\\",\\"float_fulltext\\":\\"\\",\\"image_fulltext_alt\\":\\"\\",\\"image_fulltext_caption\\":\\"\\"}","urls":"{\\"urla\\":false,\\"urlatext\\":\\"\\",\\"targeta\\":\\"\\",\\"urlb\\":false,\\"urlbtext\\":\\"\\",\\"targetb\\":\\"\\",\\"urlc\\":false,\\"urlctext\\":\\"\\",\\"targetc\\":\\"\\"}","attribs":"{\\"show_title\\":\\"\\",\\"link_titles\\":\\"\\",\\"show_tags\\":\\"\\",\\"show_intro\\":\\"\\",\\"info_block_position\\":\\"\\",\\"show_category\\":\\"\\",\\"link_category\\":\\"\\",\\"show_parent_category\\":\\"\\",\\"link_parent_category\\":\\"\\",\\"show_author\\":\\"\\",\\"link_author\\":\\"\\",\\"show_create_date\\":\\"\\",\\"show_modify_date\\":\\"\\",\\"show_publish_date\\":\\"\\",\\"show_item_navigation\\":\\"\\",\\"show_icons\\":\\"\\",\\"show_print_icon\\":\\"\\",\\"show_email_icon\\":\\"\\",\\"show_vote\\":\\"\\",\\"show_hits\\":\\"\\",\\"show_noauth\\":\\"\\",\\"urls_position\\":\\"\\",\\"alternative_readmore\\":\\"\\",\\"article_layout\\":\\"\\",\\"show_publishing_options\\":\\"\\",\\"show_article_options\\":\\"\\",\\"show_urls_images_backend\\":\\"\\",\\"show_urls_images_frontend\\":\\"\\"}","version":2,"ordering":"4","metakey":"","metadesc":"","access":"1","hits":"6","metadata":"{\\"robots\\":\\"\\",\\"author\\":\\"\\",\\"rights\\":\\"\\",\\"xreference\\":\\"\\"}","featured":"0","language":"*","xreference":""}', 0),
+(8, 7, 1, '', '2015-04-20 13:02:58', 198, 1631, '14a2e3a69472ac6868ec5fe06b4ec3e72183d19c', '{"id":7,"asset_id":71,"title":"Home","alias":"home","introtext":"","fulltext":"","state":1,"catid":"2","created":"2015-04-20 13:02:58","created_by":"198","created_by_alias":"","modified":"","modified_by":null,"checked_out":null,"checked_out_time":null,"publish_up":"2015-04-20 13:02:58","publish_down":"0000-00-00 00:00:00","images":"{\\"image_intro\\":\\"\\",\\"float_intro\\":\\"\\",\\"image_intro_alt\\":\\"\\",\\"image_intro_caption\\":\\"\\",\\"image_fulltext\\":\\"\\",\\"float_fulltext\\":\\"\\",\\"image_fulltext_alt\\":\\"\\",\\"image_fulltext_caption\\":\\"\\"}","urls":"{\\"urla\\":false,\\"urlatext\\":\\"\\",\\"targeta\\":\\"\\",\\"urlb\\":false,\\"urlbtext\\":\\"\\",\\"targetb\\":\\"\\",\\"urlc\\":false,\\"urlctext\\":\\"\\",\\"targetc\\":\\"\\"}","attribs":"{\\"show_title\\":\\"0\\",\\"link_titles\\":\\"0\\",\\"show_tags\\":\\"\\",\\"show_intro\\":\\"\\",\\"info_block_position\\":\\"\\",\\"show_category\\":\\"\\",\\"link_category\\":\\"\\",\\"show_parent_category\\":\\"\\",\\"link_parent_category\\":\\"\\",\\"show_author\\":\\"\\",\\"link_author\\":\\"\\",\\"show_create_date\\":\\"\\",\\"show_modify_date\\":\\"\\",\\"show_publish_date\\":\\"\\",\\"show_item_navigation\\":\\"\\",\\"show_icons\\":\\"\\",\\"show_print_icon\\":\\"\\",\\"show_email_icon\\":\\"\\",\\"show_vote\\":\\"\\",\\"show_hits\\":\\"\\",\\"show_noauth\\":\\"\\",\\"urls_position\\":\\"\\",\\"alternative_readmore\\":\\"\\",\\"article_layout\\":\\"\\",\\"show_publishing_options\\":\\"\\",\\"show_article_options\\":\\"\\",\\"show_urls_images_backend\\":\\"\\",\\"show_urls_images_frontend\\":\\"\\"}","version":1,"ordering":null,"metakey":"","metadesc":"","access":"1","hits":null,"metadata":"{\\"robots\\":\\"\\",\\"author\\":\\"\\",\\"rights\\":\\"\\",\\"xreference\\":\\"\\"}","featured":"0","language":"*","xreference":""}', 0);
 
 -- --------------------------------------------------------
 
@@ -1790,7 +1659,7 @@ CREATE TABLE `joomla_ucm_history` (
 --
 
 CREATE TABLE `joomla_updates` (
-  `update_id` int(11) NOT NULL AUTO_INCREMENT,
+`update_id` int(11) NOT NULL,
   `update_site_id` int(11) DEFAULT '0',
   `extension_id` int(11) DEFAULT '0',
   `name` varchar(100) DEFAULT '',
@@ -1803,9 +1672,8 @@ CREATE TABLE `joomla_updates` (
   `data` text NOT NULL,
   `detailsurl` text NOT NULL,
   `infourl` text NOT NULL,
-  `extra_query` varchar(1000) DEFAULT '',
-  PRIMARY KEY (`update_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Available Updates' AUTO_INCREMENT=1 ;
+  `extra_query` varchar(1000) DEFAULT ''
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Available Updates';
 
 -- --------------------------------------------------------
 
@@ -1814,25 +1682,24 @@ CREATE TABLE `joomla_updates` (
 --
 
 CREATE TABLE `joomla_update_sites` (
-  `update_site_id` int(11) NOT NULL AUTO_INCREMENT,
+`update_site_id` int(11) NOT NULL,
   `name` varchar(100) DEFAULT '',
   `type` varchar(20) DEFAULT '',
   `location` text NOT NULL,
   `enabled` int(11) DEFAULT '0',
   `last_check_timestamp` bigint(20) DEFAULT '0',
-  `extra_query` varchar(1000) DEFAULT '',
-  PRIMARY KEY (`update_site_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Update Sites' AUTO_INCREMENT=5 ;
+  `extra_query` varchar(1000) DEFAULT ''
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='Update Sites';
 
 --
 -- Dumping data for table `joomla_update_sites`
 --
 
 INSERT INTO `joomla_update_sites` (`update_site_id`, `name`, `type`, `location`, `enabled`, `last_check_timestamp`, `extra_query`) VALUES
-(1, 'Joomla! Core', 'collection', 'http://update.joomla.org/core/list.xml', 1, 1419029220, ''),
-(2, 'Joomla! Extension Directory', 'collection', 'http://update.joomla.org/jed/list.xml', 1, 1419029220, ''),
-(3, 'Accredited Joomla! Translations', 'collection', 'http://update.joomla.org/language/translationlist_3.xml', 1, 0, ''),
-(4, 'Joomla! Update Component Update Site', 'extension', 'http://update.joomla.org/core/extensions/com_joomlaupdate.xml', 1, 1419029218, '');
+(1, 'Joomla! Core', 'collection', 'http://update.joomla.org/core/list.xml', 0, 0, ''),
+(2, 'Joomla! Extension Directory', 'collection', 'http://update.joomla.org/jed/list.xml', 0, 0, ''),
+(3, 'Accredited Joomla! Translations', 'collection', 'http://update.joomla.org/language/translationlist_3.xml', 0, 0, ''),
+(4, 'Joomla! Update Component Update Site', 'extension', 'http://update.joomla.org/core/extensions/com_joomlaupdate.xml', 0, 0, '');
 
 -- --------------------------------------------------------
 
@@ -1842,8 +1709,7 @@ INSERT INTO `joomla_update_sites` (`update_site_id`, `name`, `type`, `location`,
 
 CREATE TABLE `joomla_update_sites_extensions` (
   `update_site_id` int(11) NOT NULL DEFAULT '0',
-  `extension_id` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`update_site_id`,`extension_id`)
+  `extension_id` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Links extensions to update sites';
 
 --
@@ -1863,17 +1729,12 @@ INSERT INTO `joomla_update_sites_extensions` (`update_site_id`, `extension_id`) 
 --
 
 CREATE TABLE `joomla_usergroups` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Primary Key',
+`id` int(10) unsigned NOT NULL COMMENT 'Primary Key',
   `parent_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Adjacency List Reference Id',
   `lft` int(11) NOT NULL DEFAULT '0' COMMENT 'Nested set lft.',
   `rgt` int(11) NOT NULL DEFAULT '0' COMMENT 'Nested set rgt.',
-  `title` varchar(100) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `idx_usergroup_parent_title_lookup` (`parent_id`,`title`),
-  KEY `idx_usergroup_title_lookup` (`title`),
-  KEY `idx_usergroup_adjacency_lookup` (`parent_id`),
-  KEY `idx_usergroup_nested_set_lookup` (`lft`,`rgt`) USING BTREE
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
+  `title` varchar(100) NOT NULL DEFAULT ''
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `joomla_usergroups`
@@ -1897,7 +1758,7 @@ INSERT INTO `joomla_usergroups` (`id`, `parent_id`, `lft`, `rgt`, `title`) VALUE
 --
 
 CREATE TABLE `joomla_users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+`id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL DEFAULT '',
   `username` varchar(150) NOT NULL DEFAULT '',
   `email` varchar(100) NOT NULL DEFAULT '',
@@ -1912,20 +1773,15 @@ CREATE TABLE `joomla_users` (
   `resetCount` int(11) NOT NULL DEFAULT '0' COMMENT 'Count of password resets since lastResetTime',
   `otpKey` varchar(1000) NOT NULL DEFAULT '' COMMENT 'Two factor authentication encrypted keys',
   `otep` varchar(1000) NOT NULL DEFAULT '' COMMENT 'One time emergency passwords',
-  `requireReset` tinyint(4) NOT NULL DEFAULT '0' COMMENT 'Require user to reset password on next login',
-  PRIMARY KEY (`id`),
-  KEY `idx_name` (`name`),
-  KEY `idx_block` (`block`),
-  KEY `username` (`username`),
-  KEY `email` (`email`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=199 ;
+  `requireReset` tinyint(4) NOT NULL DEFAULT '0' COMMENT 'Require user to reset password on next login'
+) ENGINE=InnoDB AUTO_INCREMENT=199 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `joomla_users`
 --
 
 INSERT INTO `joomla_users` (`id`, `name`, `username`, `email`, `password`, `block`, `sendEmail`, `registerDate`, `lastvisitDate`, `activation`, `params`, `lastResetTime`, `resetCount`, `otpKey`, `otep`, `requireReset`) VALUES
-(198, 'Super User', 'Admin', 'oliveira.pires@gmail.com', '$2y$10$CY9FcnZ63Vi.gWClb7C2F.0K56fb0.9yzLrBgYRDfc3l5385apgkW', 0, 1, '2014-12-19 22:01:34', '2014-12-19 22:43:05', '0', '{"admin_style":"","admin_language":"pt-BR","language":"pt-BR","editor":"","helpsite":"","timezone":""}', '0000-00-00 00:00:00', 0, '', '', 0);
+(198, 'Super User', 'Admin', 'oliveira.pires@gmail.com', '$2y$10$CY9FcnZ63Vi.gWClb7C2F.0K56fb0.9yzLrBgYRDfc3l5385apgkW', 0, 1, '2014-12-19 22:01:34', '2015-05-05 22:01:11', '0', '{"admin_style":"","admin_language":"pt-BR","language":"pt-BR","editor":"","helpsite":"","timezone":""}', '0000-00-00 00:00:00', 0, '', '', 0);
 
 -- --------------------------------------------------------
 
@@ -1934,19 +1790,14 @@ INSERT INTO `joomla_users` (`id`, `name`, `username`, `email`, `password`, `bloc
 --
 
 CREATE TABLE `joomla_user_keys` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+`id` int(10) unsigned NOT NULL,
   `user_id` varchar(255) NOT NULL,
   `token` varchar(255) NOT NULL,
   `series` varchar(255) NOT NULL,
   `invalid` tinyint(4) NOT NULL,
   `time` varchar(200) NOT NULL,
-  `uastring` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `series` (`series`),
-  UNIQUE KEY `series_2` (`series`),
-  UNIQUE KEY `series_3` (`series`),
-  KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `uastring` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1955,7 +1806,7 @@ CREATE TABLE `joomla_user_keys` (
 --
 
 CREATE TABLE `joomla_user_notes` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+`id` int(10) unsigned NOT NULL,
   `user_id` int(10) unsigned NOT NULL DEFAULT '0',
   `catid` int(10) unsigned NOT NULL DEFAULT '0',
   `subject` varchar(100) NOT NULL DEFAULT '',
@@ -1969,11 +1820,8 @@ CREATE TABLE `joomla_user_notes` (
   `modified_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `review_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `publish_up` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `publish_down` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`),
-  KEY `idx_user_id` (`user_id`),
-  KEY `idx_category_id` (`catid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `publish_down` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1985,8 +1833,7 @@ CREATE TABLE `joomla_user_profiles` (
   `user_id` int(11) NOT NULL,
   `profile_key` varchar(100) NOT NULL,
   `profile_value` text NOT NULL,
-  `ordering` int(11) NOT NULL DEFAULT '0',
-  UNIQUE KEY `idx_user_id_profile_key` (`user_id`,`profile_key`)
+  `ordering` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Simple user profile storage table';
 
 -- --------------------------------------------------------
@@ -1997,8 +1844,7 @@ CREATE TABLE `joomla_user_profiles` (
 
 CREATE TABLE `joomla_user_usergroup_map` (
   `user_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Foreign Key to #__users.id',
-  `group_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Foreign Key to #__usergroups.id',
-  PRIMARY KEY (`user_id`,`group_id`)
+  `group_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Foreign Key to #__usergroups.id'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -2015,13 +1861,11 @@ INSERT INTO `joomla_user_usergroup_map` (`user_id`, `group_id`) VALUES
 --
 
 CREATE TABLE `joomla_viewlevels` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Primary Key',
+`id` int(10) unsigned NOT NULL COMMENT 'Primary Key',
   `title` varchar(100) NOT NULL DEFAULT '',
   `ordering` int(11) NOT NULL DEFAULT '0',
-  `rules` varchar(5120) NOT NULL COMMENT 'JSON encoded access control.',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `idx_assetgroup_title_lookup` (`title`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+  `rules` varchar(5120) NOT NULL COMMENT 'JSON encoded access control.'
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `joomla_viewlevels`
@@ -2041,7 +1885,7 @@ INSERT INTO `joomla_viewlevels` (`id`, `title`, `ordering`, `rules`) VALUES
 --
 
 CREATE TABLE `joomla_weblinks` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+`id` int(10) unsigned NOT NULL,
   `catid` int(11) NOT NULL DEFAULT '0',
   `title` varchar(250) NOT NULL DEFAULT '',
   `alias` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
@@ -2068,14 +1912,586 @@ CREATE TABLE `joomla_weblinks` (
   `publish_up` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `publish_down` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `version` int(10) unsigned NOT NULL DEFAULT '1',
-  `images` text NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `idx_access` (`access`),
-  KEY `idx_checkout` (`checked_out`),
-  KEY `idx_state` (`state`),
-  KEY `idx_catid` (`catid`),
-  KEY `idx_createdby` (`created_by`),
-  KEY `idx_featured_catid` (`featured`,`catid`),
-  KEY `idx_language` (`language`),
-  KEY `idx_xreference` (`xreference`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `images` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `joomla_assets`
+--
+ALTER TABLE `joomla_assets`
+ ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `idx_asset_name` (`name`), ADD KEY `idx_lft_rgt` (`lft`,`rgt`), ADD KEY `idx_parent_id` (`parent_id`);
+
+--
+-- Indexes for table `joomla_associations`
+--
+ALTER TABLE `joomla_associations`
+ ADD PRIMARY KEY (`context`,`id`), ADD KEY `idx_key` (`key`);
+
+--
+-- Indexes for table `joomla_banners`
+--
+ALTER TABLE `joomla_banners`
+ ADD PRIMARY KEY (`id`), ADD KEY `idx_state` (`state`), ADD KEY `idx_own_prefix` (`own_prefix`), ADD KEY `idx_metakey_prefix` (`metakey_prefix`), ADD KEY `idx_banner_catid` (`catid`), ADD KEY `idx_language` (`language`);
+
+--
+-- Indexes for table `joomla_banner_clients`
+--
+ALTER TABLE `joomla_banner_clients`
+ ADD PRIMARY KEY (`id`), ADD KEY `idx_own_prefix` (`own_prefix`), ADD KEY `idx_metakey_prefix` (`metakey_prefix`);
+
+--
+-- Indexes for table `joomla_banner_tracks`
+--
+ALTER TABLE `joomla_banner_tracks`
+ ADD PRIMARY KEY (`track_date`,`track_type`,`banner_id`), ADD KEY `idx_track_date` (`track_date`), ADD KEY `idx_track_type` (`track_type`), ADD KEY `idx_banner_id` (`banner_id`);
+
+--
+-- Indexes for table `joomla_categories`
+--
+ALTER TABLE `joomla_categories`
+ ADD PRIMARY KEY (`id`), ADD KEY `cat_idx` (`extension`,`published`,`access`), ADD KEY `idx_access` (`access`), ADD KEY `idx_checkout` (`checked_out`), ADD KEY `idx_path` (`path`), ADD KEY `idx_left_right` (`lft`,`rgt`), ADD KEY `idx_alias` (`alias`), ADD KEY `idx_language` (`language`);
+
+--
+-- Indexes for table `joomla_contact_details`
+--
+ALTER TABLE `joomla_contact_details`
+ ADD PRIMARY KEY (`id`), ADD KEY `idx_access` (`access`), ADD KEY `idx_checkout` (`checked_out`), ADD KEY `idx_state` (`published`), ADD KEY `idx_catid` (`catid`), ADD KEY `idx_createdby` (`created_by`), ADD KEY `idx_featured_catid` (`featured`,`catid`), ADD KEY `idx_language` (`language`), ADD KEY `idx_xreference` (`xreference`);
+
+--
+-- Indexes for table `joomla_content`
+--
+ALTER TABLE `joomla_content`
+ ADD PRIMARY KEY (`id`), ADD KEY `idx_access` (`access`), ADD KEY `idx_checkout` (`checked_out`), ADD KEY `idx_state` (`state`), ADD KEY `idx_catid` (`catid`), ADD KEY `idx_createdby` (`created_by`), ADD KEY `idx_featured_catid` (`featured`,`catid`), ADD KEY `idx_language` (`language`), ADD KEY `idx_xreference` (`xreference`);
+
+--
+-- Indexes for table `joomla_contentitem_tag_map`
+--
+ALTER TABLE `joomla_contentitem_tag_map`
+ ADD UNIQUE KEY `uc_ItemnameTagid` (`type_id`,`content_item_id`,`tag_id`), ADD KEY `idx_tag_type` (`tag_id`,`type_id`), ADD KEY `idx_date_id` (`tag_date`,`tag_id`), ADD KEY `idx_tag` (`tag_id`), ADD KEY `idx_type` (`type_id`), ADD KEY `idx_core_content_id` (`core_content_id`);
+
+--
+-- Indexes for table `joomla_content_frontpage`
+--
+ALTER TABLE `joomla_content_frontpage`
+ ADD PRIMARY KEY (`content_id`);
+
+--
+-- Indexes for table `joomla_content_rating`
+--
+ALTER TABLE `joomla_content_rating`
+ ADD PRIMARY KEY (`content_id`);
+
+--
+-- Indexes for table `joomla_content_types`
+--
+ALTER TABLE `joomla_content_types`
+ ADD PRIMARY KEY (`type_id`), ADD KEY `idx_alias` (`type_alias`);
+
+--
+-- Indexes for table `joomla_extensions`
+--
+ALTER TABLE `joomla_extensions`
+ ADD PRIMARY KEY (`extension_id`), ADD KEY `element_clientid` (`element`,`client_id`), ADD KEY `element_folder_clientid` (`element`,`folder`,`client_id`), ADD KEY `extension` (`type`,`element`,`folder`,`client_id`);
+
+--
+-- Indexes for table `joomla_finder_filters`
+--
+ALTER TABLE `joomla_finder_filters`
+ ADD PRIMARY KEY (`filter_id`);
+
+--
+-- Indexes for table `joomla_finder_links`
+--
+ALTER TABLE `joomla_finder_links`
+ ADD PRIMARY KEY (`link_id`), ADD KEY `idx_type` (`type_id`), ADD KEY `idx_title` (`title`), ADD KEY `idx_md5` (`md5sum`), ADD KEY `idx_url` (`url`(75)), ADD KEY `idx_published_list` (`published`,`state`,`access`,`publish_start_date`,`publish_end_date`,`list_price`), ADD KEY `idx_published_sale` (`published`,`state`,`access`,`publish_start_date`,`publish_end_date`,`sale_price`);
+
+--
+-- Indexes for table `joomla_finder_links_terms0`
+--
+ALTER TABLE `joomla_finder_links_terms0`
+ ADD PRIMARY KEY (`link_id`,`term_id`), ADD KEY `idx_term_weight` (`term_id`,`weight`), ADD KEY `idx_link_term_weight` (`link_id`,`term_id`,`weight`);
+
+--
+-- Indexes for table `joomla_finder_links_terms1`
+--
+ALTER TABLE `joomla_finder_links_terms1`
+ ADD PRIMARY KEY (`link_id`,`term_id`), ADD KEY `idx_term_weight` (`term_id`,`weight`), ADD KEY `idx_link_term_weight` (`link_id`,`term_id`,`weight`);
+
+--
+-- Indexes for table `joomla_finder_links_terms2`
+--
+ALTER TABLE `joomla_finder_links_terms2`
+ ADD PRIMARY KEY (`link_id`,`term_id`), ADD KEY `idx_term_weight` (`term_id`,`weight`), ADD KEY `idx_link_term_weight` (`link_id`,`term_id`,`weight`);
+
+--
+-- Indexes for table `joomla_finder_links_terms3`
+--
+ALTER TABLE `joomla_finder_links_terms3`
+ ADD PRIMARY KEY (`link_id`,`term_id`), ADD KEY `idx_term_weight` (`term_id`,`weight`), ADD KEY `idx_link_term_weight` (`link_id`,`term_id`,`weight`);
+
+--
+-- Indexes for table `joomla_finder_links_terms4`
+--
+ALTER TABLE `joomla_finder_links_terms4`
+ ADD PRIMARY KEY (`link_id`,`term_id`), ADD KEY `idx_term_weight` (`term_id`,`weight`), ADD KEY `idx_link_term_weight` (`link_id`,`term_id`,`weight`);
+
+--
+-- Indexes for table `joomla_finder_links_terms5`
+--
+ALTER TABLE `joomla_finder_links_terms5`
+ ADD PRIMARY KEY (`link_id`,`term_id`), ADD KEY `idx_term_weight` (`term_id`,`weight`), ADD KEY `idx_link_term_weight` (`link_id`,`term_id`,`weight`);
+
+--
+-- Indexes for table `joomla_finder_links_terms6`
+--
+ALTER TABLE `joomla_finder_links_terms6`
+ ADD PRIMARY KEY (`link_id`,`term_id`), ADD KEY `idx_term_weight` (`term_id`,`weight`), ADD KEY `idx_link_term_weight` (`link_id`,`term_id`,`weight`);
+
+--
+-- Indexes for table `joomla_finder_links_terms7`
+--
+ALTER TABLE `joomla_finder_links_terms7`
+ ADD PRIMARY KEY (`link_id`,`term_id`), ADD KEY `idx_term_weight` (`term_id`,`weight`), ADD KEY `idx_link_term_weight` (`link_id`,`term_id`,`weight`);
+
+--
+-- Indexes for table `joomla_finder_links_terms8`
+--
+ALTER TABLE `joomla_finder_links_terms8`
+ ADD PRIMARY KEY (`link_id`,`term_id`), ADD KEY `idx_term_weight` (`term_id`,`weight`), ADD KEY `idx_link_term_weight` (`link_id`,`term_id`,`weight`);
+
+--
+-- Indexes for table `joomla_finder_links_terms9`
+--
+ALTER TABLE `joomla_finder_links_terms9`
+ ADD PRIMARY KEY (`link_id`,`term_id`), ADD KEY `idx_term_weight` (`term_id`,`weight`), ADD KEY `idx_link_term_weight` (`link_id`,`term_id`,`weight`);
+
+--
+-- Indexes for table `joomla_finder_links_termsa`
+--
+ALTER TABLE `joomla_finder_links_termsa`
+ ADD PRIMARY KEY (`link_id`,`term_id`), ADD KEY `idx_term_weight` (`term_id`,`weight`), ADD KEY `idx_link_term_weight` (`link_id`,`term_id`,`weight`);
+
+--
+-- Indexes for table `joomla_finder_links_termsb`
+--
+ALTER TABLE `joomla_finder_links_termsb`
+ ADD PRIMARY KEY (`link_id`,`term_id`), ADD KEY `idx_term_weight` (`term_id`,`weight`), ADD KEY `idx_link_term_weight` (`link_id`,`term_id`,`weight`);
+
+--
+-- Indexes for table `joomla_finder_links_termsc`
+--
+ALTER TABLE `joomla_finder_links_termsc`
+ ADD PRIMARY KEY (`link_id`,`term_id`), ADD KEY `idx_term_weight` (`term_id`,`weight`), ADD KEY `idx_link_term_weight` (`link_id`,`term_id`,`weight`);
+
+--
+-- Indexes for table `joomla_finder_links_termsd`
+--
+ALTER TABLE `joomla_finder_links_termsd`
+ ADD PRIMARY KEY (`link_id`,`term_id`), ADD KEY `idx_term_weight` (`term_id`,`weight`), ADD KEY `idx_link_term_weight` (`link_id`,`term_id`,`weight`);
+
+--
+-- Indexes for table `joomla_finder_links_termse`
+--
+ALTER TABLE `joomla_finder_links_termse`
+ ADD PRIMARY KEY (`link_id`,`term_id`), ADD KEY `idx_term_weight` (`term_id`,`weight`), ADD KEY `idx_link_term_weight` (`link_id`,`term_id`,`weight`);
+
+--
+-- Indexes for table `joomla_finder_links_termsf`
+--
+ALTER TABLE `joomla_finder_links_termsf`
+ ADD PRIMARY KEY (`link_id`,`term_id`), ADD KEY `idx_term_weight` (`term_id`,`weight`), ADD KEY `idx_link_term_weight` (`link_id`,`term_id`,`weight`);
+
+--
+-- Indexes for table `joomla_finder_taxonomy`
+--
+ALTER TABLE `joomla_finder_taxonomy`
+ ADD PRIMARY KEY (`id`), ADD KEY `parent_id` (`parent_id`), ADD KEY `state` (`state`), ADD KEY `ordering` (`ordering`), ADD KEY `access` (`access`), ADD KEY `idx_parent_published` (`parent_id`,`state`,`access`);
+
+--
+-- Indexes for table `joomla_finder_taxonomy_map`
+--
+ALTER TABLE `joomla_finder_taxonomy_map`
+ ADD PRIMARY KEY (`link_id`,`node_id`), ADD KEY `link_id` (`link_id`), ADD KEY `node_id` (`node_id`);
+
+--
+-- Indexes for table `joomla_finder_terms`
+--
+ALTER TABLE `joomla_finder_terms`
+ ADD PRIMARY KEY (`term_id`), ADD UNIQUE KEY `idx_term` (`term`), ADD KEY `idx_term_phrase` (`term`,`phrase`), ADD KEY `idx_stem_phrase` (`stem`,`phrase`), ADD KEY `idx_soundex_phrase` (`soundex`,`phrase`);
+
+--
+-- Indexes for table `joomla_finder_terms_common`
+--
+ALTER TABLE `joomla_finder_terms_common`
+ ADD KEY `idx_word_lang` (`term`,`language`), ADD KEY `idx_lang` (`language`);
+
+--
+-- Indexes for table `joomla_finder_tokens`
+--
+ALTER TABLE `joomla_finder_tokens`
+ ADD KEY `idx_word` (`term`), ADD KEY `idx_context` (`context`);
+
+--
+-- Indexes for table `joomla_finder_tokens_aggregate`
+--
+ALTER TABLE `joomla_finder_tokens_aggregate`
+ ADD KEY `token` (`term`), ADD KEY `keyword_id` (`term_id`);
+
+--
+-- Indexes for table `joomla_finder_types`
+--
+ALTER TABLE `joomla_finder_types`
+ ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `title` (`title`);
+
+--
+-- Indexes for table `joomla_languages`
+--
+ALTER TABLE `joomla_languages`
+ ADD PRIMARY KEY (`lang_id`), ADD UNIQUE KEY `idx_sef` (`sef`), ADD UNIQUE KEY `idx_image` (`image`), ADD UNIQUE KEY `idx_langcode` (`lang_code`), ADD KEY `idx_access` (`access`), ADD KEY `idx_ordering` (`ordering`);
+
+--
+-- Indexes for table `joomla_menu`
+--
+ALTER TABLE `joomla_menu`
+ ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `idx_client_id_parent_id_alias_language` (`client_id`,`parent_id`,`alias`,`language`), ADD KEY `idx_componentid` (`component_id`,`menutype`,`published`,`access`), ADD KEY `idx_menutype` (`menutype`), ADD KEY `idx_left_right` (`lft`,`rgt`), ADD KEY `idx_alias` (`alias`), ADD KEY `idx_path` (`path`(255)), ADD KEY `idx_language` (`language`);
+
+--
+-- Indexes for table `joomla_menu_types`
+--
+ALTER TABLE `joomla_menu_types`
+ ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `idx_menutype` (`menutype`);
+
+--
+-- Indexes for table `joomla_messages`
+--
+ALTER TABLE `joomla_messages`
+ ADD PRIMARY KEY (`message_id`), ADD KEY `useridto_state` (`user_id_to`,`state`);
+
+--
+-- Indexes for table `joomla_messages_cfg`
+--
+ALTER TABLE `joomla_messages_cfg`
+ ADD UNIQUE KEY `idx_user_var_name` (`user_id`,`cfg_name`);
+
+--
+-- Indexes for table `joomla_modules`
+--
+ALTER TABLE `joomla_modules`
+ ADD PRIMARY KEY (`id`), ADD KEY `published` (`published`,`access`), ADD KEY `newsfeeds` (`module`,`published`), ADD KEY `idx_language` (`language`);
+
+--
+-- Indexes for table `joomla_modules_menu`
+--
+ALTER TABLE `joomla_modules_menu`
+ ADD PRIMARY KEY (`moduleid`,`menuid`);
+
+--
+-- Indexes for table `joomla_newsfeeds`
+--
+ALTER TABLE `joomla_newsfeeds`
+ ADD PRIMARY KEY (`id`), ADD KEY `idx_access` (`access`), ADD KEY `idx_checkout` (`checked_out`), ADD KEY `idx_state` (`published`), ADD KEY `idx_catid` (`catid`), ADD KEY `idx_createdby` (`created_by`), ADD KEY `idx_language` (`language`), ADD KEY `idx_xreference` (`xreference`);
+
+--
+-- Indexes for table `joomla_overrider`
+--
+ALTER TABLE `joomla_overrider`
+ ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `joomla_postinstall_messages`
+--
+ALTER TABLE `joomla_postinstall_messages`
+ ADD PRIMARY KEY (`postinstall_message_id`);
+
+--
+-- Indexes for table `joomla_redirect_links`
+--
+ALTER TABLE `joomla_redirect_links`
+ ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `idx_link_old` (`old_url`), ADD KEY `idx_link_modifed` (`modified_date`);
+
+--
+-- Indexes for table `joomla_schemas`
+--
+ALTER TABLE `joomla_schemas`
+ ADD PRIMARY KEY (`extension_id`,`version_id`);
+
+--
+-- Indexes for table `joomla_session`
+--
+ALTER TABLE `joomla_session`
+ ADD PRIMARY KEY (`session_id`), ADD KEY `userid` (`userid`), ADD KEY `time` (`time`);
+
+--
+-- Indexes for table `joomla_tags`
+--
+ALTER TABLE `joomla_tags`
+ ADD PRIMARY KEY (`id`), ADD KEY `tag_idx` (`published`,`access`), ADD KEY `idx_access` (`access`), ADD KEY `idx_checkout` (`checked_out`), ADD KEY `idx_path` (`path`), ADD KEY `idx_left_right` (`lft`,`rgt`), ADD KEY `idx_alias` (`alias`), ADD KEY `idx_language` (`language`);
+
+--
+-- Indexes for table `joomla_template_styles`
+--
+ALTER TABLE `joomla_template_styles`
+ ADD PRIMARY KEY (`id`), ADD KEY `idx_template` (`template`), ADD KEY `idx_home` (`home`);
+
+--
+-- Indexes for table `joomla_ucm_base`
+--
+ALTER TABLE `joomla_ucm_base`
+ ADD PRIMARY KEY (`ucm_id`), ADD KEY `idx_ucm_item_id` (`ucm_item_id`), ADD KEY `idx_ucm_type_id` (`ucm_type_id`), ADD KEY `idx_ucm_language_id` (`ucm_language_id`);
+
+--
+-- Indexes for table `joomla_ucm_content`
+--
+ALTER TABLE `joomla_ucm_content`
+ ADD PRIMARY KEY (`core_content_id`), ADD KEY `tag_idx` (`core_state`,`core_access`), ADD KEY `idx_access` (`core_access`), ADD KEY `idx_alias` (`core_alias`), ADD KEY `idx_language` (`core_language`), ADD KEY `idx_title` (`core_title`), ADD KEY `idx_modified_time` (`core_modified_time`), ADD KEY `idx_created_time` (`core_created_time`), ADD KEY `idx_content_type` (`core_type_alias`), ADD KEY `idx_core_modified_user_id` (`core_modified_user_id`), ADD KEY `idx_core_checked_out_user_id` (`core_checked_out_user_id`), ADD KEY `idx_core_created_user_id` (`core_created_user_id`), ADD KEY `idx_core_type_id` (`core_type_id`);
+
+--
+-- Indexes for table `joomla_ucm_history`
+--
+ALTER TABLE `joomla_ucm_history`
+ ADD PRIMARY KEY (`version_id`), ADD KEY `idx_ucm_item_id` (`ucm_type_id`,`ucm_item_id`), ADD KEY `idx_save_date` (`save_date`);
+
+--
+-- Indexes for table `joomla_updates`
+--
+ALTER TABLE `joomla_updates`
+ ADD PRIMARY KEY (`update_id`);
+
+--
+-- Indexes for table `joomla_update_sites`
+--
+ALTER TABLE `joomla_update_sites`
+ ADD PRIMARY KEY (`update_site_id`);
+
+--
+-- Indexes for table `joomla_update_sites_extensions`
+--
+ALTER TABLE `joomla_update_sites_extensions`
+ ADD PRIMARY KEY (`update_site_id`,`extension_id`);
+
+--
+-- Indexes for table `joomla_usergroups`
+--
+ALTER TABLE `joomla_usergroups`
+ ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `idx_usergroup_parent_title_lookup` (`parent_id`,`title`), ADD KEY `idx_usergroup_title_lookup` (`title`), ADD KEY `idx_usergroup_adjacency_lookup` (`parent_id`), ADD KEY `idx_usergroup_nested_set_lookup` (`lft`,`rgt`) USING BTREE;
+
+--
+-- Indexes for table `joomla_users`
+--
+ALTER TABLE `joomla_users`
+ ADD PRIMARY KEY (`id`), ADD KEY `idx_name` (`name`), ADD KEY `idx_block` (`block`), ADD KEY `username` (`username`), ADD KEY `email` (`email`);
+
+--
+-- Indexes for table `joomla_user_keys`
+--
+ALTER TABLE `joomla_user_keys`
+ ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `series` (`series`), ADD UNIQUE KEY `series_2` (`series`), ADD UNIQUE KEY `series_3` (`series`), ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `joomla_user_notes`
+--
+ALTER TABLE `joomla_user_notes`
+ ADD PRIMARY KEY (`id`), ADD KEY `idx_user_id` (`user_id`), ADD KEY `idx_category_id` (`catid`);
+
+--
+-- Indexes for table `joomla_user_profiles`
+--
+ALTER TABLE `joomla_user_profiles`
+ ADD UNIQUE KEY `idx_user_id_profile_key` (`user_id`,`profile_key`);
+
+--
+-- Indexes for table `joomla_user_usergroup_map`
+--
+ALTER TABLE `joomla_user_usergroup_map`
+ ADD PRIMARY KEY (`user_id`,`group_id`);
+
+--
+-- Indexes for table `joomla_viewlevels`
+--
+ALTER TABLE `joomla_viewlevels`
+ ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `idx_assetgroup_title_lookup` (`title`);
+
+--
+-- Indexes for table `joomla_weblinks`
+--
+ALTER TABLE `joomla_weblinks`
+ ADD PRIMARY KEY (`id`), ADD KEY `idx_access` (`access`), ADD KEY `idx_checkout` (`checked_out`), ADD KEY `idx_state` (`state`), ADD KEY `idx_catid` (`catid`), ADD KEY `idx_createdby` (`created_by`), ADD KEY `idx_featured_catid` (`featured`,`catid`), ADD KEY `idx_language` (`language`), ADD KEY `idx_xreference` (`xreference`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `joomla_assets`
+--
+ALTER TABLE `joomla_assets`
+MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Primary Key',AUTO_INCREMENT=73;
+--
+-- AUTO_INCREMENT for table `joomla_banners`
+--
+ALTER TABLE `joomla_banners`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `joomla_banner_clients`
+--
+ALTER TABLE `joomla_banner_clients`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `joomla_categories`
+--
+ALTER TABLE `joomla_categories`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
+--
+-- AUTO_INCREMENT for table `joomla_contact_details`
+--
+ALTER TABLE `joomla_contact_details`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `joomla_content`
+--
+ALTER TABLE `joomla_content`
+MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
+--
+-- AUTO_INCREMENT for table `joomla_content_types`
+--
+ALTER TABLE `joomla_content_types`
+MODIFY `type_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=16;
+--
+-- AUTO_INCREMENT for table `joomla_extensions`
+--
+ALTER TABLE `joomla_extensions`
+MODIFY `extension_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=708;
+--
+-- AUTO_INCREMENT for table `joomla_finder_filters`
+--
+ALTER TABLE `joomla_finder_filters`
+MODIFY `filter_id` int(10) unsigned NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `joomla_finder_links`
+--
+ALTER TABLE `joomla_finder_links`
+MODIFY `link_id` int(10) unsigned NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `joomla_finder_taxonomy`
+--
+ALTER TABLE `joomla_finder_taxonomy`
+MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+--
+-- AUTO_INCREMENT for table `joomla_finder_terms`
+--
+ALTER TABLE `joomla_finder_terms`
+MODIFY `term_id` int(10) unsigned NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `joomla_finder_types`
+--
+ALTER TABLE `joomla_finder_types`
+MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `joomla_languages`
+--
+ALTER TABLE `joomla_languages`
+MODIFY `lang_id` int(11) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+--
+-- AUTO_INCREMENT for table `joomla_menu`
+--
+ALTER TABLE `joomla_menu`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=107;
+--
+-- AUTO_INCREMENT for table `joomla_menu_types`
+--
+ALTER TABLE `joomla_menu_types`
+MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+--
+-- AUTO_INCREMENT for table `joomla_messages`
+--
+ALTER TABLE `joomla_messages`
+MODIFY `message_id` int(10) unsigned NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `joomla_modules`
+--
+ALTER TABLE `joomla_modules`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=99;
+--
+-- AUTO_INCREMENT for table `joomla_newsfeeds`
+--
+ALTER TABLE `joomla_newsfeeds`
+MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `joomla_overrider`
+--
+ALTER TABLE `joomla_overrider`
+MODIFY `id` int(10) NOT NULL AUTO_INCREMENT COMMENT 'Primary Key';
+--
+-- AUTO_INCREMENT for table `joomla_postinstall_messages`
+--
+ALTER TABLE `joomla_postinstall_messages`
+MODIFY `postinstall_message_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
+--
+-- AUTO_INCREMENT for table `joomla_redirect_links`
+--
+ALTER TABLE `joomla_redirect_links`
+MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `joomla_tags`
+--
+ALTER TABLE `joomla_tags`
+MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+--
+-- AUTO_INCREMENT for table `joomla_template_styles`
+--
+ALTER TABLE `joomla_template_styles`
+MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=14;
+--
+-- AUTO_INCREMENT for table `joomla_ucm_content`
+--
+ALTER TABLE `joomla_ucm_content`
+MODIFY `core_content_id` int(10) unsigned NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `joomla_ucm_history`
+--
+ALTER TABLE `joomla_ucm_history`
+MODIFY `version_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=9;
+--
+-- AUTO_INCREMENT for table `joomla_updates`
+--
+ALTER TABLE `joomla_updates`
+MODIFY `update_id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `joomla_update_sites`
+--
+ALTER TABLE `joomla_update_sites`
+MODIFY `update_site_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
+--
+-- AUTO_INCREMENT for table `joomla_usergroups`
+--
+ALTER TABLE `joomla_usergroups`
+MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Primary Key',AUTO_INCREMENT=10;
+--
+-- AUTO_INCREMENT for table `joomla_users`
+--
+ALTER TABLE `joomla_users`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=199;
+--
+-- AUTO_INCREMENT for table `joomla_user_keys`
+--
+ALTER TABLE `joomla_user_keys`
+MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `joomla_user_notes`
+--
+ALTER TABLE `joomla_user_notes`
+MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `joomla_viewlevels`
+--
+ALTER TABLE `joomla_viewlevels`
+MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Primary Key',AUTO_INCREMENT=7;
+--
+-- AUTO_INCREMENT for table `joomla_weblinks`
+--
+ALTER TABLE `joomla_weblinks`
+MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;

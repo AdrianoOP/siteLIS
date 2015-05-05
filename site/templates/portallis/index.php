@@ -15,6 +15,7 @@ $DEBUG_CLASS = "";
 <head>
 	<jdoc:include type="head" /> 
 	<script src="<?php echo "templates/".$this->template."/script/jquery.js" ?>"></script>
+	<script src="<?php echo "templates/".$this->template."/script/background_change.js" ?>"></script>
 	<link href="<?php echo "templates/".$this->template."/css/main.css" ?>" rel="stylesheet" type="text/css">
 	
 	<!--[if lt IE 9]>

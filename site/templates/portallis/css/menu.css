@@ -1,10 +1,13 @@
-
+@font-face {
+    font-family: fontMarilia;
+    src: url(TT0246M_.TTF);
+}
 
 ul {
 	padding: 0 0 0 0;
 	margin: 0 0 0 0;
 	font-size: 135%;
-	font-family: verdana;
+	font-family: fontMarilia, verdana;
 	list-style-type: none;
 }
 

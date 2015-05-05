@@ -1,4 +1,8 @@
 @import url("menu.css");
+@font-face {
+    font-family: fontMarilia;
+    src: url(TT0246M_.TTF);
+}
 /**** estilos genericos   *****/
 .clearer{
 	clear:both;
@@ -20,12 +24,37 @@ body{
 	padding-top:0px; padding-right:0px; padding-bottom:0px; padding-left:0px;
 }
 
+.grayscale {
+  -webkit-filter: grayscale(100%);
+  -moz-filter: grayscale(100%);
+  -ms-filter: grayscale(100%);
+  -o-filter: grayscale(100%);
+  filter: grayscale(100%);
+  filter: url(grayscale.svg); /* Firefox 4+ */
+  filter: gray; /* IE 6-9 */
+}
+
+.non_grayscale {
+	
+}
+
+#thisDiv {
+	font-family: fontMarilia, Heveltica;
+	font-size: 1.5em;
+	position: absolute;
+	text-align: center;
+}
+
+#thisDiv p{
+	background-color: rgba(255,255,255,0.5);
+}
 /**** estilos genericos   *****/
 
 
 /**** Modulos do cabecalho ***/
 	/*** static header_main class ***/
 	header{
+		color: #4D6173;
 		margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px;
 		padding-top:0px; padding-right:0px; padding-bottom:0px; padding-left:0px;
 	}
@@ -36,14 +65,14 @@ body{
 		padding-bottom: 5px;
 	}
 	.modHeaderImages img{
-		padding-left: 1.6%;
+		margin-left: 1.7%;
 		width: 32%;
 		height: 240px;
 	}
-	.modHeaderImages img:first-child{
-		padding-left: 0%;
+	.modHeaderImages a:first-child img{
+		margin-left: 0%;
 	}
-	.modHeaderImages img:nth-child(3){
+	.modHeaderImages a:nth-child(3) img{
 		float: right;
 	}
 	.modMenu{
@@ -100,14 +129,14 @@ body{
 		width: 100%;
 	}
 	.modMainImages img{
-		padding-left: 1.6%;
+		margin-left: 1.7%;
 		width: 32%;
 		height: 230px;
 	}
-	.modMainImages img:first-child{
-		padding-left: 0%;
+	.modMainImages a:first-child img{
+		margin-left: 0%;
 	}
-	.modMainImages img:nth-child(3){
+	.modMainImages a:nth-child(3) img{
 		float: right;
 	}
 	/*** modMain end ***/
