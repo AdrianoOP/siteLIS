@@ -139,16 +139,16 @@ body{
 
 	.modMain div.mainDivRight {
 	    float: right;
-	    padding-right: 10%;
+	    padding-right: 8em;
 	    text-align: right;
-	    width: 25%;
+	    width: 8%;
 	}
 
 	.modMain img.logo_video {
-	    width: 35%;
+	    width: 100%;
 	}
 	.modMain img.logo_radio {
-	    width: 35%;
+	    width: 100%;
 	}
 
 	.modMain div.mainDivCenter {
