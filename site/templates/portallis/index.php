@@ -29,20 +29,12 @@ $DEBUG_CLASS = "";
 <body>
 
 <article <?php echo "class=\"$DEBUG_CLASS"?>">
-<?php if ($this->countModules('modHeaderImages')||
-		$this->countModules('modMenu')) : ?>
+<?php if ($this->countModules('modHeaderImages')) : ?>
 	<header <?php echo "class=\"$DEBUG_CLASS"?> header">
 		<?php if ($this->countModules('modHeaderImages')) : ?>
 			<div <?php echo "class=\"$DEBUG_CLASS"?> modHeaderImages">
 				<jdoc:include type="modules" name="modHeaderImages" style="xhtml" />
 			</div>
-		<?php endif; ?>
-		<div class="clearer"></div>
-		<?php if ($this->countModules('modMenu')) : ?>
-			<div <?php echo "class=\"$DEBUG_CLASS"?> modMenu">
-				<jdoc:include type="modules" name="modMenu" style="xhtml" />
-			</div>
-			<div class="clearer"></div>
 		<?php endif; ?>
 	</header>
 	<div class="clearer"></div>
@@ -55,6 +47,16 @@ $DEBUG_CLASS = "";
 	</div>
 	<div class="clearer"></div>
 <?php endif; ?>
+<?php if ($this->countModules('modMenu')) : ?>
+	<div <?php echo "class=\"$DEBUG_CLASS"?> modMenu">
+		<jdoc:include type="modules" name="modMenu" style="xhtml" />
+	</div>
+	<div class="clearer"></div>
+<?php endif; ?>
+<article <?php echo "class=\"$DEBUG_CLASS"?>main_article">
+	<jdoc:include type="component" style="xhtml" />
+</article>
+
 <?php if ($this->countModules('modMainImages')) : ?>
 	<div class="modMainBorder"></div>
 	<div <?php echo "class=\"$DEBUG_CLASS"?> modMainImages">
