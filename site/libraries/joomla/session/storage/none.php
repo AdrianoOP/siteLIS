@@ -22,12 +22,14 @@ class JSessionStorageNone extends JSessionStorage
 	/**
 	 * Register the functions of this class with PHP's session handler
 	 *
+	 * @param   array  $options  Optional parameters.
+	 *
 	 * @return  void
 	 *
 	 * @since   11.1
 	 */
-	public function register()
+	public function register($options = array())
 	{
-		ini_set('session.save_handler', 'files');
+		//let php handle the session storage
 	}
 }

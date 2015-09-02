@@ -22,9 +22,9 @@ class JDocumentXml extends JDocument
 	 * Document name
 	 *
 	 * @var    string
-	 * @since  12.1
+	 * @since  11.1
 	 */
-	protected $name = 'joomla';
+	protected $_name = 'joomla';
 
 	/**
 	 * Class constructor
@@ -37,10 +37,10 @@ class JDocumentXml extends JDocument
 	{
 		parent::__construct($options);
 
-		// Set mime type
+		//set mime type
 		$this->_mime = 'application/xml';
 
-		// Set document type
+		//set document type
 		$this->_type = 'xml';
 	}
 
@@ -57,8 +57,7 @@ class JDocumentXml extends JDocument
 	public function render($cache = false, $params = array())
 	{
 		parent::render();
-
-		JFactory::getApplication()->setHeader('Content-disposition', 'inline; filename="' . $this->getName() . '.xml"', true);
+		JResponse::setHeader('Content-disposition', 'inline; filename="' . $this->getName() . '.xml"', true);
 
 		return $this->getBuffer();
 	}
@@ -72,7 +71,7 @@ class JDocumentXml extends JDocument
 	 */
 	public function getName()
 	{
-		return $this->name;
+		return $this->_name;
 	}
 
 	/**
@@ -86,7 +85,7 @@ class JDocumentXml extends JDocument
 	 */
 	public function setName($name = 'joomla')
 	{
-		$this->name = $name;
+		$this->_name = $name;
 
 		return $this;
 	}

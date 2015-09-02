@@ -19,172 +19,112 @@ defined('JPATH_PLATFORM') or die;
 class JUpdate extends JObject
 {
 	/**
-	 * Update manifest <name> element
-	 *
 	 * @var    string
 	 * @since  11.1
 	 */
 	protected $name;
 
 	/**
-	 * Update manifest <description> element
-	 *
 	 * @var    string
 	 * @since  11.1
 	 */
 	protected $description;
 
 	/**
-	 * Update manifest <element> element
-	 *
 	 * @var    string
 	 * @since  11.1
 	 */
 	protected $element;
 
 	/**
-	 * Update manifest <type> element
-	 *
 	 * @var    string
 	 * @since  11.1
 	 */
 	protected $type;
 
 	/**
-	 * Update manifest <version> element
-	 *
 	 * @var    string
 	 * @since  11.1
 	 */
 	protected $version;
 
 	/**
-	 * Update manifest <infourl> element
-	 *
 	 * @var    string
 	 * @since  11.1
 	 */
 	protected $infourl;
 
 	/**
-	 * Update manifest <client> element
-	 *
 	 * @var    string
 	 * @since  11.1
 	 */
 	protected $client;
 
 	/**
-	 * Update manifest <group> element
-	 *
 	 * @var    string
 	 * @since  11.1
 	 */
 	protected $group;
 
 	/**
-	 * Update manifest <downloads> element
-	 *
 	 * @var    string
 	 * @since  11.1
 	 */
 	protected $downloads;
 
 	/**
-	 * Update manifest <tags> element
-	 *
 	 * @var    string
 	 * @since  11.1
 	 */
 	protected $tags;
 
 	/**
-	 * Update manifest <maintainer> element
-	 *
 	 * @var    string
 	 * @since  11.1
 	 */
 	protected $maintainer;
 
 	/**
-	 * Update manifest <maintainerurl> element
-	 *
 	 * @var    string
 	 * @since  11.1
 	 */
 	protected $maintainerurl;
 
 	/**
-	 * Update manifest <category> element
-	 *
 	 * @var    string
 	 * @since  11.1
 	 */
 	protected $category;
 
 	/**
-	 * Update manifest <relationships> element
-	 *
 	 * @var    string
 	 * @since  11.1
 	 */
 	protected $relationships;
 
 	/**
-	 * Update manifest <targetplatform> element
-	 *
 	 * @var    string
 	 * @since  11.1
 	 */
 	protected $targetplatform;
 
 	/**
-	 * Extra query for download URLs
-	 *
 	 * @var    string
-	 * @since  13.1
+	 * @since  11.1
 	 */
-	protected $extra_query;
+	protected $_xml_parser;
 
 	/**
-	 * Resource handle for the XML Parser
-	 *
-	 * @var    resource
-	 * @since  12.1
-	 */
-	protected $xmlParser;
-
-	/**
-	 * Element call stack
-	 *
 	 * @var    array
-	 * @since  12.1
+	 * @since  11.1
 	 */
-	protected $stack = array('base');
+	protected $_stack = array('base');
 
 	/**
-	 * Unused state array
-	 *
 	 * @var    array
-	 * @since  12.1
+	 * @since  11.1
 	 */
-	protected $stateStore = array();
-
-	/**
-	 * Object containing the current update data
-	 *
-	 * @var    stdClass
-	 * @since  12.1
-	 */
-	protected $currentUpdate;
-
-	/**
-	 * Object containing the latest update data
-	 *
-	 * @var    stdClass
-	 * @since  12.1
-	 */
-	protected $latest;
+	protected $_state_store = array();
 
 	/**
 	 * Gets the reference to the current direct parent
@@ -195,7 +135,7 @@ class JUpdate extends JObject
 	 */
 	protected function _getStackLocation()
 	{
-		return implode('->', $this->stack);
+		return implode('->', $this->_stack);
 	}
 
 	/**
@@ -207,7 +147,7 @@ class JUpdate extends JObject
 	 */
 	protected function _getLastTag()
 	{
-		return $this->stack[count($this->stack) - 1];
+		return $this->_stack[count($this->_stack) - 1];
 	}
 
 	/**
@@ -224,7 +164,7 @@ class JUpdate extends JObject
 	 */
 	public function _startElement($parser, $name, $attrs = array())
 	{
-		array_push($this->stack, $name);
+		array_push($this->_stack, $name);
 		$tag = $this->_getStackLocation();
 
 		// Reset the data
@@ -237,27 +177,23 @@ class JUpdate extends JObject
 		{
 			// This is a new update; create a current update
 			case 'UPDATE':
-				$this->currentUpdate = new stdClass;
+				$this->_current_update = new stdClass;
 				break;
-
 			// Don't do anything
 			case 'UPDATES':
 				break;
-
 			// For everything else there's...the default!
 			default:
 				$name = strtolower($name);
-
-				if (!isset($this->currentUpdate->$name))
+				if (!isset($this->_current_update->$name))
 				{
-					$this->currentUpdate->$name = new stdClass;
+					$this->_current_update->$name = new stdClass;
 				}
-				$this->currentUpdate->$name->_data = '';
-
+				$this->_current_update->$name->_data = '';
 				foreach ($attrs as $key => $data)
 				{
 					$key = strtolower($key);
-					$this->currentUpdate->$name->$key = $data;
+					$this->_current_update->$name->$key = $data;
 				}
 				break;
 		}
@@ -271,28 +207,23 @@ class JUpdate extends JObject
 	 *
 	 * @return  void
 	 *
-	 * @note    This is public because it is called externally
-	 * @since   11.1
+	 * @note This is public because it is called externally
+	 * @since  11.1
 	 */
 	public function _endElement($parser, $name)
 	{
-		array_pop($this->stack);
+		array_pop($this->_stack);
 		switch ($name)
 		{
 			// Closing update, find the latest version and check
 			case 'UPDATE':
 				$ver = new JVersion;
 				$product = strtolower(JFilterInput::getInstance()->clean($ver->PRODUCT, 'cmd'));
-
-				// Check for optional min_dev_level and max_dev_level attributes to further specify targetplatform (e.g., 3.0.1)
-				if (isset($this->currentUpdate->targetplatform->name)
-					&& $product == $this->currentUpdate->targetplatform->name
-					&& preg_match('/' . $this->currentUpdate->targetplatform->version . '/', $ver->RELEASE)
-					&& ((!isset($this->currentUpdate->targetplatform->min_dev_level)) || $ver->DEV_LEVEL >= $this->currentUpdate->targetplatform->min_dev_level)
-					&& ((!isset($this->currentUpdate->targetplatform->max_dev_level)) || $ver->DEV_LEVEL <= $this->currentUpdate->targetplatform->max_dev_level))
+				if ($product == $this->_current_update->targetplatform->name
+					&& preg_match('/' . $this->_current_update->targetplatform->version . '/', $ver->RELEASE))
 				{
 					// Check if PHP version supported via <php_minimum> tag, assume true if tag isn't present
-					if (!isset($this->currentUpdate->php_minimum) || version_compare(PHP_VERSION, $this->currentUpdate->php_minimum->_data, '>='))
+					if (!isset($this->_current_update->php_minimum) || version_compare(PHP_VERSION, $this->_current_update->php_minimum->_data, '>='))
 					{
 						$phpMatch = true;
 					}
@@ -303,35 +234,35 @@ class JUpdate extends JObject
 
 					if ($phpMatch)
 					{
-						if (isset($this->latest))
+						if (isset($this->_latest))
 						{
-							if (version_compare($this->currentUpdate->version->_data, $this->latest->version->_data, '>') == 1)
+							if (version_compare($this->_current_update->version->_data, $this->_latest->version->_data, '>') == 1)
 							{
-								$this->latest = $this->currentUpdate;
+								$this->_latest = $this->_current_update;
 							}
 						}
 						else
 						{
-							$this->latest = $this->currentUpdate;
+							$this->_latest = $this->_current_update;
 						}
 					}
 				}
 				break;
 			case 'UPDATES':
 				// If the latest item is set then we transfer it to where we want to
-				if (isset($this->latest))
+				if (isset($this->_latest))
 				{
-					foreach (get_object_vars($this->latest) as $key => $val)
+					foreach (get_object_vars($this->_latest) as $key => $val)
 					{
 						$this->$key = $val;
 					}
-					unset($this->latest);
-					unset($this->currentUpdate);
+					unset($this->_latest);
+					unset($this->_current_update);
 				}
-				elseif (isset($this->currentUpdate))
+				elseif (isset($this->_current_update))
 				{
 					// The update might be for an older version of j!
-					unset($this->currentUpdate);
+					unset($this->_current_update);
 				}
 				break;
 		}
@@ -351,15 +282,15 @@ class JUpdate extends JObject
 	public function _characterData($parser, $data)
 	{
 		$tag = $this->_getLastTag();
-
-		// @todo remove code: if(!isset($this->$tag->_data)) $this->$tag->_data = '';
-		// @todo remove code: $this->$tag->_data .= $data;
-
+		//if(!isset($this->$tag->_data)) $this->$tag->_data = '';
+		//$this->$tag->_data .= $data;
 		// Throw the data for this item together
 		$tag = strtolower($tag);
-		if (isset($this->currentUpdate->$tag))
+
+		//$this->_current_update->$tag->_data .= $data;
+		if (isset($this->_current_update->$tag))
 		{
-			$this->currentUpdate->$tag->_data .= $data;
+			$this->_current_update->$tag->_data .= $data;
 		}
 	}
 
@@ -380,39 +311,34 @@ class JUpdate extends JObject
 		{
 			$response = $http->get($url);
 		}
-		catch (RuntimeException $e)
+		catch (Exception $exc)
 		{
 			$response = null;
 		}
 
-		if ($response === null || $response->code !== 200)
+		if (is_null($response) || ($response->code != 200))
 		{
 			// TODO: Add a 'mark bad' setting here somehow
-			JLog::add(JText::sprintf('JLIB_UPDATER_ERROR_EXTENSION_OPEN_URL', $url), JLog::WARNING, 'jerror');
-
+			JError::raiseWarning('101', JText::sprintf('JLIB_UPDATER_ERROR_EXTENSION_OPEN_URL', $url));
 			return false;
 		}
 
-		$this->xmlParser = xml_parser_create('');
-		xml_set_object($this->xmlParser, $this);
-		xml_set_element_handler($this->xmlParser, '_startElement', '_endElement');
-		xml_set_character_data_handler($this->xmlParser, '_characterData');
+		$this->xml_parser = xml_parser_create('');
+		xml_set_object($this->xml_parser, $this);
+		xml_set_element_handler($this->xml_parser, '_startElement', '_endElement');
+		xml_set_character_data_handler($this->xml_parser, '_characterData');
 
-		if (!xml_parse($this->xmlParser, $response->body))
+		if (!xml_parse($this->xml_parser, $response->body))
 		{
-			JLog::add(
+			die(
 				sprintf(
-					"XML error: %s at line %d", xml_error_string(xml_get_error_code($this->xmlParser)),
-					xml_get_current_line_number($this->xmlParser)
-				),
-				JLog::WARNING, 'updater'
+					"XML error: %s at line %d", xml_error_string(xml_get_error_code($this->xml_parser)),
+					xml_get_current_line_number($this->xml_parser)
+				)
 			);
-
-			return false;
 		}
 
-		xml_parser_free($this->xmlParser);
-
+		xml_parser_free($this->xml_parser);
 		return true;
 	}
 }

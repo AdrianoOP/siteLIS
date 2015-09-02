@@ -9,6 +9,9 @@
 
 defined('JPATH_PLATFORM') or die;
 
+jimport('joomla.application.input');
+jimport('joomla.event.dispatcher');
+
 /**
  * Joomla Platform Base Application Class
  *
@@ -16,7 +19,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  Application
  * @since       12.1
  */
-abstract class JApplicationBase
+abstract class JApplicationBase extends JObject
 {
 	/**
 	 * The application dispatcher object.
@@ -73,7 +76,7 @@ abstract class JApplicationBase
 	 * Registers a handler to a particular event group.
 	 *
 	 * @param   string    $event    The event name.
-	 * @param   callable  $handler  The handler, a function or an instance of a event object.
+	 * @param   callback  $handler  The handler, a function or an instance of a event object.
 	 *
 	 * @return  JApplicationBase  The application to allow chaining.
 	 *
@@ -81,7 +84,7 @@ abstract class JApplicationBase
 	 */
 	public function registerEvent($event, $handler)
 	{
-		if ($this->dispatcher instanceof JEventDispatcher)
+		if ($this->dispatcher instanceof JDispatcher)
 		{
 			$this->dispatcher->register($event, $handler);
 		}
@@ -101,7 +104,7 @@ abstract class JApplicationBase
 	 */
 	public function triggerEvent($event, array $args = null)
 	{
-		if ($this->dispatcher instanceof JEventDispatcher)
+		if ($this->dispatcher instanceof JDispatcher)
 		{
 			return $this->dispatcher->trigger($event, $args);
 		}
@@ -116,15 +119,15 @@ abstract class JApplicationBase
 	 * but for many applications it will make sense to override this method and create event
 	 * dispatchers, if required, based on more specific needs.
 	 *
-	 * @param   JEventDispatcher  $dispatcher  An optional dispatcher object. If omitted, the factory dispatcher is created.
+	 * @param   JDispatcher  $dispatcher  An optional dispatcher object. If omitted, the factory dispatcher is created.
 	 *
 	 * @return  JApplicationBase This method is chainable.
 	 *
 	 * @since   12.1
 	 */
-	public function loadDispatcher(JEventDispatcher $dispatcher = null)
+	public function loadDispatcher(JDispatcher $dispatcher = null)
 	{
-		$this->dispatcher = ($dispatcher === null) ? JEventDispatcher::getInstance() : $dispatcher;
+		$this->dispatcher = ($dispatcher === null) ? JDispatcher::getInstance() : $dispatcher;
 
 		return $this;
 	}

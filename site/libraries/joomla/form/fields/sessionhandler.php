@@ -21,6 +21,7 @@ JFormHelper::loadFieldClass('list');
  */
 class JFormFieldSessionHandler extends JFormFieldList
 {
+
 	/**
 	 * The form field type.
 	 *
@@ -38,6 +39,7 @@ class JFormFieldSessionHandler extends JFormFieldList
 	 */
 	protected function getOptions()
 	{
+		// Initialize variables.
 		$options = array();
 
 		// Get the options from JSession.

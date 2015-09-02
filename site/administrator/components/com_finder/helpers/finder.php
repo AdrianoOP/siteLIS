@@ -35,17 +35,17 @@ class FinderHelper
 	 */
 	public static function addSubmenu($vName)
 	{
-		JHtmlSidebar::addEntry(
+		JSubMenuHelper::addEntry(
 			JText::_('COM_FINDER_SUBMENU_INDEX'),
 			'index.php?option=com_finder&view=index',
 			$vName == 'index'
 		);
-		JHtmlSidebar::addEntry(
+		JSubMenuHelper::addEntry(
 			JText::_('COM_FINDER_SUBMENU_MAPS'),
 			'index.php?option=com_finder&view=maps',
 			$vName == 'maps'
 		);
-		JHtmlSidebar::addEntry(
+		JSubMenuHelper::addEntry(
 			JText::_('COM_FINDER_SUBMENU_FILTERS'),
 			'index.php?option=com_finder&view=filters',
 			$vName == 'filters'
@@ -58,15 +58,19 @@ class FinderHelper
 	 * @return  JObject  A JObject containing the allowed actions.
 	 *
 	 * @since   2.5
-	 * @deprecated  3.2  Use JHelperContent::getActions() instead
 	 */
 	public static function getActions()
 	{
-		// Log usage of deprecated function
-		JLog::add(__METHOD__ . '() is deprecated, use JHelperContent::getActions() with new arguments order instead.', JLog::WARNING, 'deprecated');
+		$user = JFactory::getUser();
+		$result = new JObject;
+		$assetName = 'com_finder';
 
-		// Get list of actions
-		$result = JHelperContent::getActions('com_finder');
+		$actions = JAccess::getActions($assetName, 'component');
+
+		foreach ($actions as $action)
+		{
+			$result->set($action->name, $user->authorise($action->name, $assetName));
+		}
 
 		return $result;
 	}

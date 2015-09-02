@@ -19,9 +19,9 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  Event
  * @link        http://docs.joomla.org/Tutorial:Plugins Plugin tutorials
  * @see         JPlugin
- * @since       12.1
+ * @since       11.1
  */
-class JEventDispatcher extends JObject
+class JDispatcher extends JObject
 {
 	/**
 	 * An array of Observer objects to notify
@@ -50,7 +50,7 @@ class JEventDispatcher extends JObject
 	/**
 	 * Stores the singleton instance of the dispatcher.
 	 *
-	 * @var    JEventDispatcher
+	 * @var    JDispatcher
 	 * @since  11.3
 	 */
 	protected static $instance = null;
@@ -59,7 +59,7 @@ class JEventDispatcher extends JObject
 	 * Returns the global Event Dispatcher object, only creating it
 	 * if it doesn't already exist.
 	 *
-	 * @return  JEventDispatcher  The EventDispatcher object.
+	 * @return  JDispatcher  The EventDispatcher object.
 	 *
 	 * @since   11.1
 	 */
@@ -67,14 +67,14 @@ class JEventDispatcher extends JObject
 	{
 		if (self::$instance === null)
 		{
-			self::$instance = new static;
+			self::$instance = new JDispatcher;
 		}
 
 		return self::$instance;
 	}
 
 	/**
-	 * Get the state of the JEventDispatcher object
+	 * Get the state of the JDispatcher object
 	 *
 	 * @return  mixed    The state of the object.
 	 *
@@ -94,12 +94,11 @@ class JEventDispatcher extends JObject
 	 * @return  void
 	 *
 	 * @since   11.1
-	 * @throws  InvalidArgumentException
 	 */
 	public function register($event, $handler)
 	{
-		// Are we dealing with a class or callback type handler?
-		if (is_callable($handler))
+		// Are we dealing with a class or function type handler?
+		if (function_exists($handler))
 		{
 			// Ok, function type event handler... let's attach it.
 			$method = array('event' => $event, 'handler' => $handler);
@@ -112,7 +111,7 @@ class JEventDispatcher extends JObject
 		}
 		else
 		{
-			throw new InvalidArgumentException('Invalid event handler.');
+			return JError::raiseWarning('SOME_ERROR_CODE', JText::sprintf('JLIB_EVENT_ERROR_DISPATCHER', $handler));
 		}
 	}
 
@@ -129,6 +128,7 @@ class JEventDispatcher extends JObject
 	 */
 	public function trigger($event, $args = array())
 	{
+		// Initialise variables.
 		$result = array();
 
 		/*
@@ -145,7 +145,6 @@ class JEventDispatcher extends JObject
 			// No Plugins Associated To Event!
 			return $result;
 		}
-
 		// Loop through all plugins having a method matching our event
 		foreach ($this->_methods[$event] as $key)
 		{
@@ -166,7 +165,6 @@ class JEventDispatcher extends JObject
 			{
 				$value = call_user_func_array($this->_observers[$key]['handler'], $args);
 			}
-
 			if (isset($value))
 			{
 				$result[] = $value;
@@ -255,6 +253,7 @@ class JEventDispatcher extends JObject
 	 */
 	public function detach($observer)
 	{
+		// Initialise variables.
 		$retval = false;
 
 		$key = array_search($observer, $this->_observers);

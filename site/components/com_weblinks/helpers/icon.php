@@ -1,62 +1,57 @@
 <?php
 /**
- * @package     Joomla.Site
- * @subpackage  com_weblinks
- *
- * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @package		Joomla.Site
+ * @subpackage	com_weblinks
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+// no direct access
 defined('_JEXEC') or die;
-
+jimport('joomla.application.component.helper');
 /**
  * Weblink Component HTML Helper
  *
  * @static
- * @package     Joomla.Site
- * @subpackage  com_weblinks
- * @since       1.5
+ * @package		Joomla.Site
+ * @subpackage	com_weblinks
+ * @since 1.5
  */
 class JHtmlIcon
 {
-	public static function create($weblink, $params)
+	static function create($weblink, $params)
 	{
-		JHtml::_('bootstrap.tooltip');
+		$uri = JFactory::getURI();
 
-		$uri = JUri::getInstance();
 		$url = JRoute::_(WeblinksHelperRoute::getFormRoute(0, base64_encode($uri)));
-		$text = JHtml::_('image', 'system/new.png', JText::_('JNEW'), null, true);
+		$text = JHtml::_('image', 'system/new.png', JText::_('JNEW'), NULL, true);
 		$button = JHtml::_('link', $url, $text);
-		$output = '<span class="hasTooltip" title="' . JHtml::tooltipText('COM_WEBLINKS_FORM_CREATE_WEBLINK') . '">' . $button . '</span>';
+		$output = '<span class="hasTip" title="'.JText::_('COM_WEBLINKS_FORM_CREATE_WEBLINK').'">'.$button.'</span>';
 		return $output;
 	}
 
-	public static function edit($weblink, $params, $attribs = array())
+	static function edit($weblink, $params, $attribs = array())
 	{
-		$uri = JUri::getInstance();
+		$user = JFactory::getUser();
+		$uri = JFactory::getURI();
 
-		if ($params && $params->get('popup'))
-		{
+		if ($params && $params->get('popup')) {
 			return;
 		}
 
-		if ($weblink->state < 0)
-		{
+		if ($weblink->state < 0) {
 			return;
 		}
 
-		JHtml::_('bootstrap.tooltip');
-
+		JHtml::_('behavior.tooltip');
 		$url	= WeblinksHelperRoute::getFormRoute($weblink->id, base64_encode($uri));
 		$icon	= $weblink->state ? 'edit.png' : 'edit_unpublished.png';
-		$text	= JHtml::_('image', 'system/'.$icon, JText::_('JGLOBAL_EDIT'), null, true);
+		$text	= JHtml::_('image', 'system/'.$icon, JText::_('JGLOBAL_EDIT'), NULL, true);
 
-		if ($weblink->state == 0)
-		{
+		if ($weblink->state == 0) {
 			$overlib = JText::_('JUNPUBLISHED');
 		}
-		else
-		{
+		else {
 			$overlib = JText::_('JPUBLISHED');
 		}
 
@@ -70,7 +65,7 @@ class JHtmlIcon
 
 		$button = JHtml::_('link', JRoute::_($url), $text);
 
-		$output = '<span class="hasTooltip" title="' . JHtml::tooltipText('COM_WEBLINKS_EDIT') . ' :: ' . $overlib . '">' . $button . '</span>';
+		$output = '<span class="hasTip" title="'.JText::_('COM_WEBLINKS_EDIT').' :: '.$overlib.'">'.$button.'</span>';
 
 		return $output;
 	}

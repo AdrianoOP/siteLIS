@@ -7,7 +7,10 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+// No direct access.
 defined('_JEXEC') or die;
+
+jimport('joomla.application.component.controllerform');
 
 /**
  * User controller class.
@@ -54,7 +57,7 @@ class UsersControllerUser extends JControllerForm
 	/**
 	 * Method to run batch operations.
 	 *
-	 * @param   object   $model  The model.
+	 * @param   object  $model  The model.
 	 *
 	 * @return  boolean  True on success, false on failure
 	 *
@@ -74,17 +77,32 @@ class UsersControllerUser extends JControllerForm
 	}
 
 	/**
-	 * Function that allows child controller access to model data after the data has been saved.
+	 * Overrides parent save method to check the submitted passwords match.
 	 *
-	 * @param   JModelLegacy  $model      The data model object.
-	 * @param   array         $validData  The validated data.
+	 * @param   string  $key     The name of the primary key of the URL variable.
+	 * @param   string  $urlVar  The name of the URL variable if different from the primary key (sometimes required to avoid router collisions).
 	 *
-	 * @return  void
+	 * @return  boolean  True if successful, false otherwise.
 	 *
-	 * @since   3.1
+	 * @since   1.6
 	 */
-	protected function postSaveHook(JModelLegacy $model, $validData = array())
+	public function save($key = null, $urlVar = null)
 	{
-		return;
+		$data = JRequest::getVar('jform', array(), 'post', 'array');
+
+		// TODO: JForm should really have a validation handler for this.
+		if (isset($data['password']) && isset($data['password2']))
+		{
+			// Check the passwords match.
+			if ($data['password'] != $data['password2'])
+			{
+				$this->setMessage(JText::_('JLIB_USER_ERROR_PASSWORD_NOT_MATCH'), 'warning');
+				$this->setRedirect(JRoute::_('index.php?option=com_users&view=user&layout=edit', false));
+			}
+
+			unset($data['password2']);
+		}
+
+		return parent::save();
 	}
 }

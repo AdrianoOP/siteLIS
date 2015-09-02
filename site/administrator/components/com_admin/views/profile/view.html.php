@@ -1,27 +1,19 @@
 <?php
 /**
- * @package     Joomla.Administrator
- * @subpackage  com_admin
- *
- * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('_JEXEC') or die;
 
 /**
- * View class to allow users edit their own profile.
- *
- * @package     Joomla.Administrator
- * @subpackage  com_admin
- * @since       1.6
+ * @package		Joomla.Administrator
+ * @subpackage	com_admin
  */
 class AdminViewProfile extends JViewLegacy
 {
 	protected $form;
-
 	protected $item;
-
 	protected $state;
 
 	/**
@@ -34,8 +26,7 @@ class AdminViewProfile extends JViewLegacy
 		$this->state		= $this->get('State');
 
 		// Check for errors.
-		if (count($errors = $this->get('Errors')))
-		{
+		if (count($errors = $this->get('Errors'))) {
 			JError::raiseError(500, implode("\n", $errors));
 			return false;
 		}
@@ -50,17 +41,17 @@ class AdminViewProfile extends JViewLegacy
 	/**
 	 * Add the page title and toolbar.
 	 *
-	 * @since   1.6
+	 * @since	1.6
 	 */
 	protected function addToolbar()
 	{
-		JFactory::getApplication()->input->set('hidemainmenu', 1);
+		JRequest::setVar('hidemainmenu', 1);
 
-		JToolbarHelper::title(JText::_('COM_ADMIN_VIEW_PROFILE_TITLE'), 'user user-profile');
-		JToolbarHelper::apply('profile.apply');
-		JToolbarHelper::save('profile.save');
-		JToolbarHelper::cancel('profile.cancel', 'JTOOLBAR_CLOSE');
-		JToolbarHelper::divider();
-		JToolbarHelper::help('JHELP_ADMIN_USER_PROFILE_EDIT');
+		JToolBarHelper::title(JText::_('COM_ADMIN_VIEW_PROFILE_TITLE'), 'user-profile');
+		JToolBarHelper::apply('profile.apply');
+		JToolBarHelper::save('profile.save');
+		JToolBarHelper::cancel('profile.cancel', 'JTOOLBAR_CLOSE');
+		JToolBarHelper::divider();
+		JToolBarHelper::help('JHELP_ADMIN_USER_PROFILE_EDIT');
 	}
 }

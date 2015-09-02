@@ -4,10 +4,12 @@
  * @subpackage  com_users
  *
  * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
 defined('_JEXEC') or die;
+
+jimport('joomla.application.component.modeladmin');
 
 /**
  * User note model.
@@ -18,15 +20,6 @@ defined('_JEXEC') or die;
  */
 class UsersModelNote extends JModelAdmin
 {
-
-	/**
-	 * The type alias for this content type.
-	 *
-	 * @var      string
-	 * @since    3.2
-	 */
-	public $typeAlias = 'com_users.note';
-
 	/**
 	 * Method to get the record form.
 	 *
@@ -63,11 +56,11 @@ class UsersModelNote extends JModelAdmin
 		$result = parent::getItem($pk);
 
 		// Get the dispatcher and load the users plugins.
-		$dispatcher	= JEventDispatcher::getInstance();
+		$dispatcher	= JDispatcher::getInstance();
 		JPluginHelper::importPlugin('user');
 
 		// Trigger the data preparation event.
-		$dispatcher->trigger('onContentPrepareData', array('com_users.note', $result));
+		$results = $dispatcher->trigger('onContentPrepareData', array('com_users.note', $result));
 
 		return $result;
 	}
@@ -119,9 +112,8 @@ class UsersModelNote extends JModelAdmin
 			{
 				$data->user_id = $userId;
 			}
-		}
 
-		$this->preprocessData('com_users.note', $data);
+		}
 
 		return $data;
 	}
@@ -131,7 +123,7 @@ class UsersModelNote extends JModelAdmin
 	 *
 	 * Note. Calling getState in this method will result in recursion.
 	 *
-	 * @return  void
+	 * @return	void
 	 *
 	 * @since   2.5
 	 */
@@ -154,35 +146,32 @@ class UsersModelNote extends JModelAdmin
 	 */
 	/*public function save($data)
 	{
+		// Initialise variables.
 		$pk		= (!empty($data['id'])) ? $data['id'] : (int) $this->getState('note.id');
 		$table	= $this->getTable();
 		$isNew	= empty($pk);
 
-		if (!$table->bind($data))
-		{
+		if (!$table->bind($data)) {
 			$this->setError($table->getError());
 
 			return false;
 		}
 
 		// JTableCategory doesn't bind the params, so we need to do that by hand.
-		if (isset($data['params']) && is_array($data['params']))
-		{
+		if (isset($data['params']) && is_array($data['params'])) {
 			$registry = new JRegistry();
 			$registry->loadArray($data['params']);
 			$table->params = $registry->toString();
 			// This will give us INI format.
 		}
 
-		if (!$table->check())
-		{
+		if (!$table->check()) {
 			$this->setError($table->getError());
 
 			return false;
 		}
 
-		if (!$table->store())
-		{
+		if (!$table->store()) {
 			$this->setError($table->getError());
 
 			return false;

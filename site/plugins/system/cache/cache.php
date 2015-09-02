@@ -1,124 +1,102 @@
 <?php
 /**
- * @package     Joomla.Plugin
- * @subpackage  System.cache
- *
- * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+// no direct access
 defined('_JEXEC') or die;
 
 /**
- * Joomla! Page Cache Plugin.
+ * Joomla! Page Cache Plugin
  *
- * @package     Joomla.Plugin
- * @subpackage  System.cache
- * @since       1.5
+ * @package		Joomla.Plugin
+ * @subpackage	System.cache
  */
-class PlgSystemCache extends JPlugin
+class plgSystemCache extends JPlugin
 {
-	var $_cache		= null;
 
-	var $_cache_key	= null;
+	var $_cache = null;
 
 	/**
-	 * Constructor.
+	 * Constructor
 	 *
-	 * @param   object  &$subject  The object to observe.
-	 * @param   array   $config    An optional associative array of configuration settings.
-	 *
-	 * @since   1.5
+	 * @access	protected
+	 * @param	object	$subject The object to observe
+	 * @param	array	$config  An array that holds the plugin configuration
+	 * @since	1.0
 	 */
-	public function __construct(& $subject, $config)
+	function __construct(& $subject, $config)
 	{
 		parent::__construct($subject, $config);
 
-		// Set the language in the class.
+		//Set the language in the class
+		$config = JFactory::getConfig();
 		$options = array(
 			'defaultgroup'	=> 'page',
 			'browsercache'	=> $this->params->get('browsercache', false),
 			'caching'		=> false,
 		);
 
-		$this->_cache		= JCache::getInstance('page', $options);
-		$this->_cache_key	= JUri::getInstance()->toString();
+		$this->_cache = JCache::getInstance('page', $options);
 	}
 
 	/**
-	 * Converting the site URL to fit to the HTTP request.
-	 *
-	 * @return  void
-	 *
-	 * @since   1.5
-	 */
-	public function onAfterInitialise()
+	* Converting the site URL to fit to the HTTP request
+	*
+	*/
+	function onAfterInitialise()
 	{
 		global $_PROFILER;
+		$app	= JFactory::getApplication();
+		$user	= JFactory::getUser();
 
-		$app  = JFactory::getApplication();
-		$user = JFactory::getUser();
-
-		if ($app->isAdmin())
-		{
+		if ($app->isAdmin() || JDEBUG) {
 			return;
 		}
 
-		if (count($app->getMessageQueue()))
-		{
+		if (count($app->getMessageQueue())) {
 			return;
 		}
 
-		if ($user->get('guest') && $app->input->getMethod() == 'GET')
-		{
+		if ($user->get('guest') && $_SERVER['REQUEST_METHOD'] == 'GET') {
 			$this->_cache->setCaching(true);
 		}
 
-		$data = $this->_cache->get($this->_cache_key);
+		$data  = $this->_cache->get();
 
 		if ($data !== false)
 		{
-			// Set cached body.
-			$app->setBody($data);
+			JResponse::setBody($data);
 
-			echo $app->toString($app->get('gzip'));
+			echo JResponse::toString($app->getCfg('gzip'));
 
 			if (JDEBUG)
 			{
 				$_PROFILER->mark('afterCache');
+				echo implode('', $_PROFILER->getBuffer());
 			}
 
 			$app->close();
 		}
 	}
 
-	/**
-	 * After render.
-	 *
-	 * @return   void
-	 *
-	 * @since   1.5
-	 */
-	public function onAfterRender()
+	function onAfterRender()
 	{
 		$app = JFactory::getApplication();
 
-		if ($app->isAdmin())
-		{
+		if ($app->isAdmin() || JDEBUG) {
 			return;
 		}
 
-		if (count($app->getMessageQueue()))
-		{
+		if (count($app->getMessageQueue())) {
 			return;
 		}
 
 		$user = JFactory::getUser();
-
-		if ($user->get('guest'))
-		{
-			// We need to check again here, because auto-login plugins have not been fired before the first aid check.
-			$this->_cache->store(null, $this->_cache_key);
+		if ($user->get('guest')) {
+			//We need to check again here, because auto-login plugins have not been fired before the first aid check
+			$this->_cache->store();
 		}
 	}
 }

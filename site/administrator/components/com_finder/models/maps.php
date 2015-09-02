@@ -9,6 +9,8 @@
 
 defined('_JEXEC') or die();
 
+jimport('joomla.application.component.modellist');
+
 /**
  * Maps model for the Finder package.
  *
@@ -80,7 +82,9 @@ class FinderModelMaps extends JModelList
 	 */
 	public function delete(&$pks)
 	{
-		$dispatcher = JEventDispatcher::getInstance();
+		// Initialise variables.
+		$dispatcher = JDispatcher::getInstance();
+		$user = JFactory::getUser();
 		$pks = (array) $pks;
 		$table = $this->getTable();
 
@@ -154,37 +158,37 @@ class FinderModelMaps extends JModelList
 		$query = $db->getQuery(true);
 
 		// Select all fields from the table.
-		$query->select('a.*')
-			->from($db->quoteName('#__finder_taxonomy') . ' AS a');
+		$query->select('a.*');
+		$query->from($db->quoteName('#__finder_taxonomy') . ' AS a');
 
 		// Self-join to get children.
-		$query->select('COUNT(b.id) AS num_children')
-			->join('LEFT', $db->quoteName('#__finder_taxonomy') . ' AS b ON b.parent_id=a.id');
+		$query->select('COUNT(b.id) AS num_children');
+		$query->join('LEFT', $db->quoteName('#__finder_taxonomy') . ' AS b ON b.parent_id=a.id');
 
 		// Join to get the map links
-		$query->select('COUNT(c.node_id) AS num_nodes')
-			->join('LEFT', $db->quoteName('#__finder_taxonomy_map') . ' AS c ON c.node_id=a.id')
+		$query->select('COUNT(c.node_id) AS num_nodes');
+		$query->join('LEFT', $db->quoteName('#__finder_taxonomy_map') . ' AS c ON c.node_id=a.id');
 
-			->group('a.id, a.parent_id, a.title, a.state, a.access, a.ordering');
+		$query->group('a.id, a.parent_id, a.title, a.state, a.access, a.ordering');
 
 		// If the model is set to check item state, add to the query.
 		if (is_numeric($this->getState('filter.state')))
 		{
-			$query->where('a.state = ' . (int) $this->getState('filter.state'));
+			$query->where($db->quoteName('a.state') . ' = ' . (int) $this->getState('filter.state'));
 		}
 
 		// Filter the maps over the branch if set.
 		$branch_id = $this->getState('filter.branch');
 		if (!empty($branch_id))
 		{
-			$query->where('a.parent_id = ' . (int) $branch_id);
+			$query->where($db->quoteName('a.parent_id') . ' = ' . (int) $branch_id);
 		}
 
 		// Filter the maps over the search string if set.
 		$search = $this->getState('filter.search');
 		if (!empty($search))
 		{
-			$query->where('a.title LIKE ' . $db->quote('%' . $search . '%'));
+			$query->where($db->quoteName('a.title') . ' LIKE ' . $db->quote('%' . $search . '%'));
 		}
 
 		// Handle the list ordering.
@@ -279,7 +283,8 @@ class FinderModelMaps extends JModelList
 	 */
 	public function publish(&$pks, $value = 1)
 	{
-		$dispatcher = JEventDispatcher::getInstance();
+		// Initialise variables.
+		$dispatcher = JDispatcher::getInstance();
 		$user = JFactory::getUser();
 		$table = $this->getTable();
 		$pks = (array) $pks;
@@ -338,17 +343,33 @@ class FinderModelMaps extends JModelList
 	public function purge()
 	{
 		$db = $this->getDbo();
-		$query = $db->getQuery(true)
-			->delete($db->quoteName('#__finder_taxonomy'))
-			->where($db->quoteName('parent_id') . ' > 1');
+		$query = $db->getQuery(true);
+		$query->delete();
+		$query->from($db->quoteName('#__finder_taxonomy'));
+		$query->where($db->quoteName('parent_id') . ' > 1');
 		$db->setQuery($query);
-		$db->execute();
+		$db->query();
 
-		$query->clear()
-			->delete($db->quoteName('#__finder_taxonomy_map'))
-			->where('1');
+		// Check for a database error.
+		if ($db->getErrorNum())
+		{
+			$this->setError($db->getErrorMsg());
+			return false;
+		}
+
+		$query->clear();
+		$query->delete();
+		$query->from($db->quoteName('#__finder_taxonomy_map'));
+		$query->where('1');
 		$db->setQuery($query);
-		$db->execute();
+		$db->query();
+
+		// Check for a database error.
+		if ($db->getErrorNum())
+		{
+			$this->setError($db->getErrorMsg());
+			return false;
+		}
 
 		return true;
 	}

@@ -33,7 +33,7 @@ class FinderViewSearch extends JViewLegacy
 		$app = JFactory::getApplication();
 
 		// Adjust the list limit to the feed limit.
-		$app->input->set('limit', $app->get('feed_limit'));
+		$app->input->set('limit', $app->getCfg('feed_limit'));
 
 		// Get view data.
 		$state = $this->get('State');
@@ -43,6 +43,7 @@ class FinderViewSearch extends JViewLegacy
 
 		// Push out the query data.
 		JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
+		$suggested = JHtml::_('query.suggested', $query);
 		$explained = JHtml::_('query.explained', $query);
 
 		// Set the document title.
@@ -50,15 +51,15 @@ class FinderViewSearch extends JViewLegacy
 
 		if (empty($title))
 		{
-			$title = $app->get('sitename');
+			$title = $app->getCfg('sitename');
 		}
-		elseif ($app->get('sitename_pagetitles', 0) == 1)
+		elseif ($app->getCfg('sitename_pagetitles', 0) == 1)
 		{
-			$title = JText::sprintf('JPAGETITLE', $app->get('sitename'), $title);
+			$title = JText::sprintf('JPAGETITLE', $app->getCfg('sitename'), $title);
 		}
-		elseif ($app->get('sitename_pagetitles', 0) == 2)
+		elseif ($app->getCfg('sitename_pagetitles', 0) == 2)
 		{
-			$title = JText::sprintf('JPAGETITLE', $title, $app->get('sitename'));
+			$title = JText::sprintf('JPAGETITLE', $title, $app->getCfg('sitename'));
 		}
 
 		$this->document->setTitle($title);
@@ -82,11 +83,11 @@ class FinderViewSearch extends JViewLegacy
 		foreach ($results as $result)
 		{
 			// Convert the result to a feed entry.
-			$item              = new JFeedItem;
-			$item->title       = $result->title;
-			$item->link        = JRoute::_($result->route);
+			$item = new JFeedItem;
+			$item->title = $result->title;
+			$item->link = JRoute::_($result->route);
 			$item->description = $result->description;
-			$item->date        = (int) $result->start_date ? JHtml::date($result->start_date, 'l d F Y') : $result->indexdate;
+			$item->date = intval($result->start_date) ? JHtml::date($result->start_date, 'l d F Y') : $result->indexdate;
 
 			// Get the taxonomy data.
 			$taxonomy = $result->getTaxonomy();
@@ -94,11 +95,11 @@ class FinderViewSearch extends JViewLegacy
 			// Add the category to the feed if available.
 			if (isset($taxonomy['Category']))
 			{
-				$node           = array_pop($taxonomy['Category']);
+				$node = array_pop($taxonomy['Category']);
 				$item->category = $node->title;
 			}
 
-			// Loads item info into RSS array
+			// Loads item info into rss array.
 			$this->document->addItem($item);
 		}
 	}

@@ -1,0 +1,65 @@
+/*************Informacoes sobre o site***********************/
+Dominio: 
+Dono do site: Márcia Ramos
+Empresa: Laboratório de Imagem e Som - LIS
+Nome do contato: Márcia Ramos
+Telefone pra contato: (48) 9618-2840
+e-mail pra contato: marciaramos@cpovo.net
+/***********************************************************/
+
+
+/*************Acesso ao painel***********************/
+Painel:
+Usuario: 
+Senha: 
+/***************************************************/
+
+/*************Acesso Dns***********************/
+Endereço: 
+Usuário: 
+Senha: /****************************************************/
+
+/*************Acesso ssh***********************/
+user@endereço: lis@paginas.faed.udesc.br
+Senha: 085lis15./****************************************************//*************Acesso ftp***********************/
+Endereço: paginas.faed.udesc.br 
+porta: 21
+Usuário: lis
+Senha: 085lis15./****************************************************/
+/*************Joomla local***********************/
+	/******Administracao******/
+	administracao: localhost/lis/site/administrator |/administrator
+	User: Admin
+	Senha: Lis@2015
+	/************************/
+
+	/******Banco de Dados******/
+	Tipo do banco: MySQL
+	Acesso via: PhpMyAdmin
+	Banco: lis25
+	Host: localhost
+	usuário: lis25_user
+	Senha: S5wZSvc6bVCeNAua
+	/************************/
+
+        Prefixo das tabelas: joomla_
+/***************************************************/
+
+/*************Joomla web***********************/
+	/******Administracao******/
+	administracao: http://www.paginas.faed.udesc.br/lis/administrator
+	User: Admin
+	Senha: Lis@2015
+	/************************/
+
+	/******Banco de Dados******/
+	Tipo do banco: MySQL
+	Acesso via: http://paginas.faed.udesc.br/phpmyadmin
+	Banco: lis
+	Host: localhost
+	usuário: lis
+	Senha: 085lis15.
+	/************************/
+
+        Prefixo das tabelas: joomla_
+/***************************************************/

@@ -66,10 +66,10 @@ class FinderViewFilter extends JViewLegacy
 		$userId = $user->get('id');
 		$isNew = ($this->item->filter_id == 0);
 		$checkedOut = !($this->item->checked_out == 0 || $this->item->checked_out == $userId);
-		$canDo = JHelperContent::getActions('com_finder');
+		$canDo = FinderHelper::getActions();
 
 		// Configure the toolbar.
-		JToolbarHelper::title(JText::_('COM_FINDER_FILTER_EDIT_TOOLBAR_TITLE'), 'zoom-in finder');
+		JToolBarHelper::title(JText::_('COM_FINDER_FILTER_EDIT_TOOLBAR_TITLE'), 'finder');
 
 		// Set the actions for new and existing records.
 		if ($isNew)
@@ -77,38 +77,34 @@ class FinderViewFilter extends JViewLegacy
 			// For new records, check the create permission.
 			if ($canDo->get('core.create'))
 			{
-				JToolbarHelper::apply('filter.apply');
-				JToolbarHelper::save('filter.save');
-				JToolbarHelper::save2new('filter.save2new');
+				JToolBarHelper::apply('filter.apply');
+				JToolBarHelper::save('filter.save');
+				JToolBarHelper::save2new('filter.save2new');
 			}
-			JToolbarHelper::cancel('filter.cancel');
+			JToolBarHelper::cancel('filter.cancel');
 		}
 		else
 		{
-			// Can't save the record if it's checked out.
-			if (!$checkedOut)
+			// Since it's an existing record, check the edit permission.
+			if ($canDo->get('core.edit'))
 			{
-				// Since it's an existing record, check the edit permission.
-				if ($canDo->get('core.edit'))
-				{
-					JToolbarHelper::apply('filter.apply');
-					JToolbarHelper::save('filter.save');
+				JToolBarHelper::apply('filter.apply');
+				JToolBarHelper::save('filter.save');
 
-					// We can save this record, but check the create permission to see if we can return to make a new one.
-					if ($canDo->get('core.create'))
-					{
-						JToolbarHelper::save2new('filter.save2new');
-					}
+				// We can save this record, but check the create permission to see if we can return to make a new one.
+				if ($canDo->get('core.create'))
+				{
+					JToolBarHelper::save2new('filter.save2new');
 				}
 			}
 			// If an existing item, can save as a copy
 			if ($canDo->get('core.create'))
 			{
-				JToolbarHelper::save2copy('filter.save2copy');
+				JToolBarHelper::save2copy('filter.save2copy');
 			}
-			JToolbarHelper::cancel('filter.cancel', 'JTOOLBAR_CLOSE');
+			JToolBarHelper::cancel('filter.cancel', 'JTOOLBAR_CLOSE');
 		}
-		JToolbarHelper::divider();
-		JToolbarHelper::help('JHELP_COMPONENTS_FINDER_MANAGE_SEARCH_FILTERS_EDIT');
+		JToolBarHelper::divider();
+		JToolBarHelper::help('JHELP_COMPONENTS_FINDER_MANAGE_SEARCH_FILTERS_EDIT');
 	}
 }

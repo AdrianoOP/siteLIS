@@ -11,6 +11,7 @@ defined('JPATH_PLATFORM') or die;
 
 jimport('joomla.filesystem.file');
 jimport('joomla.filesystem.folder');
+jimport('joomla.filesystem.archive');
 jimport('joomla.filesystem.path');
 jimport('joomla.base.adapter');
 jimport('joomla.utilities.arrayhelper');
@@ -38,7 +39,7 @@ class JUpdater extends JAdapter
 	public function __construct()
 	{
 		// Adapter base path, class prefix
-		parent::__construct(__DIR__, 'JUpdater');
+		parent::__construct(dirname(__FILE__), 'JUpdater');
 	}
 
 	/**
@@ -49,7 +50,7 @@ class JUpdater extends JAdapter
 	 *
 	 * @since   11.1
 	 */
-	public static function getInstance()
+	public static function &getInstance()
 	{
 		if (!isset(self::$instance))
 		{
@@ -70,31 +71,22 @@ class JUpdater extends JAdapter
 	 */
 	public function findUpdates($eid = 0, $cacheTimeout = 0)
 	{
-		$db     = $this->getDBO();
-		$query  = $db->getQuery(true);
-
+		$dbo = $this->getDBO();
 		$retval = false;
 
-		$query->select('DISTINCT a.update_site_id, a.type, a.location, a.last_check_timestamp, a.extra_query')
-			->from('#__update_sites AS a')
-			->where('a.enabled = 1');
-
-		if ($eid)
+		// Push it into an array
+		if (!is_array($eid))
 		{
-			$query->join('INNER', '#__update_sites_extensions AS b ON a.update_site_id = b.update_site_id');
-
-			if (is_array($eid))
-			{
-				$query->where('b.extension_id IN (' . implode(',', $eid) . ')');
-			}
-			elseif ((int) $eid)
-			{
-				$query->where('b.extension_id = ' . $eid);
-			}
+			$query = 'SELECT DISTINCT update_site_id, type, location, last_check_timestamp FROM #__update_sites WHERE enabled = 1';
 		}
-
-		$db->setQuery($query);
-		$results = $db->loadAssocList();
+		else
+		{
+			$query = 'SELECT DISTINCT update_site_id, type, location, last_check_timestamp FROM #__update_sites' .
+				' WHERE update_site_id IN' .
+				'  (SELECT update_site_id FROM #__update_sites_extensions WHERE extension_id IN (' . implode(',', $eid) . '))';
+		}
+		$dbo->setQuery($query);
+		$results = $dbo->loadAssocList();
 		$result_count = count($results);
 		$now = time();
 		for ($i = 0; $i < $result_count; $i++)
@@ -124,13 +116,11 @@ class JUpdater extends JAdapter
 					$results = JArrayHelper::arrayUnique(array_merge($results, $update_result['update_sites']));
 					$result_count = count($results);
 				}
-
 				if (array_key_exists('updates', $update_result) && count($update_result['updates']))
 				{
 					for ($k = 0, $count = count($update_result['updates']); $k < $count; $k++)
 					{
 						$current_update = &$update_result['updates'][$k];
-						$current_update->extra_query = $result['extra_query'];
 						$update = JTable::getInstance('update');
 						$extension = JTable::getInstance('extension');
 						$uid = $update
@@ -150,7 +140,6 @@ class JUpdater extends JAdapter
 								'folder' => strtolower($current_update->get('folder'))
 							)
 						);
-
 						if (!$uid)
 						{
 							// Set the extension id
@@ -164,6 +153,31 @@ class JUpdater extends JAdapter
 									$current_update->extension_id = $eid;
 									$current_update->store();
 								}
+
+								// Store compatibility information into the extension table
+								if (!empty($update_result['compatibility']))
+								{
+									$system_data = json_decode($extension->system_data);
+									$system_data->compatibility = new stdClass();
+
+									$compatibility = $update_result['compatibility'];
+									ksort($compatibility);
+
+									// Check data for current installed version
+									if (!empty($compatibility[$data['version']]))
+									{
+										$system_data->compatibility->installed          = new stdClass();
+										$system_data->compatibility->installed->value   = $compatibility[$data['version']];
+										$system_data->compatibility->installed->version = $data['version'];
+									}
+
+									// Get last item in array which is highest release
+									$system_data->compatibility->available          = new stdClass();
+									$system_data->compatibility->available->value   = end($compatibility);
+									$system_data->compatibility->available->version = key($compatibility);
+									$extension->system_data = json_encode($system_data);
+									$extension->store();
+								}
 							}
 							else
 							{
@@ -174,8 +188,7 @@ class JUpdater extends JAdapter
 						else
 						{
 							$update->load($uid);
-
-							// If there is an update, check that the version is newer then replaces
+							// if there is an update, check that the version is newer then replaces
 							if (version_compare($current_update->version, $update->version, '>') == 1)
 							{
 								$current_update->store();
@@ -183,17 +196,42 @@ class JUpdater extends JAdapter
 						}
 					}
 				}
+				$update_result = true;
+			}
+			elseif ($retval)
+			{
+				$update_result = true;
 			}
 
 			// Finally, update the last update check timestamp
-			$query = $db->getQuery(true)
-				->update($db->quoteName('#__update_sites'))
-				->set($db->quoteName('last_check_timestamp') . ' = ' . $db->quote($now))
-				->where($db->quoteName('update_site_id') . ' = ' . $db->quote($result['update_site_id']));
-			$db->setQuery($query);
-			$db->execute();
+			$query = $dbo->getQuery(true);
+			$query->update($dbo->quoteName('#__update_sites'));
+			$query->set($dbo->quoteName('last_check_timestamp') . ' = ' . $dbo->quote($now));
+			$query->where($dbo->quoteName('update_site_id') . ' = ' . $dbo->quote($result['update_site_id']));
+			$dbo->setQuery($query);
+			$dbo->execute();
 		}
 		return $retval;
+	}
+
+	/**
+	 * Multidimensional array safe unique test
+	 *
+	 * @param   array  $myArray  The source array.
+	 *
+	 * @return  array
+	 *
+	 * @deprecated    12.1
+	 * @note    Use JArrayHelper::arrayUnique() instead.
+	 * @note    Borrowed from PHP.net
+	 * @see     http://au2.php.net/manual/en/function.array-unique.php
+	 * @since   11.1
+	 *
+	 */
+	public function arrayUnique($myArray)
+	{
+		JLog::add('JUpdater::arrayUnique() is deprecated. See JArrayHelper::arrayUnique() . ', JLog::WARNING, 'deprecated');
+		return JArrayHelper::arrayUnique($myArray);
 	}
 
 	/**
@@ -216,5 +254,4 @@ class JUpdater extends JAdapter
 		}
 		return false;
 	}
-
 }

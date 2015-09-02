@@ -1,10 +1,7 @@
 <?php
 /**
- * @package     Joomla.Administrator
- * @subpackage  com_menus
- *
- * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('_JEXEC') or die;
@@ -12,20 +9,20 @@ defined('_JEXEC') or die;
 /**
  * The Menu List Controller
  *
- * @package     Joomla.Administrator
- * @subpackage  com_menus
- * @since       1.6
+ * @package		Joomla.Administrator
+ * @subpackage	com_menus
+ * @since		1.6
  */
 class MenusControllerMenus extends JControllerLegacy
 {
 	/**
 	 * Display the view
 	 *
-	 * @param   boolean            If true, the view output will be cached
-	 * @param   array              An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
+	 * @param	boolean			If true, the view output will be cached
+	 * @param	array			An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
 	 *
-	 * @return  JController        This object to support chaining.
-	 * @since   1.6
+	 * @return	JController		This object to support chaining.
+	 * @since	1.6
 	 */
 	public function display($cachable = false, $urlparams = false)
 	{
@@ -57,14 +54,11 @@ class MenusControllerMenus extends JControllerLegacy
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
 		// Get items to remove from the request.
-		$cid = $this->input->get('cid', array(), 'array');
+		$cid	= JRequest::getVar('cid', array(), '', 'array');
 
-		if (!is_array($cid) || count($cid) < 1)
-		{
+		if (!is_array($cid) || count($cid) < 1) {
 			JError::raiseWarning(500, JText::_('COM_MENUS_NO_MENUS_SELECTED'));
-		}
-		else
-		{
+		} else {
 			// Get the model.
 			$model = $this->getModel();
 
@@ -73,13 +67,10 @@ class MenusControllerMenus extends JControllerLegacy
 			JArrayHelper::toInteger($cid);
 
 			// Remove the items.
-			if (!$model->delete($cid))
-			{
+			if (!$model->delete($cid)) {
 				$this->setMessage($model->getError());
-			}
-			else
-			{
-				$this->setMessage(JText::plural('COM_MENUS_N_MENUS_DELETED', count($cid)));
+			} else {
+			$this->setMessage(JText::plural('COM_MENUS_N_MENUS_DELETED', count($cid)));
 			}
 		}
 
@@ -89,7 +80,7 @@ class MenusControllerMenus extends JControllerLegacy
 	/**
 	 * Rebuild the menu tree.
 	 *
-	 * @return  bool    False on failure or error, true on success.
+	 * @return	bool	False on failure or error, true on success.
 	 */
 	public function rebuild()
 	{
@@ -97,16 +88,14 @@ class MenusControllerMenus extends JControllerLegacy
 
 		$this->setRedirect('index.php?option=com_menus&view=menus');
 
+		// Initialise variables.
 		$model = $this->getModel('Item');
 
-		if ($model->rebuild())
-		{
+		if ($model->rebuild()) {
 			// Reorder succeeded.
 			$this->setMessage(JText::_('JTOOLBAR_REBUILD_SUCCESS'));
 			return true;
-		}
-		else
-		{
+		} else {
 			// Rebuild failed.
 			$this->setMessage(JText::sprintf('JTOOLBAR_REBUILD_FAILED', $model->getMessage()));
 			return false;
@@ -118,83 +107,64 @@ class MenusControllerMenus extends JControllerLegacy
 	 */
 	public function resync()
 	{
+		// Initialise variables.
 		$db = JFactory::getDbo();
-		$query = $db->getQuery(true);
 		$parts = null;
 
-		try
-		{
-			$query->select('element, extension_id')
-				->from('#__extensions')
-				->where('type = ' . $db->quote('component'));
-			$db->setQuery($query);
+		// Load a lookup table of all the component id's.
+		$components = $db->setQuery(
+			'SELECT element, extension_id' .
+			' FROM #__extensions' .
+			' WHERE type = '.$db->quote('component')
+		)->loadAssocList('element', 'extension_id');
 
-			$components = $db->loadAssocList('element', 'extension_id');
-		}
-		catch (RuntimeException $e)
-		{
-			return JError::raiseWarning(500, $e->getMessage());
+		if ($error = $db->getErrorMsg()) {
+			return JError::raiseWarning(500, $error);
 		}
 
 		// Load all the component menu links
-		$query->select($db->quoteName('id'))
-			->select($db->quoteName('link'))
-			->select($db->quoteName('component_id'))
-			->from('#__menu')
-			->where($db->quoteName('type') . ' = ' . $db->quote('component.item'));
-			$db->setQuery($query);
+		$items = $db->setQuery(
+			'SELECT id, link, component_id' .
+			' FROM #__menu' .
+			' WHERE type = '.$db->quote('component')
+		)->loadObjectList();
 
-		try
-		{
-			$items = $db->loadObjectList();
-		}
-		catch (RuntimeException $e)
-		{
-			return JError::raiseWarning(500, $e->getMessage());
+		if ($error = $db->getErrorMsg()) {
+			return JError::raiseWarning(500, $error);
 		}
 
-		foreach ($items as $item)
-		{
+		foreach ($items as $item) {
 			// Parse the link.
 			parse_str(parse_url($item->link, PHP_URL_QUERY), $parts);
 
 			// Tease out the option.
-			if (isset($parts['option']))
-			{
+			if (isset($parts['option'])) {
 				$option = $parts['option'];
 
 				// Lookup the component ID
-				if (isset($components[$option]))
-				{
+				if (isset($components[$option])) {
 					$componentId = $components[$option];
-				}
-				else
-				{
+				} else {
 					// Mismatch. Needs human intervention.
 					$componentId = -1;
 				}
 
 				// Check for mis-matched component id's in the menu link.
-				if ($item->component_id != $componentId)
-				{
+				if ($item->component_id != $componentId) {
 					// Update the menu table.
 					$log = "Link $item->id refers to $item->component_id, converting to $componentId ($item->link)";
 					echo "<br/>$log";
 
-					$query->clear();
-					$query->update('#__menu')
-						->set('component_id = ' . $componentId)
-						->where('id = ' . $item->id);
-
-					try
-					{
-						$db->setQuery($query)->execute();
-					}
-					catch (RuntimeException $e)
-					{
-						return JError::raiseWarning(500, $e->getMessage());
-					}
+					$db->setQuery(
+						'UPDATE #__menu' .
+						' SET component_id = '.$componentId.
+						' WHERE id = '.$item->id
+					)->query();
 					//echo "<br>".$db->getQuery();
+
+					if ($error = $db->getErrorMsg()) {
+						return JError::raiseWarning(500, $error);
+					}
 				}
 			}
 		}

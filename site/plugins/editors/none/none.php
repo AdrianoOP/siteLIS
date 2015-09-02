@@ -1,44 +1,38 @@
 <?php
 /**
- * @package     Joomla.Plugin
- * @subpackage  Editors.none
- *
- * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+// no direct access
 defined('_JEXEC') or die;
 
 /**
  * Plain Textarea Editor Plugin
  *
- * @package     Joomla.Plugin
- * @subpackage  Editors.none
- * @since       1.5
+ * @package		Joomla.Plugin
+ * @subpackage	Editors.none
+ * @since		1.5
  */
-class PlgEditorNone extends JPlugin
+class plgEditorNone extends JPlugin
 {
 	/**
 	 * Method to handle the onInitEditor event.
 	 *  - Initialises the Editor
 	 *
-	 * @return  string	JavaScript Initialization string
-	 *
+	 * @return	string	JavaScript Initialization string
 	 * @since 1.5
 	 */
 	public function onInit()
 	{
 		$txt =	"<script type=\"text/javascript\">
-					function insertAtCursor(myField, myValue)
-					{
-						if (document.selection)
-						{
+					function insertAtCursor(myField, myValue) {
+						if (document.selection) {
 							// IE support
 							myField.focus();
 							sel = document.selection.createRange();
 							sel.text = myValue;
-						} else if (myField.selectionStart || myField.selectionStart == '0')
-						{
+						} else if (myField.selectionStart || myField.selectionStart == '0') {
 							// MOZILLA/NETSCAPE support
 							var startPos = myField.selectionStart;
 							var endPos = myField.selectionEnd;
@@ -59,9 +53,9 @@ class PlgEditorNone extends JPlugin
 	 *
 	 * Not applicable in this editor.
 	 *
-	 * @return  void
+	 * @return	void
 	 */
-	public function onSave()
+	function onSave()
 	{
 		return;
 	}
@@ -69,11 +63,11 @@ class PlgEditorNone extends JPlugin
 	/**
 	 * Get the editor content.
 	 *
-	 * @param   string  $id  The id of the editor field.
+	 * @param	string	$id		The id of the editor field.
 	 *
-	 * @return  string
+	 * @return	string
 	 */
-	public function onGetContent($id)
+	function onGetContent($id)
 	{
 		return "document.getElementById('$id').value;\n";
 	}
@@ -81,33 +75,29 @@ class PlgEditorNone extends JPlugin
 	/**
 	 * Set the editor content.
 	 *
-	 * @param   string  $id    The id of the editor field.
-	 * @param   string  $html  The content to set.
+	 * @param	string	$id		The id of the editor field.
+	 * @param	string	$html	The content to set.
 	 *
-	 * @return  string
+	 * @return	string
 	 */
-	public function onSetContent($id, $html)
+	function onSetContent($id, $html)
 	{
 		return "document.getElementById('$id').value = $html;\n";
 	}
 
 	/**
-	 * Inserts html code into the editor
+	 * @param	string	$id
 	 *
-	 * @param   string  $id  The id of the editor field
-	 *
-	 * @return  boolean  returns true when complete
+	 * @return	string
 	 */
-	public function onGetInsertMethod($id)
+	function onGetInsertMethod($id)
 	{
 		static $done = false;
 
 		// Do this only once.
-		if (!$done)
-		{
+		if (!$done) {
 			$doc = JFactory::getDocument();
-			$js = "\tfunction jInsertEditorText(text, editor)
-			{
+			$js = "\tfunction jInsertEditorText(text, editor) {
 				insertAtCursor(document.getElementById(editor), text);
 			}";
 			$doc->addScriptDeclaration($js);
@@ -119,83 +109,78 @@ class PlgEditorNone extends JPlugin
 	/**
 	 * Display the editor area.
 	 *
-	 * @param   string   $name     The control name.
-	 * @param   string   $content  The contents of the text area.
-	 * @param   string   $width    The width of the text area (px or %).
-	 * @param   string   $height   The height of the text area (px or %).
-	 * @param   integer  $col      The number of columns for the textarea.
-	 * @param   integer  $row      The number of rows for the textarea.
-	 * @param   boolean  $buttons  True and the editor buttons will be displayed.
-	 * @param   string   $id       An optional ID for the textarea (note: since 1.6). If not supplied the name is used.
-	 * @param   string   $asset    The object asset
-	 * @param   object   $author   The author.
-	 * @param   array    $params   Associative array of editor parameters.
+	 * @param	string	$name		The control name.
+	 * @param	string	$html		The contents of the text area.
+	 * @param	string	$width		The width of the text area (px or %).
+	 * @param	string	$height		The height of the text area (px or %).
+	 * @param	int		$col		The number of columns for the textarea.
+	 * @param	int		$row		The number of rows for the textarea.
+	 * @param	boolean	$buttons	True and the editor buttons will be displayed.
+	 * @param	string	$id			An optional ID for the textarea (note: since 1.6). If not supplied the name is used.
+	 * @param	string	$asset
+	 * @param	object	$author
+	 * @param	array	$params		Associative array of editor parameters.
 	 *
-	 * @return  string
+	 * @return	string
 	 */
-	public function onDisplay($name, $content, $width, $height, $col, $row, $buttons = true,
-		$id = null, $asset = null, $author = null, $params = array())
+	function onDisplay($name, $content, $width, $height, $col, $row, $buttons = true, $id = null, $asset = null, $author = null, $params = array())
 	{
-		if (empty($id))
-		{
+		if (empty($id)) {
 			$id = $name;
 		}
 
 		// Only add "px" to width and height if they are not given as a percentage
-		if (is_numeric($width))
-		{
+		if (is_numeric($width)) {
 			$width .= 'px';
 		}
 
-		if (is_numeric($height))
-		{
+		if (is_numeric($height)) {
 			$height .= 'px';
 		}
 
 		$buttons = $this->_displayButtons($id, $buttons, $asset, $author);
-		$editor  = "<textarea name=\"$name\" id=\"$id\" cols=\"$col\" rows=\"$row\" style=\"width: $width; height: $height;\">$content</textarea>"
-			. $buttons;
+		$editor  = "<textarea name=\"$name\" id=\"$id\" cols=\"$col\" rows=\"$row\" style=\"width: $width; height: $height;\">$content</textarea>" . $buttons;
 
 		return $editor;
 	}
 
-	/**
-	 * Displays the editor buttons.
-	 *
-	 * @param   string  $name     The control name.
-	 * @param   mixed   $buttons  [array with button objects | boolean true to display buttons]
-	 * @param   string  $asset    The object asset
-	 * @param   object  $author   The author.
-	 *
-	 * @return  string HTML
-	 */
-	public function _displayButtons($name, $buttons, $asset, $author)
+	function _displayButtons($name, $buttons, $asset, $author)
 	{
+		// Load modal popup behavior
+		JHtml::_('behavior.modal', 'a.modal-button');
+
+		$args['name'] = $name;
+		$args['event'] = 'onGetInsertMethod';
+
 		$return = '';
+		$results[] = $this->update($args);
 
-		$args = array(
-			'name'  => $name,
-			'event' => 'onGetInsertMethod'
-		);
-
-		$results = (array) $this->update($args);
-
-		if ($results)
+		foreach ($results as $result)
 		{
-			foreach ($results as $result)
-			{
-				if (is_string($result) && trim($result))
-				{
-					$return .= $result;
-				}
+			if (is_string($result) && trim($result)) {
+				$return .= $result;
 			}
 		}
 
-		if (is_array($buttons) || (is_bool($buttons) && $buttons))
-		{
-			$buttons = $this->_subject->getButtons($name, $buttons, $asset, $author);
+		if (is_array($buttons) || (is_bool($buttons) && $buttons)) {
+			$results = $this->_subject->getButtons($name, $buttons, $asset, $author);
 
-			$return .= JLayoutHelper::render('joomla.editors.buttons', $buttons);
+			// This will allow plugins to attach buttons or change the behavior on the fly using AJAX
+			$return .= "\n<div id=\"editor-xtd-buttons\">\n";
+
+			foreach ($results as $button)
+			{
+				// Results should be an object
+				if ($button->get('name')) {
+					$modal		= ($button->get('modal')) ? 'class="modal-button"' : null;
+					$href		= ($button->get('link')) ? 'href="'.JURI::base().$button->get('link').'"' : null;
+					$onclick	= ($button->get('onclick')) ? 'onclick="'.$button->get('onclick').'"' : null;
+					$title      = ($button->get('title')) ? $button->get('title') : $button->get('text');
+					$return .= "<div class=\"button2-left\"><div class=\"".$button->get('name')."\"><a ".$modal." title=\"".$title."\" ".$href." ".$onclick." rel=\"".$button->get('options')."\">".$button->get('text')."</a></div></div>\n";
+				}
+			}
+
+			$return .= "</div>\n";
 		}
 
 		return $return;

@@ -1,35 +1,19 @@
 <?php
 /**
- * @package     Joomla.Site
- * @subpackage  mod_articles_popular
- *
- * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @package		Joomla.Site
+ * @subpackage	mod_articles_popular
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('_JEXEC') or die;
 
-require_once JPATH_SITE . '/components/com_content/helpers/route.php';
+require_once JPATH_SITE.'/components/com_content/helpers/route.php';
 
-JModelLegacy::addIncludePath(JPATH_SITE . '/components/com_content/models', 'ContentModel');
+JModelLegacy::addIncludePath(JPATH_SITE.'/components/com_content/models', 'ContentModel');
 
-/**
- * Helper for mod_articles_popular
- *
- * @package     Joomla.Site
- * @subpackage  mod_articles_popular
- *
- * @since       1.6.0
- */
-abstract class ModArticlesPopularHelper
+abstract class modArticlesPopularHelper
 {
-	/**
-	 * Get a list of popular articles from the articles model
-	 *
-	 * @param   JRegistry  &$params  object holding the models parameters
-	 *
-	 * @return mixed
-	 */
 	public static function getList(&$params)
 	{
 		// Get an instance of the generic articles model
@@ -63,18 +47,14 @@ abstract class ModArticlesPopularHelper
 
 		$items = $model->getItems();
 
-		foreach ($items as &$item)
-		{
-			$item->slug = $item->id . ':' . $item->alias;
-			$item->catslug = $item->catid . ':' . $item->category_alias;
+		foreach ($items as &$item) {
+			$item->slug = $item->id.':'.$item->alias;
+			$item->catslug = $item->catid.':'.$item->category_alias;
 
-			if ($access || in_array($item->access, $authorised))
-			{
+			if ($access || in_array($item->access, $authorised)) {
 				// We know that user has the privilege to view the article
-				$item->link = JRoute::_(ContentHelperRoute::getArticleRoute($item->slug, $item->catslug));
-			}
-			else
-			{
+				$item->link = JRoute::_(ContentHelperRoute::getArticleRoute($item->slug, $item->catslug, $item->language));
+			} else {
 				$item->link = JRoute::_('index.php?option=com_users&view=login');
 			}
 		}

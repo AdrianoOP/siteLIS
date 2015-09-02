@@ -100,7 +100,8 @@ class JAccess
 		{
 			$db = JFactory::getDbo();
 			$assets = JTable::getInstance('Asset', 'JTable', array('dbo' => $db));
-			$asset = $assets->getRootId();
+			$rootId = $assets->getRootId();
+			$asset = $rootId;
 		}
 
 		// Get the rules for the asset recursively to root if not already retrieved.
@@ -142,7 +143,7 @@ class JAccess
 		{
 			$db = JFactory::getDbo();
 			$assets = JTable::getInstance('Asset', 'JTable', array('dbo' => $db));
-			$asset = $assets->getRootId();
+			$rootId = $assets->getRootId();
 		}
 
 		// Get the rules for the asset recursively to root if not already retrieved.
@@ -219,11 +220,10 @@ class JAccess
 		$db = JFactory::getDbo();
 
 		// Build the database query to get the rules for the asset.
-		$query = $db->getQuery(true)
-			->select($recursive ? 'b.rules' : 'a.rules')
-			->from('#__assets AS a');
-
-		// SQLsrv change
+		$query = $db->getQuery(true);
+		$query->select($recursive ? 'b.rules' : 'a.rules');
+		$query->from('#__assets AS a');
+		//sqlsrv change
 		$query->group($recursive ? 'b.id, b.rules, b.lft' : 'a.id, a.rules, a.lft');
 
 		// If the asset identifier is numeric assume it is a primary key, else lookup by name.
@@ -239,8 +239,8 @@ class JAccess
 		// If we want the rules cascading up to the global asset node we need a self-join.
 		if ($recursive)
 		{
-			$query->join('LEFT', '#__assets AS b ON b.lft <= a.lft AND b.rgt >= a.rgt')
-				->order('b.lft');
+			$query->leftJoin('#__assets AS b ON b.lft <= a.lft AND b.rgt >= a.rgt');
+			$query->order('b.lft');
 		}
 
 		// Execute the query and load the rules from the result.
@@ -253,10 +253,10 @@ class JAccess
 			$db = JFactory::getDbo();
 			$assets = JTable::getInstance('Asset', 'JTable', array('dbo' => $db));
 			$rootId = $assets->getRootId();
-			$query->clear()
-				->select('rules')
-				->from('#__assets')
-				->where('id = ' . $db->quote($rootId));
+			$query = $db->getQuery(true);
+			$query->select('rules');
+			$query->from('#__assets');
+			$query->where('id = ' . $db->quote($rootId));
 			$db->setQuery($query);
 			$result = $db->loadResult();
 			$result = array($result);
@@ -287,20 +287,10 @@ class JAccess
 
 		if (!isset(self::$groupsByUser[$storeId]))
 		{
-			// TODO: Uncouple this from JComponentHelper and allow for a configuration setting or value injection.
-			if (class_exists('JComponentHelper'))
-			{
-				$guestUsergroup = JComponentHelper::getParams('com_users')->get('guest_usergroup', 1);
-			}
-			else
-			{
-				$guestUsergroup = 1;
-			}
-
 			// Guest user (if only the actually assigned group is requested)
 			if (empty($userId) && !$recursive)
 			{
-				$result = array($guestUsergroup);
+				$result = array(JComponentHelper::getParams('com_users')->get('guest_usergroup', 1));
 			}
 			// Registered user and guest if all groups are requested
 			else
@@ -308,25 +298,24 @@ class JAccess
 				$db = JFactory::getDbo();
 
 				// Build the database query to get the rules for the asset.
-				$query = $db->getQuery(true)
-					->select($recursive ? 'b.id' : 'a.id');
-
+				$query = $db->getQuery(true);
+				$query->select($recursive ? 'b.id' : 'a.id');
 				if (empty($userId))
 				{
-					$query->from('#__usergroups AS a')
-						->where('a.id = ' . (int) $guestUsergroup);
+					$query->from('#__usergroups AS a');
+					$query->where('a.id = ' . (int) JComponentHelper::getParams('com_users')->get('guest_usergroup', 1));
 				}
 				else
 				{
-					$query->from('#__user_usergroup_map AS map')
-						->where('map.user_id = ' . (int) $userId)
-						->join('LEFT', '#__usergroups AS a ON a.id = map.group_id');
+					$query->from('#__user_usergroup_map AS map');
+					$query->where('map.user_id = ' . (int) $userId);
+					$query->leftJoin('#__usergroups AS a ON a.id = map.group_id');
 				}
 
 				// If we want the rules cascading up to the global asset node we need a self-join.
 				if ($recursive)
 				{
-					$query->join('LEFT', '#__usergroups AS b ON b.lft <= a.lft AND b.rgt >= a.rgt');
+					$query->leftJoin('#__usergroups AS b ON b.lft <= a.lft AND b.rgt >= a.rgt');
 				}
 
 				// Execute the query and load the rules from the result.
@@ -371,12 +360,12 @@ class JAccess
 		$test = $recursive ? '>=' : '=';
 
 		// First find the users contained in the group
-		$query = $db->getQuery(true)
-			->select('DISTINCT(user_id)')
-			->from('#__usergroups as ug1')
-			->join('INNER', '#__usergroups AS ug2 ON ug2.lft' . $test . 'ug1.lft AND ug1.rgt' . $test . 'ug2.rgt')
-			->join('INNER', '#__user_usergroup_map AS m ON ug2.id=m.group_id')
-			->where('ug1.id=' . $db->quote($groupId));
+		$query = $db->getQuery(true);
+		$query->select('DISTINCT(user_id)');
+		$query->from('#__usergroups as ug1');
+		$query->join('INNER', '#__usergroups AS ug2 ON ug2.lft' . $test . 'ug1.lft AND ug1.rgt' . $test . 'ug2.rgt');
+		$query->join('INNER', '#__user_usergroup_map AS m ON ug2.id=m.group_id');
+		$query->where('ug1.id=' . $db->Quote($groupId));
 
 		$db->setQuery($query);
 
@@ -406,15 +395,15 @@ class JAccess
 		if (empty(self::$viewLevels))
 		{
 			// Get a database object.
-			$db = JFactory::getDbo();
+			$db = JFactory::getDBO();
 
 			// Build the base query.
-			$query = $db->getQuery(true)
-				->select('id, rules')
-				->from($db->quoteName('#__viewlevels'));
+			$query = $db->getQuery(true);
+			$query->select('id, rules');
+			$query->from($query->qn('#__viewlevels'));
 
 			// Set the query for execution.
-			$db->setQuery($query);
+			$db->setQuery((string) $query);
 
 			// Build the view levels array.
 			foreach ($db->loadAssocList() as $level)
@@ -456,19 +445,20 @@ class JAccess
 	 *
 	 * @return  array  List of actions available for the given component and section.
 	 *
-	 * @since       11.1
-	 * @deprecated  12.3 (Platform) & 4.0 (CMS)  Use JAccess::getActionsFromFile or JAccess::getActionsFromData instead.
+	 * @since   11.1
+	 *
+	 * @deprecated  12.3  Use JAccess::getActionsFromFile or JAccess::getActionsFromData instead.
+	 *
 	 * @codeCoverageIgnore
+	 * 
 	 */
 	public static function getActions($component, $section = 'component')
 	{
-		JLog::add(__METHOD__ . ' is deprecated. Use JAccess::getActionsFromFile or JAccess::getActionsFromData instead.', JLog::WARNING, 'deprecated');
-
+		JLog::add(__METHOD__ . ' is deprecated. Use JAccess::getActionsFromFile or JAcces::getActionsFromData instead.', JLog::WARNING, 'deprecated');
 		$actions = self::getActionsFromFile(
 			JPATH_ADMINISTRATOR . '/components/' . $component . '/access.xml',
 			"/access/section[@name='" . $section . "']/"
 		);
-
 		if (empty($actions))
 		{
 			return array();
@@ -491,7 +481,7 @@ class JAccess
 	 */
 	public static function getActionsFromFile($file, $xpath = "/access/section[@name='component']/")
 	{
-		if (!is_file($file) || !is_readable($file))
+		if (!is_file($file))
 		{
 			// If unable to find the file return false.
 			return false;
@@ -499,9 +489,7 @@ class JAccess
 		else
 		{
 			// Else return the actions from the xml.
-			$xml = simplexml_load_file($file);
-
-			return self::getActionsFromData($xml, $xpath);
+			return self::getActionsFromData(JFactory::getXML($file, true), $xpath);
 		}
 	}
 
@@ -526,14 +514,7 @@ class JAccess
 		// Attempt to load the XML if a string.
 		if (is_string($data))
 		{
-			try
-			{
-				$data = new SimpleXMLElement($data);
-			}
-			catch (Exception $e)
-			{
-				return false;
-			}
+			$data = JFactory::getXML($data, false);
 
 			// Make sure the XML loaded correctly.
 			if (!$data)

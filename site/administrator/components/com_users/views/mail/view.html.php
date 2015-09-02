@@ -1,10 +1,9 @@
 <?php
 /**
- * @package     Joomla.Administrator
- * @subpackage  com_users
- *
- * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @package		Joomla.Administrator
+ * @subpackage	com_users
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('_JEXEC') or die;
@@ -12,8 +11,8 @@ defined('_JEXEC') or die;
 /**
  * Users mail view.
  *
- * @package     Joomla.Administrator
- * @subpackage  com_users
+ * @package		Joomla.Administrator
+ * @subpackage	com_users
  */
 class UsersViewMail extends JViewLegacy
 {
@@ -25,7 +24,7 @@ class UsersViewMail extends JViewLegacy
 	/**
 	 * Display the view
 	 */
-	public function display($tpl = null)
+	function display($tpl = null)
 	{
 		// Get data from the model
 		$this->form = $this->get('Form');
@@ -37,18 +36,18 @@ class UsersViewMail extends JViewLegacy
 	/**
 	 * Add the page title and toolbar.
 	 *
-	 * @since   1.6
+	 * @since	1.6
 	 */
 	protected function addToolbar()
 	{
-		JFactory::getApplication()->input->set('hidemainmenu', true);
+		JRequest::setVar('hidemainmenu', 1);
 
-		JToolbarHelper::title(JText::_('COM_USERS_MASS_MAIL'), 'users massmail');
-		JToolbarHelper::custom('mail.send', 'envelope.png', 'send_f2.png', 'COM_USERS_TOOLBAR_MAIL_SEND_MAIL', false);
-		JToolbarHelper::cancel('mail.cancel');
-		JToolbarHelper::divider();
-		JToolbarHelper::preferences('com_users');
-		JToolbarHelper::divider();
-		JToolbarHelper::help('JHELP_USERS_MASS_MAIL_USERS');
+		JToolBarHelper::title(JText::_('COM_USERS_MASS_MAIL'), 'massmail.png');
+		JToolBarHelper::custom('mail.send', 'send.png', 'send_f2.png', 'COM_USERS_TOOLBAR_MAIL_SEND_MAIL', false);
+		JToolBarHelper::cancel('mail.cancel');
+		JToolBarHelper::divider();
+		JToolBarHelper::preferences('com_users');
+		JToolBarHelper::divider();
+		JToolBarHelper::help('JHELP_USERS_MASS_MAIL_USERS');
 	}
 }

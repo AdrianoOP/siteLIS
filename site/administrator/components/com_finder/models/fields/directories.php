@@ -7,7 +7,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
-defined('_JEXEC') or die;
+defined('JPATH_BASE') or die;
 
 JFormHelper::loadFieldClass('list');
 
@@ -27,7 +27,7 @@ class JFormFieldDirectories extends JFormFieldList
 	 * The form field type.
 	 *
 	 * @var    string
-	 * @since  2.5
+	 * @since  1.7
 	 */
 	protected $type = 'Directories';
 
@@ -36,11 +36,11 @@ class JFormFieldDirectories extends JFormFieldList
 	 *
 	 * @return  array  The field option objects.
 	 *
-	 * @since   2.5
+	 * @since   1.7
 	 */
 	public function getOptions()
 	{
-		$values  = array();
+		$values = array();
 		$options = array();
 		$exclude = array(
 			JPATH_ADMINISTRATOR,
@@ -53,12 +53,11 @@ class JFormFieldDirectories extends JFormFieldList
 			JPATH_SITE . '/language',
 			JPATH_SITE . '/modules',
 			JPATH_THEMES,
-			JFactory::getApplication()->get('log_path'),
-			JFactory::getApplication()->get('tmp_path')
+			JFactory::getApplication()->getCfg('log_path'),
+			JFactory::getApplication()->getCfg('tmp_path')
 		);
 
 		// Get the base directories.
-		jimport('joomla.filesystem.folder');
 		$dirs = JFolder::folders(JPATH_SITE, '.', false, true);
 
 		// Iterate through the base directories and find the subdirectories.
@@ -82,13 +81,22 @@ class JFormFieldDirectories extends JFormFieldList
 		}
 
 		// Convert the values to options.
-		foreach ($values as $value)
+		for ($i = 0, $c = count($values); $i < $c; $i++)
 		{
-			$options[] = JHtml::_('select.option', str_replace(JPATH_SITE . '/', '', $value), str_replace(JPATH_SITE . '/', '', $values));
+			$options[] = JHtml::_('select.option', str_replace(JPATH_SITE . DS, '', $values[$i]), str_replace(JPATH_SITE . DS, '', $values[$i]));
 		}
 
 		// Add a null option.
-		array_unshift($options, JHtml::_('select.option', '', '- ' . JText::_('JNONE') . ' -'));
+		array_unshift($options, JHTML::_('select.option', '', '- ' . JText::_('JNONE') . ' -'));
+
+		// Handle default values of value1|value2|value3
+		if (is_string($value) && strpos($value, '|') && preg_match('#(?<!\\\)\|#', $value))
+		{
+			// Explode the value if it is serialized as an array of value1|value2|value3
+			$value = preg_split('/(?<!\\\)\|/', $value);
+			$value = str_replace('\|', '|', $value);
+			$value = str_replace('\n', "\n", $value);
+		}
 
 		return $options;
 	}

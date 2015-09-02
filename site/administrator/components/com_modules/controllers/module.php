@@ -7,7 +7,10 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+// No direct access.
 defined('_JEXEC') or die;
+
+jimport('joomla.application.component.controllerform');
 
 /**
  * Module controller class.
@@ -27,6 +30,7 @@ class ModulesControllerModule extends JControllerForm
 	 */
 	public function add()
 	{
+		// Initialise variables.
 		$app = JFactory::getApplication();
 
 		// Get the result of the parent method. If an error, just return it.
@@ -63,6 +67,7 @@ class ModulesControllerModule extends JControllerForm
 	 */
 	public function cancel($key = null)
 	{
+		// Initialise variables.
 		$app = JFactory::getApplication();
 
 		$result = parent::cancel();
@@ -86,44 +91,14 @@ class ModulesControllerModule extends JControllerForm
 	protected function allowSave($data, $key = 'id')
 	{
 		// use custom position if selected
-		if (isset($data['custom_position']))
+		if (empty($data['position']))
 		{
-			if (empty($data['position']))
-			{
-				$data['position'] = $data['custom_position'];
-			}
-
-			unset($data['custom_position']);
+			$data['position'] = $data['custom_position'];
 		}
+
+		unset($data['custom_position']);
 
 		return parent::allowSave($data, $key);
-	}
-
-	/**
-	 * Method override to check if you can edit an existing record.
-	 *
-	 * @param   array   $data  An array of input data.
-	 * @param   string  $key   The name of the key for the primary key.
-	 *
-	 * @return  boolean
-	 *
-	 * @since   3.2
-	 */
-	protected function allowEdit($data = array(), $key = 'id')
-	{
-		// Initialise variables.
-		$recordId = (int) isset($data[$key]) ? $data[$key] : 0;
-		$user = JFactory::getUser();
-		$userId = $user->get('id');
-
-		// Check general edit permission first.
-		if ($user->authorise('core.edit', 'com_modules.module.' . $recordId))
-		{
-			return true;
-		}
-
-		// Since there is no asset tracking, revert to the component permissions.
-		return parent::allowEdit($data, $key);
 	}
 
 	/**
@@ -131,9 +106,9 @@ class ModulesControllerModule extends JControllerForm
 	 *
 	 * @param   string  $model  The model
 	 *
-	 * @return  boolean  True on success.
+	 * @return	boolean  True on success.
 	 *
-	 * @since   1.7
+	 * @since	1.7
 	 */
 	public function batch($model = null)
 	{
@@ -151,15 +126,16 @@ class ModulesControllerModule extends JControllerForm
 	/**
 	 * Function that allows child controller access to model data after the data has been saved.
 	 *
-	 * @param   JModelLegacy  $model      The data model object.
-	 * @param   array         $validData  The validated data.
+	 * @param   JModel  &$model     The data model object.
+	 * @param   array   $validData  The validated data.
 	 *
 	 * @return  void
 	 *
 	 * @since   1.6
 	 */
-	protected function postSaveHook(JModelLegacy $model, $validData = array())
+	protected function postSaveHook(JModel &$model, $validData = array())
 	{
+		// Initialise variables.
 		$app = JFactory::getApplication();
 		$task = $this->getTask();
 

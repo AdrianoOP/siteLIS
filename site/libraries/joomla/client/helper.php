@@ -23,10 +23,10 @@ class JClientHelper
 	 *
 	 * @param   string   $client  Client name, currently only 'ftp' is supported
 	 * @param   boolean  $force   Forces re-creation of the login credentials. Set this to
-	 *                            true if login credentials in the session storage have changed
+	 * true if login credentials in the session storage have changed
 	 *
 	 * @return  array    Client layer configuration options, consisting of at least
-	 *                   these fields: enabled, host, port, user, pass, root
+	 * these fields: enabled, host, port, user, pass, root
 	 *
 	 * @since   11.1
 	 */
@@ -38,6 +38,7 @@ class JClientHelper
 
 		if (!isset($credentials[$client]) || $force)
 		{
+			// Initialise variables.
 			$config = JFactory::getConfig();
 
 			// Fetch the client layer configuration options for the specific client
@@ -104,7 +105,8 @@ class JClientHelper
 
 				if ($options['enabled'])
 				{
-					$ftp = JClientFtp::getInstance($options['host'], $options['port']);
+					jimport('joomla.client.ftp');
+					$ftp = JFTP::getInstance($options['host'], $options['port']);
 
 					// Test the connection and try to log in
 					if ($ftp->isConnected())
@@ -130,7 +132,7 @@ class JClientHelper
 			$session->set($client . '.pass', $pass, 'JClientHelper');
 
 			// Force re-creation of the data saved within JClientHelper::getCredentials()
-			self::getCredentials($client, true);
+			JClientHelper::getCredentials($client, true);
 		}
 
 		return $return;
@@ -179,7 +181,6 @@ class JClientHelper
 			$session = JFactory::getSession();
 			$user = $session->get($client . '.user', null, 'JClientHelper');
 			$pass = $session->get($client . '.pass', null, 'JClientHelper');
-
 			if ($user != '' && $pass != '')
 			{
 				$return = true;
@@ -198,41 +199,31 @@ class JClientHelper
 	 *
 	 * @param   string  $client  The name of the client.
 	 *
-	 * @return  mixed  True, if FTP settings; JError if using legacy tree.
+	 * @return  mixed  True, if FTP settings should be shown or an exception
 	 *
 	 * @since   11.1
-	 * @throws  InvalidArgumentException if credentials invalid
 	 */
 	public static function setCredentialsFromRequest($client)
 	{
 		// Determine whether FTP credentials have been passed along with the current request
-		$input = JFactory::getApplication()->input;
-		$user = $input->post->getString('username', null);
-		$pass = $input->post->getString('password', null);
-
+		$user = JRequest::getString('username', null, 'POST', JREQUEST_ALLOWRAW);
+		$pass = JRequest::getString('password', null, 'POST', JREQUEST_ALLOWRAW);
 		if ($user != '' && $pass != '')
 		{
 			// Add credentials to the session
-			if (self::setCredentials($client, $user, $pass))
+			if (JClientHelper::setCredentials($client, $user, $pass))
 			{
 				$return = false;
 			}
 			else
 			{
-				if (class_exists('JError'))
-				{
-					$return = JError::raiseWarning('SOME_ERROR_CODE', JText::_('JLIB_CLIENT_ERROR_HELPER_SETCREDENTIALSFROMREQUEST_FAILED'));
-				}
-				else
-				{
-					throw new InvalidArgumentException('Invalid user credentials');
-				}
+				$return = JError::raiseWarning('SOME_ERROR_CODE', JText::_('JLIB_CLIENT_ERROR_HELPER_SETCREDENTIALSFROMREQUEST_FAILED'));
 			}
 		}
 		else
 		{
 			// Just determine if the FTP input fields need to be shown
-			$return = !self::hasCredentials('ftp');
+			$return = !JClientHelper::hasCredentials('ftp');
 		}
 
 		return $return;

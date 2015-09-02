@@ -19,7 +19,7 @@ defined('JPATH_PLATFORM') or die;
 class JHttpFactory
 {
 	/**
-	 * method to receive Http instance.
+	 * method to recieve Http instance.
 	 *
 	 * @param   JRegistry  $options   Client options object.
 	 * @param   mixed      $adapters  Adapter (string) or queue of adapters (array) to use for communication.
@@ -35,16 +35,6 @@ class JHttpFactory
 		if (empty($options))
 		{
 			$options = new JRegistry;
-		}
-
-		if (empty($adapters))
-		{
-			$config = JFactory::getConfig();
-
-			if ($config->get('proxy_enable'))
-			{
-				$adapters = 'curl';
-			}
 		}
 
 		if (!$driver = self::getAvailableDriver($options, $adapters))
@@ -76,8 +66,7 @@ class JHttpFactory
 			settype($default, 'array');
 			$availableAdapters = $default;
 		}
-
-		// Check if there is at least one available http transport adapter
+		// Check if there is available http transport adapters
 		if (!count($availableAdapters))
 		{
 			return false;
@@ -87,7 +76,7 @@ class JHttpFactory
 		{
 			$class = 'JHttpTransport' . ucfirst($adapter);
 
-			if ($class::isSupported())
+			if (call_user_func(array($class, 'isSupported')))
 			{
 				return new $class($options);
 			}
@@ -106,25 +95,18 @@ class JHttpFactory
 	public static function getHttpTransports()
 	{
 		$names = array();
-		$iterator = new DirectoryIterator(__DIR__ . '/transport');
+		$iterator = new DirectoryIterator(dirname(__FILE__) . '/transport');
 
-		/* @type  $file  DirectoryIterator */
 		foreach ($iterator as $file)
 		{
 			$fileName = $file->getFilename();
 
 			// Only load for php files.
-			if ($file->isFile() && $file->getExtension() == 'php')
+			// Note: DirectoryIterator::getExtension only available PHP >= 5.3.6
+			if ($file->isFile() && substr($fileName, strrpos($fileName, '.') + 1) == 'php')
 			{
 				$names[] = substr($fileName, 0, strrpos($fileName, '.'));
 			}
-		}
-
-		// If curl is available set it to the first position
-		if ($key = array_search('curl', $names))
-		{
-			unset($names[$key]);
-			array_unshift($names, 'curl');
 		}
 
 		return $names;

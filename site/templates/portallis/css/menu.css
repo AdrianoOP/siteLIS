@@ -3,19 +3,28 @@
     src: url(TT0246M_.TTF);
 }
 
+@import url(https://fonts.googleapis.com/css?family=Lora);
+
+
 ul {
 	padding: 0 0 0 0;
 	margin: 0 0 0 0;
-	font-size: 135%;
-	font-family: fontMarilia, verdana;
+	font-size: 1em;
+	font-family: 'Lora', serif, verdana;
 	list-style-type: none;
 }
 
-a, a:active, a:visited, a:hover {
-	font-size: 16pt;
-	color: #4D6173;
+ul a,
+ul a:active,
+ul a:visited,
+ul a:hover {
+	color: #363636;
 	text-transform: uppercase;
 	text-decoration: none;
+}
+
+ul a:hover {
+	text-decoration: underline;
 }
 
 li {

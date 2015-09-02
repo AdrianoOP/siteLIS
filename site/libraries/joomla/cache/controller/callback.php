@@ -94,6 +94,7 @@ class JCacheControllerCallback extends JCacheController
 			$id = $this->_makeId($callback, $args);
 		}
 
+		$data = false;
 		$data = $this->cache->get($id);
 
 		$locktest = new stdClass;
@@ -141,10 +142,10 @@ class JCacheControllerCallback extends JCacheController
 				$locktest = $this->cache->lock($id);
 			}
 
-			if (isset($woptions['modulemode']) && $woptions['modulemode'] == 1)
+			if (isset($woptions['modulemode']))
 			{
 				$document = JFactory::getDocument();
-				$coptions['modulemode'] = 1;
+				$coptions['modulemode'] = $woptions['modulemode'];
 				$coptions['headerbefore'] = $document->getHeadData();
 			}
 			else

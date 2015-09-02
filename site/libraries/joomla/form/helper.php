@@ -103,7 +103,9 @@ class JFormHelper
 		// Reference to an array with current entity's type instances
 		$types = &self::$entities[$entity];
 
+		// Initialize variables.
 		$key = md5($type);
+		$class = '';
 
 		// Return an entity object if it already exists and we don't need a new one.
 		if (isset($types[$key]) && $new === false)
@@ -111,8 +113,7 @@ class JFormHelper
 			return $types[$key];
 		}
 
-		$class = self::loadClass($entity, $type);
-		if ($class !== false)
+		if (($class = self::loadClass($entity, $type)) !== false)
 		{
 			// Instantiate a new type object.
 			$types[$key] = new $class;
@@ -185,7 +186,7 @@ class JFormHelper
 		}
 
 		// Get the field search path array.
-		$paths = self::addPath($entity);
+		$paths = JFormHelper::addPath($entity);
 
 		// If the type is complex, add the base type to the paths.
 		if ($pos = strpos($type, '_'))
@@ -289,13 +290,10 @@ class JFormHelper
 			// While we support limited number of entities (form, field and rule)
 			// we can do this simple pluralisation:
 			$entity_plural = $entity . 's';
-
-			/*
-			 * But when someday we would want to support more entities, then we should consider adding
-			 * an inflector class to "libraries/joomla/utilities" and use it here (or somebody can use a real inflector in his subclass).
-			 * See also: pluralization snippet by Paul Osman in JControllerForm's constructor.
-			 */
-			$paths[] = __DIR__ . '/' . $entity_plural;
+			// But when someday we would want to support more entities, then we should consider adding
+			// an inflector class to "libraries/joomla/utilities" and use it here (or somebody can use a real inflector in his subclass).
+			// see also: pluralization snippet by Paul Osman in JControllerForm's constructor.
+			$paths[] = dirname(__FILE__) . '/' . $entity_plural;
 		}
 
 		// Force the new path(s) to an array.

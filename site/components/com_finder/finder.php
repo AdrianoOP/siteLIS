@@ -11,6 +11,7 @@ defined('_JEXEC') or die;
 
 require_once JPATH_COMPONENT . '/helpers/route.php';
 
+// Execute the task.
 $controller = JControllerLegacy::getInstance('Finder');
-$controller->execute(JFactory::getApplication()->input->get('task'));
+$controller->execute(JFactory::getApplication()->input->get('task', '', 'word'));
 $controller->redirect();

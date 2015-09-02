@@ -10,7 +10,7 @@
 defined('JPATH_PLATFORM') or die;
 
 /**
- * GitHub API Forks class for the Joomla Platform.
+ * GitHub API References class for the Joomla Platform.
  *
  * @package     Joomla.Platform
  * @subpackage  GitHub
@@ -19,18 +19,15 @@ defined('JPATH_PLATFORM') or die;
 class JGithubForks extends JGithubObject
 {
 	/**
-	 * Method to fork a repository.
+	 * Method to create an issue.
 	 *
 	 * @param   string  $user  The name of the owner of the GitHub repository.
 	 * @param   string  $repo  The name of the GitHub repository.
 	 * @param   string  $org   The organization to fork the repo into. By default it is forked to the current user.
 	 *
-	 * @deprecated  use repositories->forks->create()
-	 *
 	 * @return  object
 	 *
 	 * @since   11.4
-	 * @throws  DomainException
 	 */
 	public function create($user, $repo, $org = '')
 	{
@@ -52,7 +49,7 @@ class JGithubForks extends JGithubObject
 		$response = $this->client->post($this->fetchUrl($path), $data);
 
 		// Validate the response code.
-		if ($response->code != 202)
+		if ($response->code != 201)
 		{
 			// Decode the error response and throw an exception.
 			$error = json_decode($response->body);
@@ -70,12 +67,9 @@ class JGithubForks extends JGithubObject
 	 * @param   integer  $page   Page to request
 	 * @param   integer  $limit  Number of results to return per page
 	 *
-	 * @deprecated  use repositories->forks->getList()
-	 *
 	 * @return  array
 	 *
 	 * @since   11.4
-	 * @throws  DomainException
 	 */
 	public function getList($user, $repo, $page = 0, $limit = 0)
 	{

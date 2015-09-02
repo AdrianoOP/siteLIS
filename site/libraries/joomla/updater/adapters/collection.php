@@ -17,7 +17,8 @@ jimport('joomla.updater.updateadapter');
  * @package     Joomla.Platform
  * @subpackage  Updater
  * @since       11.1
- */
+ * */
+
 class JUpdaterCollection extends JUpdateAdapter
 {
 	/**
@@ -65,7 +66,8 @@ class JUpdaterCollection extends JUpdateAdapter
 	 */
 	protected function _getStackLocation()
 	{
-		return implode('->', $this->stack);
+
+		return implode('->', $this->_stack);
 	}
 
 	/**
@@ -93,7 +95,7 @@ class JUpdaterCollection extends JUpdateAdapter
 	 */
 	public function _startElement($parser, $name, $attrs = array())
 	{
-		array_push($this->stack, $name);
+		array_push($this->_stack, $name);
 		$tag = $this->_getStackLocation();
 
 		// Reset the data
@@ -107,7 +109,7 @@ class JUpdaterCollection extends JUpdateAdapter
 			case 'CATEGORY':
 				if (isset($attrs['REF']))
 				{
-					$this->update_sites[] = array('type' => 'collection', 'location' => $attrs['REF'], 'update_site_id' => $this->updateSiteId);
+					$this->update_sites[] = array('type' => 'collection', 'location' => $attrs['REF'], 'update_site_id' => $this->_update_site_id);
 				}
 				else
 				{
@@ -117,8 +119,8 @@ class JUpdaterCollection extends JUpdateAdapter
 				break;
 			case 'EXTENSION':
 				$update = JTable::getInstance('update');
-				$update->set('update_site_id', $this->updateSiteId);
-				foreach ($this->updatecols as $col)
+				$update->set('update_site_id', $this->_update_site_id);
+				foreach ($this->_updatecols as $col)
 				{
 					// Reset the values if it doesn't exist
 					if (!array_key_exists($col, $attrs))
@@ -131,11 +133,7 @@ class JUpdaterCollection extends JUpdateAdapter
 					}
 				}
 				$client = JApplicationHelper::getClientInfo($attrs['CLIENT'], 1);
-				if (isset($client->id))
-				{
-					$attrs['CLIENT_ID'] = $client->id;
-				}
-
+				$attrs['CLIENT_ID'] = $client->id;
 				// Lower case all of the fields
 				foreach ($attrs as $key => $attr)
 				{
@@ -144,28 +142,23 @@ class JUpdaterCollection extends JUpdateAdapter
 
 				// Only add the update if it is on the same platform and release as we are
 				$ver = new JVersion;
-
-				// Lower case and remove the exclamation mark
-				$product = strtolower(JFilterInput::getInstance()->clean($ver->PRODUCT, 'cmd'));
-
-				/*
-				 * Set defaults, the extension file should clarify in case but it may be only available in one version
-				 * This allows an update site to specify a targetplatform
-				 * targetplatformversion can be a regexp, so 1.[56] would be valid for an extension that supports 1.5 and 1.6
-				 * Note: Whilst the version is a regexp here, the targetplatform is not (new extension per platform)
-				 * Additionally, the version is a regexp here and it may also be in an extension file if the extension is
-				 * compatible against multiple versions of the same platform (e.g. a library)
-				 */
+				$product = strtolower(JFilterInput::getInstance()->clean($ver->PRODUCT, 'cmd')); // lower case and remove the exclamation mark
+				// Set defaults, the extension file should clarify in case but it may be only available in one version
+				// This allows an update site to specify a targetplatform
+				// targetplatformversion can be a regexp, so 1.[56] would be valid for an extension that supports 1.5 and 1.6
+				// Note: Whilst the version is a regexp here, the targetplatform is not (new extension per platform)
+				//		Additionally, the version is a regexp here and it may also be in an extension file if the extension is
+				//		compatible against multiple versions of the same platform (e.g. a library)
 				if (!isset($values['targetplatform']))
 				{
 					$values['targetplatform'] = $product;
 				}
-				// Set this to ourself as a default
+				// set this to ourself as a default
 				if (!isset($values['targetplatformversion']))
 				{
 					$values['targetplatformversion'] = $ver->RELEASE;
 				}
-				// Set this to ourself as a default
+				// set this to ourself as a default
 				// validate that we can install the extension
 				if ($product == $values['targetplatform'] && preg_match('/' . $values['targetplatformversion'] . '/', $ver->RELEASE))
 				{
@@ -189,7 +182,7 @@ class JUpdaterCollection extends JUpdateAdapter
 	 */
 	protected function _endElement($parser, $name)
 	{
-		array_pop($this->stack);
+		$lastcell = array_pop($this->_stack);
 		switch ($name)
 		{
 			case 'CATEGORY':
@@ -216,56 +209,42 @@ class JUpdaterCollection extends JUpdateAdapter
 	public function findUpdate($options)
 	{
 		$url = trim($options['location']);
-		$this->updateSiteId = $options['update_site_id'];
+		$this->_update_site_id = $options['update_site_id'];
 
-		$appendExtension = false;
-
-		if (array_key_exists('append_extension', $options))
-		{
-			$appendExtension = $options['append_extension'];
-		}
-
-		if ($appendExtension && (substr($url, -4) != '.xml'))
+		if (substr($url, -4) != '.xml')
 		{
 			if (substr($url, -1) != '/')
 			{
 				$url .= '/';
 			}
+
 			$url .= 'update.xml';
 		}
 
 		$this->base = new stdClass;
 		$this->update_sites = array();
 		$this->updates = array();
-		$db = $this->parent->getDBO();
+		$dbo = $this->parent->getDBO();
 
 		$http = JHttpFactory::getHttp();
 
-		// JHttp transport throws an exception when there's no response.
 		try
 		{
 			$response = $http->get($url);
 		}
-		catch (RuntimeException $e)
+		catch (Exception $exc)
 		{
 			$response = null;
 		}
 
-		if ($response === null || $response->code !== 200)
+		if (is_null($response) || ($response->code != 200))
 		{
-			// If the URL is missing the .xml extension, try appending it and retry loading the update
-			if (!$appendExtension && (substr($url, -4) != '.xml'))
-			{
-				$options['append_extension'] = true;
-				return $this->findUpdate($options);
-			}
-
-			$query = $db->getQuery(true)
-				->update('#__update_sites')
-				->set('enabled = 0')
-				->where('update_site_id = ' . $this->updateSiteId);
-			$db->setQuery($query);
-			$db->execute();
+			$query = $dbo->getQuery(true);
+			$query->update('#__update_sites');
+			$query->set('enabled = 0');
+			$query->where('update_site_id = ' . $this->_update_site_id);
+			$dbo->setQuery($query);
+			$dbo->execute();
 
 			JLog::add("Error parsing url: " . $url, JLog::WARNING, 'updater');
 			$app = JFactory::getApplication();
@@ -274,21 +253,13 @@ class JUpdaterCollection extends JUpdateAdapter
 			return false;
 		}
 
-		$this->xmlParser = xml_parser_create('');
-		xml_set_object($this->xmlParser, $this);
-		xml_set_element_handler($this->xmlParser, '_startElement', '_endElement');
+		$this->xml_parser = xml_parser_create('');
+		xml_set_object($this->xml_parser, $this);
+		xml_set_element_handler($this->xml_parser, '_startElement', '_endElement');
 
-		if (!xml_parse($this->xmlParser, $response->body))
+		if (!xml_parse($this->xml_parser, $response->body))
 		{
-			// If the URL is missing the .xml extension, try appending it and retry loading the update
-			if (!$appendExtension && (substr($url, -4) != '.xml'))
-			{
-				$options['append_extension'] = true;
-				return $this->findUpdate($options);
-			}
-
 			JLog::add("Error parsing url: " . $url, JLog::WARNING, 'updater');
-
 			$app = JFactory::getApplication();
 			$app->enqueueMessage(JText::sprintf('JLIB_UPDATER_ERROR_COLLECTION_PARSE_URL', $url), 'warning');
 

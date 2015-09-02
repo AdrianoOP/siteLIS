@@ -1,10 +1,7 @@
 <?php
 /**
- * @package     Joomla.Administrator
- * @subpackage  com_redirect
- *
- * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('_JEXEC') or die;
@@ -12,22 +9,20 @@ defined('_JEXEC') or die;
 /**
  * View to edit a redirect link.
  *
- * @package     Joomla.Administrator
- * @subpackage  com_redirect
- * @since       1.6
+ * @package		Joomla.Administrator
+ * @subpackage	com_redirect
+ * @since		1.6
  */
 class RedirectViewLink extends JViewLegacy
 {
 	protected $item;
-
 	protected $form;
-
 	protected $state;
 
 	/**
 	 * Display the view
 	 *
-	 * @since   1.6
+	 * @since	1.6
 	 */
 	public function display($tpl = null)
 	{
@@ -36,8 +31,7 @@ class RedirectViewLink extends JViewLegacy
 		$this->state	= $this->get('State');
 
 		// Check for errors.
-		if (count($errors = $this->get('Errors')))
-		{
+		if (count($errors = $this->get('Errors'))) {
 			JError::raiseError(500, implode("\n", $errors));
 			return false;
 		}
@@ -49,41 +43,38 @@ class RedirectViewLink extends JViewLegacy
 	/**
 	 * Add the page title and toolbar.
 	 *
-	 * @since   1.6
+	 * @since	1.6
 	 */
 	protected function addToolbar()
 	{
-		JFactory::getApplication()->input->set('hidemainmenu', true);
+		JRequest::setVar('hidemainmenu', true);
 
-		$canDo		= JHelperContent::getActions('com_redirect');
+		$user		= JFactory::getUser();
+		$isNew		= ($this->item->id == 0);
+		$canDo		= RedirectHelper::getActions();
 
-		JToolbarHelper::title(JText::_('COM_REDIRECT_MANAGER_LINK'), 'refresh redirect');
+		JToolBarHelper::title(JText::_('COM_REDIRECT_MANAGER_LINK'), 'redirect');
 
 		// If not checked out, can save the item.
-		if ($canDo->get('core.edit'))
-		{
-			JToolbarHelper::apply('link.apply');
-			JToolbarHelper::save('link.save');
+		if ($canDo->get('core.edit')) {
+			JToolBarHelper::apply('link.apply');
+			JToolBarHelper::save('link.save');
 		}
 
 		// This component does not support Save as Copy due to uniqueness checks.
 		// While it can be done, it causes too much confusion if the user does
 		// not change the Old URL.
 
-		if ($canDo->get('core.edit') && $canDo->get('core.create'))
-		{
-			JToolbarHelper::save2new('link.save2new');
+		if ($canDo->get('core.edit') && $canDo->get('core.create')) {
+			JToolBarHelper::save2new('link.save2new');
 		}
 
-		if (empty($this->item->id))
-		{
-			JToolbarHelper::cancel('link.cancel');
-		}
-		else
-		{
-			JToolbarHelper::cancel('link.cancel', 'JTOOLBAR_CLOSE');
+		if (empty($this->item->id)) {
+			JToolBarHelper::cancel('link.cancel');
+		} else {
+			JToolBarHelper::cancel('link.cancel', 'JTOOLBAR_CLOSE');
 		}
 
-		JToolbarHelper::help('JHELP_COMPONENTS_REDIRECT_MANAGER_EDIT');
+		JToolBarHelper::help('JHELP_COMPONENTS_REDIRECT_MANAGER_EDIT');
 	}
 }

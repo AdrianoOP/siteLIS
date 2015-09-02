@@ -20,18 +20,14 @@ defined('JPATH_PLATFORM') or die;
 class JCacheStorageCachelite extends JCacheStorage
 {
 	/**
-	 * Static cache of the Cache_Lite instance
-	 *
 	 * @var    object
 	 * @since  11.1
 	 */
 	protected static $CacheLiteInstance = null;
 
 	/**
-	 * Root path
-	 *
-	 * @var    string
-	 * @since  11.1
+	 * @var
+	 * @since   11.1
 	 */
 	protected $_root;
 
@@ -96,6 +92,7 @@ class JCacheStorageCachelite extends JCacheStorage
 	 */
 	public function get($id, $group, $checkTime = true)
 	{
+		$data = false;
 		self::$CacheLiteInstance->setOption('cacheDir', $this->_root . '/' . $group . '/');
 		$this->_getCacheId($id, $group);
 		$data = self::$CacheLiteInstance->get($this->rawname, $group);
@@ -115,34 +112,21 @@ class JCacheStorageCachelite extends JCacheStorage
 		parent::getAll();
 
 		$path = $this->_root;
-		$folders = new DirectoryIterator($path);
+		jimport('joomla.filesystem.folder');
+		$folders = JFolder::folders($path);
 		$data = array();
 
 		foreach ($folders as $folder)
 		{
-			if (!$folder->isDir() || $folder->isDot())
-			{
-				continue;
-			}
-
-			$foldername = $folder->getFilename();
-
-			$files = new DirectoryIterator($path . '/' . $foldername);
-			$item  = new JCacheStorageHelper($foldername);
+			$files = JFolder::files($path . '/' . $folder);
+			$item = new JCacheStorageHelper($folder);
 
 			foreach ($files as $file)
 			{
-				if (!$file->isFile())
-				{
-					continue;
-				}
-
-				$filename = $file->getFilename();
-
-				$item->updateSize(filesize($path . '/' . $foldername . '/' . $filename) / 1024);
+				$item->updateSize(filesize($path . '/' . $folder . '/' . $file) / 1024);
 			}
 
-			$data[$foldername] = $item;
+			$data[$folder] = $item;
 		}
 
 		return $data;
@@ -233,6 +217,16 @@ class JCacheStorageCachelite extends JCacheStorage
 	{
 		jimport('joomla.filesystem.folder');
 
+		if (trim($group) == '')
+		{
+			$clmode = 'notgroup';
+		}
+
+		if ($mode == null)
+		{
+			$clmode = 'group';
+		}
+
 		switch ($mode)
 		{
 			case 'notgroup':
@@ -307,7 +301,7 @@ class JCacheStorageCachelite extends JCacheStorage
 
 				if (is_dir($file2))
 				{
-					$result = ($result && (self::$CacheLiteInstance->_cleanDir($file2 . '/', false, 'old')));
+					$result = ($result and (self::$CacheLiteInstance->_cleanDir($file2 . '/', false, 'old')));
 				}
 			}
 		}
@@ -322,9 +316,9 @@ class JCacheStorageCachelite extends JCacheStorage
 	 *
 	 * @return  boolean  True on success, false otherwise.
 	 *
-	 * @since   12.1
+	 * @since   11.1
 	 */
-	public static function isSupported()
+	public static function test()
 	{
 		@include_once 'Cache/Lite.php';
 

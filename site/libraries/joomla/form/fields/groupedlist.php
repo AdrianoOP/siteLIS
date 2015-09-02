@@ -33,10 +33,10 @@ class JFormFieldGroupedList extends JFormField
 	 * @return  array  The field option objects as a nested array in groups.
 	 *
 	 * @since   11.1
-	 * @throws  UnexpectedValueException
 	 */
 	protected function getGroups()
 	{
+		// Initialize variables.
 		$groups = array();
 		$label = 0;
 
@@ -52,14 +52,11 @@ class JFormFieldGroupedList extends JFormField
 						$groups[$label] = array();
 					}
 
-					$disabled = (string) $element['disabled'];
-					$disabled = ($disabled == 'true' || $disabled == 'disabled' || $disabled == '1');
-
 					// Create a new option object based on the <option /> element.
 					$tmp = JHtml::_(
 						'select.option', ($element['value']) ? (string) $element['value'] : trim((string) $element),
 						JText::alt(trim((string) $element), preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname)), 'value', 'text',
-						$disabled
+						((string) $element['disabled'] == 'true')
 					);
 
 					// Set some option attributes.
@@ -95,13 +92,10 @@ class JFormFieldGroupedList extends JFormField
 							continue;
 						}
 
-						$disabled = (string) $option['disabled'];
-						$disabled = ($disabled == 'true' || $disabled == 'disabled' || $disabled == '1');
-
 						// Create a new option object based on the <option /> element.
 						$tmp = JHtml::_(
 							'select.option', ($option['value']) ? (string) $option['value'] : JText::_(trim((string) $option)),
-							JText::_(trim((string) $option)), 'value', 'text', $disabled
+							JText::_(trim((string) $option)), 'value', 'text', ((string) $option['disabled'] == 'true')
 						);
 
 						// Set some option attributes.
@@ -122,7 +116,8 @@ class JFormFieldGroupedList extends JFormField
 
 				// Unknown element type.
 				default:
-					throw new UnexpectedValueException(sprintf('Unsupported element %s in JFormFieldGroupedList', $element->getName()), 500);
+					JError::raiseError(500, JText::sprintf('JLIB_FORM_ERROR_FIELDS_GROUPEDLIST_ELEMENT_NAME', $element->getName()));
+					break;
 			}
 		}
 
@@ -141,25 +136,24 @@ class JFormFieldGroupedList extends JFormField
 	 */
 	protected function getInput()
 	{
+		// Initialize variables.
 		$html = array();
 		$attr = '';
 
 		// Initialize some field attributes.
-		$attr .= !empty($this->class) ? ' class="' . $this->class . '"' : '';
-		$attr .= $this->disabled ? ' disabled' : '';
-		$attr .= !empty($this->size) ? ' size="' . $this->size . '"' : '';
-		$attr .= $this->multiple ? ' multiple' : '';
-		$attr .= $this->required ? ' required aria-required="true"' : '';
-		$attr .= $this->autofocus ? ' autofocus' : '';
+		$attr .= $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
+		$attr .= ((string) $this->element['disabled'] == 'true') ? ' disabled="disabled"' : '';
+		$attr .= $this->element['size'] ? ' size="' . (int) $this->element['size'] . '"' : '';
+		$attr .= $this->multiple ? ' multiple="multiple"' : '';
 
 		// Initialize JavaScript field attributes.
-		$attr .= !empty($this->onchange) ? ' onchange="' . $this->onchange . '"' : '';
+		$attr .= $this->element['onchange'] ? ' onchange="' . (string) $this->element['onchange'] . '"' : '';
 
 		// Get the field groups.
 		$groups = (array) $this->getGroups();
 
 		// Create a read-only list (no name) with a hidden input to store the value.
-		if ($this->readonly)
+		if ((string) $this->element['readonly'] == 'true')
 		{
 			$html[] = JHtml::_(
 				'select.groupedlist', $groups, null,
@@ -170,7 +164,6 @@ class JFormFieldGroupedList extends JFormField
 			);
 			$html[] = '<input type="hidden" name="' . $this->name . '" value="' . htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') . '"/>';
 		}
-
 		// Create a regular list.
 		else
 		{

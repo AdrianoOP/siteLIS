@@ -9,8 +9,7 @@
 
 defined('_JEXEC') or die;
 
-define('FINDER_PATH_INDEXER', JPATH_ADMINISTRATOR . '/components/com_finder/helpers/indexer');
-JLoader::register('FinderIndexerHelper', FINDER_PATH_INDEXER . '/helper.php');
+jimport('joomla.application.component.modellist');
 
 /**
  * Suggestions model class for the Finder package.
@@ -39,7 +38,7 @@ class FinderModelSuggestions extends JModelList
 	public function getItems()
 	{
 		// Get the items.
-		$items = parent::getItems();
+		$items = &parent::getItems();
 
 		// Convert them to a simple array.
 		foreach ($items as $k => $v)
@@ -64,13 +63,12 @@ class FinderModelSuggestions extends JModelList
 		$query = $db->getQuery(true);
 
 		// Select required fields
-		$query->select('t.term')
-			->from($db->quoteName('#__finder_terms') . ' AS t')
-			->where('t.term LIKE ' . $db->quote($db->escape($this->getState('input'), true) . '%'))
-			->where('t.common = 0')
-			->where('t.language IN (' . $db->quote($db->escape($this->getState('language'), true)) . ', ' . $db->quote('*') . ')')
-			->order('t.links DESC')
-			->order('t.weight DESC');
+		$query->select('t.term');
+		$query->from($db->quoteName('#__finder_terms') . ' AS t');
+		$query->where('t.term LIKE ' . $db->quote($db->escape($this->getState('input'), true) . '%'));
+		$query->where('t.common = 0');
+		$query->order('t.links DESC');
+		$query->order('t.weight DESC');
 
 		return $query;
 	}
@@ -104,14 +102,11 @@ class FinderModelSuggestions extends JModelList
 	/**
 	 * Method to auto-populate the model state.  Calling getState in this method will result in recursion.
 	 *
-	 * @param   string  $ordering   An optional ordering field.
-	 * @param   string  $direction  An optional direction (asc|desc).
-	 *
 	 * @return  void
 	 *
 	 * @since   2.5
 	 */
-	protected function populateState($ordering = null, $direction = null)
+	protected function populateState()
 	{
 		// Get the configuration options.
 		$app = JFactory::getApplication();
@@ -121,19 +116,7 @@ class FinderModelSuggestions extends JModelList
 
 		// Get the query input.
 		$this->setState('input', $input->request->get('q', '', 'string'));
-
-		// Set the query language
-		if (JLanguageMultilang::isEnabled())
-		{
-			$lang = JFactory::getLanguage()->getTag();
-		}
-		else
-		{
-			$lang = FinderIndexerHelper::getDefaultLanguage();
-		}
-
-		$lang = FinderIndexerHelper::getPrimaryLanguage($lang);
-		$this->setState('language', $lang);
+		$this->setState('language', $input->request->get('l', '', 'string'));
 
 		// Load the list state.
 		$this->setState('list.start', 0);

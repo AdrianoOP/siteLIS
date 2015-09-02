@@ -1,20 +1,20 @@
 <?php
 /**
- * @package     Joomla.Administrator
- * @subpackage  com_categories
- *
- * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @package		Joomla.Administrator
+ * @subpackage	com_categories
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+// No direct access
 defined('_JEXEC') or die;
 
+// Import JTableCategory
+JLoader::register('JTableCategory', JPATH_PLATFORM . '/joomla/database/table/category.php');
+
 /**
- * Category table
- *
- * @package     Joomla.Administrator
- * @subpackage  com_categories
- * @since       1.6
+ * @package		Joomla.Administrator
+ * @subpackage	com_categories
  */
 class CategoriesTableCategory extends JTableCategory
 {

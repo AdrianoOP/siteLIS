@@ -28,7 +28,7 @@ $DEBUG_CLASS = "";
 
 <body>
 
-<article <?php echo "class=\"$DEBUG_CLASS"?> corpo_main">
+<article <?php echo "class=\"$DEBUG_CLASS"?>">
 <?php if ($this->countModules('modHeaderImages')||
 		$this->countModules('modMenu')) : ?>
 	<header <?php echo "class=\"$DEBUG_CLASS"?> header">

@@ -31,11 +31,10 @@
 				type="hidden"
 				default="blog"
 			/>
-		  	<field name="show_category_heading_title_text"
-				type="list"
- 				label="JGLOBAL_SHOW_CATEGORY_HEADING_TITLE_TEXT_LABEL"
-				description="JGLOBAL_SHOW_CATEGORY_HEADING_TITLE_TEXT_DESC"
-				>
+		<field name="show_category_heading_title_text" type="list"
+ 			label="JGLOBAL_SHOW_CATEGORY_HEADING_TITLE_TEXT_LABEL"
+			description="JGLOBAL_SHOW_CATEGORY_HEADING_TITLE_TEXT_DESC"
+			>
 				<option value="">JGLOBAL_USE_GLOBAL</option>
 				<option value="0">JHIDE</option>
 				<option value="1">JSHOW</option>
@@ -111,16 +110,6 @@
 			<field name="show_cat_num_articles" type="list"
 				label="COM_CONTENT_NUMBER_CATEGORY_ITEMS_LABEL"
 				description="COM_CONTENT_NUMBER_CATEGORY_ITEMS_DESC"
-			>
-				<option value="">JGLOBAL_USE_GLOBAL</option>
-				<option value="0">JHIDE</option>
-				<option value="1">JSHOW</option>
-			</field>
-
-			<field name="show_cat_tags"
-				type="list"
-				label="COM_CONTENT_FIELD_SHOW_CAT_TAGS_LABEL"
-				description="COM_CONTENT_FIELD_SHOW_CAT_TAGS_DESC"
 			>
 				<option value="">JGLOBAL_USE_GLOBAL</option>
 				<option value="0">JHIDE</option>
@@ -289,19 +278,6 @@
 				<option value="1">JSHOW</option>
 			</field>
 
-			<field
-				name="info_block_position"
-				type="list"
-				default=""
-				label="COM_CONTENT_FIELD_INFOBLOCK_POSITION_LABEL"
-				description="COM_CONTENT_FIELD_INFOBLOCK_POSITION_DESC">
-				<option value="">JGLOBAL_USE_GLOBAL</option>
-				<option value="use_article">COM_CONTENT_FIELD_VALUE_USE_ARTICLE_SETTINGS</option>
-				<option value="0">COM_CONTENT_FIELD_OPTION_ABOVE</option>
-				<option value="1">COM_CONTENT_FIELD_OPTION_BELOW</option>
-				<option value="2">COM_CONTENT_FIELD_OPTION_SPLIT</option>
-			</field>
-
 			<field name="show_category" type="list"
 				description="JGLOBAL_SHOW_CATEGORY_DESC"
 				label="JGLOBAL_SHOW_CATEGORY_LABEL"
@@ -402,6 +378,7 @@
 				<option value="1">JSHOW</option>
 			</field>
 
+
 			<field
 			name="show_vote" type="list"
 			label="JGLOBAL_SHOW_VOTE_LABEL"
@@ -486,7 +463,7 @@
 			</field>
 
 </fieldset>
-		<fieldset name="integration" label="COM_MENUS_INTEGRATION_FIELDSET_LABEL"
+		<fieldset name="integration"
 		>
 
 			<field name="show_feed_link" type="list"

@@ -4,16 +4,17 @@
  * @subpackage  mod_finder
  *
  * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
 defined('_JEXEC') or die;
 
+// Register dependent classes.
 JLoader::register('FinderHelperRoute', JPATH_SITE . '/components/com_finder/helpers/route.php');
 JLoader::register('FinderHelperLanguage', JPATH_ADMINISTRATOR . '/components/com_finder/helpers/language.php');
 
 // Include the helper.
-require_once __DIR__ . '/helper.php';
+require_once dirname(__FILE__) . '/helper.php';
 
 if (!defined('FINDER_PATH_INDEXER'))
 {
@@ -29,9 +30,9 @@ This code intentionally commented
 	$doc = JFactory::getDocument();
 	$app = JFactory::getApplication();
 
-	$ostitle = $params->get('opensearch_title', JText::_('MOD_FINDER_SEARCHBUTTON_TEXT') . ' ' . $app->get('sitename'));
+	$ostitle = $params->get('opensearch_title', JText::_('MOD_FINDER_SEARCHBUTTON_TEXT') . ' ' . $app->getCfg('sitename'));
 	$doc->addHeadLink(
-						JUri::getInstance()->toString(array('scheme', 'host', 'port')) . JRoute::_('&option=com_finder&format=opensearch'),
+						JURI::getInstance()->toString(array('scheme', 'host', 'port')) . JRoute::_('&option=com_finder&format=opensearch'),
 						'search', 'rel', array('title' => $ostitle, 'type' => 'application/opensearchdescription+xml')
 					);
 */
@@ -42,7 +43,7 @@ This code intentionally commented
 $params->def('field_size', 20);
 
 // Get the route.
-$route = FinderHelperRoute::getSearchRoute($params->get('searchfilter', null));
+$route = FinderHelperRoute::getSearchRoute($params->get('f', null));
 
 // Load component language file.
 FinderHelperLanguage::loadComponentLanguage();

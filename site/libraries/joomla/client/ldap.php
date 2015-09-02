@@ -14,49 +14,49 @@ defined('JPATH_PLATFORM') or die;
  *
  * @package     Joomla.Platform
  * @subpackage  Client
- * @since       12.1
+ * @since       11.1
  */
-class JClientLdap
+class JLDAP extends JObject
 {
 	/**
 	 * @var    string  Hostname of LDAP server
-	 * @since  12.1
+	 * @since  11.1
 	 */
 	public $host = null;
 
 	/**
 	 * @var    bool  Authorization Method to use
-	 * @since  12.1
+	 * @since  11.1
 	 */
 	public $auth_method = null;
 
 	/**
 	 * @var    int  Port of LDAP server
-	 * @since  12.1
+	 * @since  11.1
 	 */
 	public $port = null;
 
 	/**
 	 * @var    string  Base DN (e.g. o=MyDir)
-	 * @since  12.1
+	 * @since  11.1
 	 */
 	public $base_dn = null;
 
 	/**
 	 * @var    string  User DN (e.g. cn=Users,o=MyDir)
-	 * @since  12.1
+	 * @since  11.1
 	 */
 	public $users_dn = null;
 
 	/**
 	 * @var    string  Search String
-	 * @since  12.1
+	 * @since  11.1
 	 */
 	public $search_string = null;
 
 	/**
 	 * @var    boolean  Use LDAP Version 3
-	 * @since  12.1
+	 * @since  11.1
 	 */
 	public $use_ldapV3 = null;
 
@@ -68,33 +68,33 @@ class JClientLdap
 
 	/**
 	 * @var    boolean  Negotiate TLS (encrypted communications)
-	 * @since  12.1
+	 * @since  11.1
 	 */
 	public $negotiate_tls = null;
 
 	/**
 	 * @var    string  Username to connect to server
-	 * @since  12.1
+	 * @since  11.1
 	 */
 	public $username = null;
 
 	/**
 	 *
 	 * @var    string  Password to connect to server
-	 * @since  12.1
+	 * @since  11.1
 	 */
 	public $password = null;
 
 	/**
 	 * @var    mixed  LDAP Resource Identifier
-	 * @since  12.1
+	 * @since  11.1
 	 */
 	private $_resource = null;
 
 	/**
 	 *
 	 * @var    string  Current DN
-	 * @since  12.1
+	 * @since  11.1
 	 */
 	private $_dn = null;
 
@@ -103,20 +103,18 @@ class JClientLdap
 	 *
 	 * @param   object  $configObj  An object of configuration variables
 	 *
-	 * @since   12.1
+	 * @since   11.1
 	 */
 	public function __construct($configObj = null)
 	{
 		if (is_object($configObj))
 		{
 			$vars = get_class_vars(get_class($this));
-
 			foreach (array_keys($vars) as $var)
 			{
 				if (substr($var, 0, 1) != '_')
 				{
 					$param = $configObj->get($var);
-
 					if ($param)
 					{
 						$this->$var = $param;
@@ -131,7 +129,7 @@ class JClientLdap
 	 *
 	 * @return  boolean  True if successful
 	 *
-	 * @since   12.1
+	 * @since   11.1
 	 */
 	public function connect()
 	{
@@ -139,9 +137,7 @@ class JClientLdap
 		{
 			return false;
 		}
-
 		$this->_resource = @ ldap_connect($this->host, $this->port);
-
 		if ($this->_resource)
 		{
 			if ($this->use_ldapV3)
@@ -151,12 +147,10 @@ class JClientLdap
 					return false;
 				}
 			}
-
-			if (!@ldap_set_option($this->_resource, LDAP_OPT_REFERRALS, (int) $this->no_referrals))
+			if (!@ldap_set_option($this->_resource, LDAP_OPT_REFERRALS, intval($this->no_referrals)))
 			{
 				return false;
 			}
-
 			if ($this->negotiate_tls)
 			{
 				if (!@ldap_start_tls($this->_resource))
@@ -164,7 +158,6 @@ class JClientLdap
 					return false;
 				}
 			}
-
 			return true;
 		}
 		else
@@ -178,7 +171,7 @@ class JClientLdap
 	 *
 	 * @return  void
 	 *
-	 * @since   12.1
+	 * @since   11.1
 	 */
 	public function close()
 	{
@@ -193,7 +186,7 @@ class JClientLdap
 	 *
 	 * @return  void
 	 *
-	 * @since   12.1
+	 * @since   11.1
 	 */
 	public function setDN($username, $nosub = 0)
 	{
@@ -216,7 +209,7 @@ class JClientLdap
 	 *
 	 * @return  string  The current dn
 	 *
-	 * @since   12.1
+	 * @since   11.1
 	 */
 	public function getDN()
 	{
@@ -228,12 +221,11 @@ class JClientLdap
 	 *
 	 * @return  array
 	 *
-	 * @since   12.1
+	 * @since   11.1
 	 */
 	public function anonymous_bind()
 	{
 		$bindResult = @ldap_bind($this->_resource);
-
 		return $bindResult;
 	}
 
@@ -246,7 +238,7 @@ class JClientLdap
 	 *
 	 * @return  boolean
 	 *
-	 * @since   12.1
+	 * @since   11.1
 	 */
 	public function bind($username = null, $password = null, $nosub = 0)
 	{
@@ -254,15 +246,13 @@ class JClientLdap
 		{
 			$username = $this->username;
 		}
-
 		if (is_null($password))
 		{
 			$password = $this->password;
 		}
-
 		$this->setDN($username, $nosub);
+		//if (strlen($this->getDN()))
 		$bindResult = @ldap_bind($this->_resource, $this->getDN(), $password);
-
 		return $bindResult;
 	}
 
@@ -273,35 +263,31 @@ class JClientLdap
 	 *
 	 * @return  array  Search results
 	 *
-	 * @since   12.1
+	 * @since    11.1
 	 */
 	public function simple_search($search)
 	{
 		$results = explode(';', $search);
-
 		foreach ($results as $key => $result)
 		{
 			$results[$key] = '(' . $result . ')';
 		}
-
 		return $this->search($results);
 	}
 
 	/**
-	 * Performs an LDAP search
+	 * Perform an LDAP search
 	 *
 	 * @param   array   $filters     Search Filters (array of strings)
 	 * @param   string  $dnoverride  DN Override
-	 * @param   array   $attributes  An array of attributes to return (if empty, all fields are returned).
 	 *
 	 * @return  array  Multidimensional array of results
 	 *
-	 * @since   12.1
+	 * @since   11.1
 	 */
-	public function search(array $filters, $dnoverride = null, array $attributes = array())
+	public function search($filters, $dnoverride = null)
 	{
-		$result = array();
-
+		$attributes = array();
 		if ($dnoverride)
 		{
 			$dn = $dnoverride;
@@ -315,14 +301,12 @@ class JClientLdap
 
 		foreach ($filters as $search_filter)
 		{
-			$search_result = @ldap_search($resource, $dn, $search_filter, $attributes);
-
+			$search_result = @ldap_search($resource, $dn, $search_filter);
 			if ($search_result && ($count = @ldap_count_entries($resource, $search_result)) > 0)
 			{
 				for ($i = 0; $i < $count; $i++)
 				{
-					$result[$i] = array();
-
+					$attributes[$i] = array();
 					if (!$i)
 					{
 						$firstentry = @ldap_first_entry($resource, $search_result);
@@ -331,31 +315,26 @@ class JClientLdap
 					{
 						$firstentry = @ldap_next_entry($resource, $firstentry);
 					}
-
 					// Load user-specified attributes
-					$result_array = @ldap_get_attributes($resource, $firstentry);
-
-					// LDAP returns an array of arrays, fit this into attributes result array
-					foreach ($result_array as $ki => $ai)
+					$attributes_array = @ldap_get_attributes($resource, $firstentry);
+					// Ldap returns an array of arrays, fit this into attributes result array
+					foreach ($attributes_array as $ki => $ai)
 					{
 						if (is_array($ai))
 						{
 							$subcount = $ai['count'];
-							$result[$i][$ki] = array();
-
+							$attributes[$i][$ki] = array();
 							for ($k = 0; $k < $subcount; $k++)
 							{
-								$result[$i][$ki][$k] = $ai[$k];
+								$attributes[$i][$ki][$k] = $ai[$k];
 							}
 						}
 					}
-
-					$result[$i]['dn'] = @ldap_get_dn($resource, $firstentry);
+					$attributes[$i]['dn'] = @ldap_get_dn($resource, $firstentry);
 				}
 			}
 		}
-
-		return $result;
+		return $attributes;
 	}
 
 	/**
@@ -366,8 +345,9 @@ class JClientLdap
 	 *
 	 * @return  mixed  result of comparison (true, false, -1 on error)
 	 *
-	 * @since   12.1
+	 * @since   11.1
 	 */
+
 	public function replace($dn, $attribute)
 	{
 		return @ldap_mod_replace($this->_resource, $dn, $attribute);
@@ -381,7 +361,7 @@ class JClientLdap
 	 *
 	 * @return  mixed  result of comparison (true, false, -1 on error)
 	 *
-	 * @since   12.1
+	 * @since   11.1
 	 */
 	public function modify($dn, $attribute)
 	{
@@ -396,12 +376,11 @@ class JClientLdap
 	 *
 	 * @return  mixed  result of comparison (true, false, -1 on error)
 	 *
-	 * @since   12.1
+	 * @since   11.1
 	 */
 	public function remove($dn, $attribute)
 	{
 		$resource = $this->_resource;
-
 		return @ldap_mod_del($resource, $dn, $attribute);
 	}
 
@@ -414,7 +393,7 @@ class JClientLdap
 	 *
 	 * @return  mixed  result of comparison (true, false, -1 on error)
 	 *
-	 * @since   12.1
+	 * @since   11.1
 	 */
 	public function compare($dn, $attribute, $value)
 	{
@@ -424,13 +403,14 @@ class JClientLdap
 	/**
 	 * Read all or specified attributes of given dn
 	 *
-	 * @param   string  $dn  The DN of the object you want to read
+	 * @param   string  $dn         The DN of the object you want to read
+	 * @param   string  $attribute  The attribute values you want to read (Optional)
 	 *
 	 * @return  mixed  array of attributes or -1 on error
 	 *
-	 * @since   12.1
+	 * @since   11.1
 	 */
-	public function read($dn)
+	public function read($dn, $attribute = array())
 	{
 		$base = substr($dn, strpos($dn, ',') + 1);
 		$cn = substr($dn, 0, strpos($dn, ','));
@@ -452,8 +432,6 @@ class JClientLdap
 	 * @param   string  $dn  The DN of the object you want to delete
 	 *
 	 * @return  boolean  Result of operation
-	 *
-	 * @since   12.1
 	 */
 	public function delete($dn)
 	{
@@ -467,10 +445,8 @@ class JClientLdap
 	 * @param   array   $entries  An array of arrays describing the object to add
 	 *
 	 * @return  boolean  Result of operation
-	 *
-	 * @since   12.1
 	 */
-	public function create($dn, array $entries)
+	public function create($dn, $entries)
 	{
 		return @ldap_add($this->_resource, $dn, $entries);
 	}
@@ -483,10 +459,8 @@ class JClientLdap
 	 * @param   array   $entry  An array of arrays with attributes to add
 	 *
 	 * @return  boolean   Result of operation
-	 *
-	 * @since   12.1
 	 */
-	public function add($dn, array $entry)
+	public function add($dn, $entry)
 	{
 		return @ldap_mod_add($this->_resource, $dn, $entry);
 	}
@@ -501,7 +475,7 @@ class JClientLdap
 	 *
 	 * @return  boolean  Result of operation
 	 *
-	 * @since   12.1
+	 * @since   11.1
 	 */
 	public function rename($dn, $newdn, $newparent, $deleteolddn)
 	{
@@ -513,7 +487,7 @@ class JClientLdap
 	 *
 	 * @return  string   error message
 	 *
-	 * @since   12.1
+	 * @since   11.1
 	 */
 	public function getErrorMsg()
 	{
@@ -527,9 +501,9 @@ class JClientLdap
 	 *
 	 * @return  string  Net address
 	 *
-	 * @since   12.1
+	 * @since   11.1
 	 */
-	public static function ipToNetAddress($ip)
+	public function ipToNetAddress($ip)
 	{
 		$parts = explode('.', $ip);
 		$address = '1#';
@@ -537,15 +511,12 @@ class JClientLdap
 		foreach ($parts as $int)
 		{
 			$tmp = dechex($int);
-
 			if (strlen($tmp) != 2)
 			{
 				$tmp = '0' . $tmp;
 			}
-
 			$address .= '\\' . $tmp;
 		}
-
 		return $address;
 	}
 
@@ -571,15 +542,13 @@ class JClientLdap
 	 * @return  array
 	 *
 	 * @author  Jay Burrell, Systems & Networks, Mississippi State University
-	 * @since   12.1
+	 * @since   11.1
 	 */
-	public static function LDAPNetAddr($networkaddress)
+	public function LDAPNetAddr($networkaddress)
 	{
 		$addr = "";
-		$addrtype = (int) substr($networkaddress, 0, 1);
-
-		// Throw away bytes 0 and 1 which should be the addrtype and the "#" separator
-		$networkaddress = substr($networkaddress, 2);
+		$addrtype = intval(substr($networkaddress, 0, 1));
+		$networkaddress = substr($networkaddress, 2); // throw away bytes 0 and 1 which should be the addrtype and the "#" separator
 
 		if (($addrtype == 8) || ($addrtype = 9))
 		{
@@ -604,23 +573,21 @@ class JClientLdap
 			'URL',
 			'Count');
 		$len = strlen($networkaddress);
-
 		if ($len > 0)
 		{
-			for ($i = 0; $i < $len; $i++)
+			for ($i = 0; $i < $len; $i += 1)
 			{
 				$byte = substr($networkaddress, $i, 1);
 				$addr .= ord($byte);
-
 				if (($addrtype == 1) || ($addrtype == 8) || ($addrtype = 9))
 				{
-					// Dot separate IP addresses...
+					// dot separate IP addresses...
 					$addr .= ".";
 				}
 			}
 			if (($addrtype == 1) || ($addrtype == 8) || ($addrtype = 9))
 			{
-				// Strip last period from end of $addr
+				// strip last period from end of $addr
 				$addr = substr($addr, 0, strlen($addr) - 1);
 			}
 		}
@@ -639,45 +606,20 @@ class JClientLdap
 	 *
 	 * @return  string   Encrypted password
 	 *
-	 * @since   12.1
+	 * @since   11.1
 	 */
-	public static function generatePassword($password, $type = 'md5')
+	public function generatePassword($password, $type = 'md5')
 	{
+		$userpassword = '';
 		switch (strtolower($type))
 		{
 			case 'sha':
 				$userpassword = '{SHA}' . base64_encode(pack('H*', sha1($password)));
-				break;
 			case 'md5':
 			default:
 				$userpassword = '{MD5}' . base64_encode(pack('H*', md5($password)));
 				break;
 		}
-
 		return $userpassword;
-	}
-}
-
-/**
- * Deprecated class placeholder. You should use JClientLdap instead.
- *
- * @package     Joomla.Platform
- * @subpackage  Client
- * @since       11.1
- * @deprecated  12.3 (Platform) & 4.0 (CMS)
- */
-class JLDAP extends JClientLdap
-{
-	/**
-	 * Constructor
-	 *
-	 * @param   object  $configObj  An object of configuration variables
-	 *
-	 * @since   11.1
-	 */
-	public function __construct($configObj = null)
-	{
-		JLog::add('JLDAP is deprecated. Use JClientLdap instead.', JLog::WARNING, 'deprecated');
-		parent::__construct($configObj);
 	}
 }

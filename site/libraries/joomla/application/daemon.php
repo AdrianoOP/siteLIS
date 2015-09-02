@@ -73,12 +73,6 @@ class JApplicationDaemon extends JApplicationCli
 	protected $exiting = false;
 
 	/**
-	 * @var    integer  The parent process id.
-	 * @since  12.1
-	 */
-	protected $parentId = 0;
-
-	/**
 	 * @var    integer  The process id of the daemon.
 	 * @since  11.1
 	 */
@@ -100,14 +94,14 @@ class JApplicationDaemon extends JApplicationCli
 	 *                              config object.  If the argument is a JRegistry object that object will become
 	 *                              the application's config object, otherwise a default config object is created.
 	 * @param   mixed  $dispatcher  An optional argument to provide dependency injection for the application's
-	 *                              event dispatcher.  If the argument is a JEventDispatcher object that object will become
+	 *                              event dispatcher.  If the argument is a JDispatcher object that object will become
 	 *                              the application's event dispatcher, if it is null then the default event dispatcher
 	 *                              will be created based on the application's loadDispatcher() method.
 	 *
 	 * @since   11.1
 	 * @throws  RuntimeException
 	 */
-	public function __construct(JInputCli $input = null, JRegistry $config = null, JEventDispatcher $dispatcher = null)
+	public function __construct(JInputCli $input = null, JRegistry $config = null, JDispatcher $dispatcher = null)
 	{
 		// Verify that the process control extension for PHP is available.
 		// @codeCoverageIgnoreStart
@@ -130,7 +124,6 @@ class JApplicationDaemon extends JApplicationCli
 
 		// Set some system limits.
 		@set_time_limit($this->config->get('max_execution_time', 0));
-
 		if ($this->config->get('max_memory_limit') !== null)
 		{
 			ini_set('memory_limit', $this->config->get('max_memory_limit', '256M'));
@@ -157,51 +150,50 @@ class JApplicationDaemon extends JApplicationCli
 		JLog::add('Received signal: ' . $signal, JLog::DEBUG);
 
 		// Let's make sure we have an application instance.
-		if (!is_subclass_of(static::$instance, 'JApplicationDaemon'))
+		if (!is_subclass_of(self::$instance, 'JApplicationDaemon'))
 		{
 			JLog::add('Cannot find the application instance.', JLog::EMERGENCY);
 			throw new RuntimeException('Cannot find the application instance.');
 		}
 
 		// Fire the onReceiveSignal event.
-		static::$instance->triggerEvent('onReceiveSignal', array($signal));
+		self::$instance->triggerEvent('onReceiveSignal', array($signal));
 
 		switch ($signal)
 		{
-			case SIGINT:
 			case SIGTERM:
 				// Handle shutdown tasks
-				if (static::$instance->running && static::$instance->isActive())
+				if (self::$instance->running && self::$instance->isActive())
 				{
-					static::$instance->shutdown();
+					self::$instance->shutdown();
 				}
 				else
 				{
-					static::$instance->close();
+					self::$instance->close();
 				}
 				break;
 			case SIGHUP:
 				// Handle restart tasks
-				if (static::$instance->running && static::$instance->isActive())
+				if (self::$instance->running && self::$instance->isActive())
 				{
-					static::$instance->shutdown(true);
+					self::$instance->shutdown(true);
 				}
 				else
 				{
-					static::$instance->close();
+					self::$instance->close();
 				}
 				break;
 			case SIGCHLD:
 				// A child process has died
-				while (static::$instance->pcntlWait($signal, WNOHANG || WUNTRACED) > 0)
+				while (self::$instance->pcntlWait($signal, WNOHANG or WUNTRACED) > 0)
 				{
 					usleep(1000);
 				}
 				break;
 			case SIGCLD:
-				while (static::$instance->pcntlWait($signal, WNOHANG) > 0)
+				while (self::$instance->pcntlWait($signal, WNOHANG) > 0)
 				{
-					$signal = static::$instance->pcntlChildExitStatus($signal);
+					$signal = self::$instance->pcntlChildExitStatus($signal);
 				}
 				break;
 			default:
@@ -231,7 +223,7 @@ class JApplicationDaemon extends JApplicationCli
 		// Read the contents of the process id file as an integer.
 		$fp = fopen($pidFile, 'r');
 		$pid = fread($fp, filesize($pidFile));
-		$pid = (int) $pid;
+		$pid = intval($pid);
 		fclose($fp);
 
 		// Check to make sure that the process id exists as a positive integer.
@@ -336,7 +328,6 @@ class JApplicationDaemon extends JApplicationCli
 
 		// The maximum execution time of the application in seconds.  Zero is infinite.
 		$tmp = $this->config->get('max_execution_time');
-
 		if ($tmp !== null)
 		{
 			$this->config->set('max_execution_time', (int) $tmp);
@@ -344,7 +335,6 @@ class JApplicationDaemon extends JApplicationCli
 
 		// The maximum amount of memory the application can use.
 		$tmp = $this->config->get('max_memory_limit', '256M');
-
 		if ($tmp !== null)
 		{
 			$this->config->set('max_memory_limit', (string) $tmp);
@@ -354,19 +344,33 @@ class JApplicationDaemon extends JApplicationCli
 	}
 
 	/**
-	 * Execute the daemon.
+	 * Restart daemon process.
+	 *
+	 * @return  void
+	 *
+	 * @codeCoverageIgnore
+	 * @since   11.1
+	 */
+	public function restart()
+	{
+		JLog::add('Stopping ' . $this->name, JLog::INFO);
+		$this->shutdown(true);
+	}
+
+	/**
+	 * Spawn daemon process.
 	 *
 	 * @return  void
 	 *
 	 * @since   11.1
 	 */
-	public function execute()
+	public function start()
 	{
-		// Trigger the onBeforeExecute event.
-		$this->triggerEvent('onBeforeExecute');
-
-		// Enable basic garbage collection.
-		gc_enable();
+		// Enable basic garbage collection.  Only available in PHP 5.3+
+		if (function_exists('gc_enable'))
+		{
+			gc_enable();
+		}
 
 		JLog::add('Starting ' . $this->name, JLog::INFO);
 
@@ -395,23 +399,6 @@ class JApplicationDaemon extends JApplicationCli
 		{
 			JLog::add('Starting ' . $this->name . ' failed', JLog::INFO);
 		}
-
-		// Trigger the onAfterExecute event.
-		$this->triggerEvent('onAfterExecute');
-	}
-
-	/**
-	 * Restart daemon process.
-	 *
-	 * @return  void
-	 *
-	 * @codeCoverageIgnore
-	 * @since   11.1
-	 */
-	public function restart()
-	{
-		JLog::add('Stopping ' . $this->name, JLog::INFO);
-		$this->shutdown(true);
 	}
 
 	/**
@@ -449,7 +436,6 @@ class JApplicationDaemon extends JApplicationCli
 		if ($uid && (fileowner($file) != $uid) && (!@ chown($file, $uid)))
 		{
 			JLog::add('Unable to change user ownership of the process id file.', JLog::ERROR);
-
 			return false;
 		}
 
@@ -457,7 +443,6 @@ class JApplicationDaemon extends JApplicationCli
 		if ($gid && (filegroup($file) != $gid) && (!@ chgrp($file, $gid)))
 		{
 			JLog::add('Unable to change group ownership of the process id file.', JLog::ERROR);
-
 			return false;
 		}
 
@@ -471,7 +456,6 @@ class JApplicationDaemon extends JApplicationCli
 		if ($uid && (posix_getuid($file) != $uid) && (!@ posix_setuid($uid)))
 		{
 			JLog::add('Unable to change user ownership of the proccess.', JLog::ERROR);
-
 			return false;
 		}
 
@@ -479,7 +463,6 @@ class JApplicationDaemon extends JApplicationCli
 		if ($gid && (posix_getgid($file) != $gid) && (!@ posix_setgid($gid)))
 		{
 			JLog::add('Unable to change group ownership of the proccess.', JLog::ERROR);
-
 			return false;
 		}
 
@@ -506,7 +489,6 @@ class JApplicationDaemon extends JApplicationCli
 		if ($this->isActive())
 		{
 			JLog::add($this->name . ' daemon is still running. Exiting the application.', JLog::EMERGENCY);
-
 			return false;
 		}
 
@@ -518,27 +500,11 @@ class JApplicationDaemon extends JApplicationCli
 		// Detach process!
 		try
 		{
-			// Check if we should run in the foreground.
-			if (!$this->input->get('f'))
-			{
-				// Detach from the terminal.
-				$this->detach();
-			}
-			else
-			{
-				// Setup running values.
-				$this->exiting = false;
-				$this->running = true;
-
-				// Set the process id.
-				$this->processId = (int) posix_getpid();
-				$this->parentId = $this->processId;
-			}
+			$this->detach();
 		}
 		catch (RuntimeException $e)
 		{
 			JLog::add('Unable to fork.', JLog::EMERGENCY);
-
 			return false;
 		}
 
@@ -546,7 +512,6 @@ class JApplicationDaemon extends JApplicationCli
 		if ($this->processId < 1)
 		{
 			JLog::add('The process id is invalid; the fork failed.', JLog::EMERGENCY);
-
 			return false;
 		}
 
@@ -557,7 +522,6 @@ class JApplicationDaemon extends JApplicationCli
 		if (!$this->writeProcessIdFile())
 		{
 			JLog::add('Unable to write the pid file at: ' . $this->config->get('application_pid_file'), JLog::EMERGENCY);
-
 			return false;
 		}
 
@@ -569,7 +533,6 @@ class JApplicationDaemon extends JApplicationCli
 			if ($this->config->get('application_require_identity'))
 			{
 				JLog::add('Unable to change process owner.', JLog::CRITICAL);
-
 				return false;
 			}
 			else
@@ -619,9 +582,6 @@ class JApplicationDaemon extends JApplicationCli
 			// Setup some protected values.
 			$this->exiting = false;
 			$this->running = true;
-
-			// Set the parent to self.
-			$this->parentId = $this->processId;
 		}
 	}
 
@@ -672,8 +632,11 @@ class JApplicationDaemon extends JApplicationCli
 	 */
 	protected function gc()
 	{
-		// Perform generic garbage collection.
-		gc_collect_cycles();
+		// Perform generic garbage collection.  Only available in PHP 5.3+
+		if (function_exists('gc_collect_cycles'))
+		{
+			gc_collect_cycles();
+		}
 
 		// Clear the stat cache so it doesn't blow up memory.
 		clearstatcache();
@@ -697,11 +660,6 @@ class JApplicationDaemon extends JApplicationCli
 			// Ignore signals that are not defined.
 			if (!defined($signal) || !is_int(constant($signal)) || (constant($signal) === 0))
 			{
-				// Define the signal to avoid notices.
-				JLog::add('Signal "' . $signal . '" not defined. Defining it as null.', JLog::DEBUG);
-				define($signal, null);
-
-				// Don't listen for signal.
 				continue;
 			}
 
@@ -709,7 +667,6 @@ class JApplicationDaemon extends JApplicationCli
 			if (!$this->pcntlSignal(constant($signal), array('JApplicationDaemon', 'signal')))
 			{
 				JLog::add(sprintf('Unable to reroute signal handler: %s', $signal), JLog::EMERGENCY);
-
 				return false;
 			}
 		}
@@ -746,29 +703,25 @@ class JApplicationDaemon extends JApplicationCli
 			$this->close();
 		}
 
-		// Only read the pid for the parent file.
-		if ($this->parentId == $this->processId)
+		// Read the contents of the process id file as an integer.
+		$fp = fopen($this->config->get('application_pid_file'), 'r');
+		$pid = fread($fp, filesize($this->config->get('application_pid_file')));
+		$pid = intval($pid);
+		fclose($fp);
+
+		// Remove the process id file.
+		@ unlink($this->config->get('application_pid_file'));
+
+		// If we are supposed to restart the daemon we need to execute the same command.
+		if ($restart)
 		{
-			// Read the contents of the process id file as an integer.
-			$fp = fopen($this->config->get('application_pid_file'), 'r');
-			$pid = fread($fp, filesize($this->config->get('application_pid_file')));
-			$pid = (int) $pid;
-			fclose($fp);
-
-			// Remove the process id file.
-			@ unlink($this->config->get('application_pid_file'));
-
-			// If we are supposed to restart the daemon we need to execute the same command.
-			if ($restart)
-			{
-				$this->close(exec(implode(' ', $GLOBALS['argv']) . ' > /dev/null &'));
-			}
-			// If we are not supposed to restart the daemon let's just kill -9.
-			else
-			{
-				passthru('kill -9 ' . $pid);
-				$this->close();
-			}
+			$this->close(exec(implode(' ', $GLOBALS['argv']) . ' > /dev/null &'));
+		}
+		// If we are not supposed to restart the daemon let's just kill -9.
+		else
+		{
+			passthru('kill -9 ' . $pid);
+			$this->close();
 		}
 	}
 
@@ -785,27 +738,22 @@ class JApplicationDaemon extends JApplicationCli
 		if ($this->processId < 1)
 		{
 			JLog::add('The process id is invalid.', JLog::EMERGENCY);
-
 			return false;
 		}
 
 		// Get the application process id file path.
 		$file = $this->config->get('application_pid_file');
-
 		if (empty($file))
 		{
 			JLog::add('The process id file path is empty.', JLog::ERROR);
-
 			return false;
 		}
 
 		// Make sure that the folder where we are writing the process id file exists.
 		$folder = dirname($file);
-
 		if (!is_dir($folder) && !JFolder::create($folder))
 		{
 			JLog::add('Unable to create directory: ' . $folder, JLog::ERROR);
-
 			return false;
 		}
 
@@ -813,7 +761,6 @@ class JApplicationDaemon extends JApplicationCli
 		if (!file_put_contents($file, $this->processId))
 		{
 			JLog::add('Unable to write proccess id file: ' . $file, JLog::ERROR);
-
 			return false;
 		}
 
@@ -821,7 +768,6 @@ class JApplicationDaemon extends JApplicationCli
 		if (!chmod($file, 0644))
 		{
 			JLog::add('Unable to adjust permissions for the proccess id file: ' . $file, JLog::ERROR);
-
 			return false;
 		}
 
@@ -878,7 +824,7 @@ class JApplicationDaemon extends JApplicationCli
 	 * Method to install a signal handler.
 	 *
 	 * @param   integer   $signal   The signal number.
-	 * @param   callable  $handler  The signal handler which may be the name of a user created function,
+	 * @param   callback  $handler  The signal handler which may be the name of a user created function,
 	 *                              or method, or either of the two global constants SIG_IGN or SIG_DFL.
 	 * @param   boolean   $restart  Specifies whether system call restarting should be used when this
 	 *                              signal arrives.

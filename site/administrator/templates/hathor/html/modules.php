@@ -1,12 +1,13 @@
 <?php
 /**
- * @package     Joomla.Administrator
- * @subpackage  Template.hathor
- *
- * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @package		Joomla.Administrator
+ * @subpackage	Templates.hathor
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @since		1.6
  */
 
+// no direct access
 defined('_JEXEC') or die;
 
 /**
@@ -28,18 +29,16 @@ defined('_JEXEC') or die;
  */
 function modChrome_xhtmlid($module, &$params, &$attribs)
 {
-	if ($module->content)
-	{
+	if ($module->content) {
 		?>
-		<div id="<?php echo (int) $attribs['id'] ?>">
+		<div id="<?php echo (int)$attribs['id'] ?>">
 
 				<?php echo $module->content; ?>
 				<div class="clr"></div>
 
 		</div>
 		<?php
-	} elseif ($attribs['id'] == "submenu-box")
-	{
+	} elseif ($attribs['id'] == "submenu-box") {
 		?>
 		<div id="no-submenu"></div>
 		<?php

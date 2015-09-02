@@ -18,12 +18,12 @@
 
 		<field
 			name="message"
-			type="editor"
+			type="textarea"
+			rows="10"
+			cols="80"
 			label="COM_MESSAGES_FIELD_MESSAGE_LABEL"
 			description="COM_MESSAGES_FIELD_MESSAGE_DESC"
-			required="true"
-			filter="JComponentHelper::filterText"
-			buttons="true"
-			hide="readmore,pagebreak,image,article" />
+			required="true">
+		</field>
 	</fieldset>
 </form>

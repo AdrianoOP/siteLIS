@@ -9,6 +9,8 @@
 
 defined('_JEXEC') or die;
 
+jimport('joomla.application.component.helper');
+
 /**
  * Finder route helper class.
  *

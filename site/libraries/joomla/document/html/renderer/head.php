@@ -33,44 +33,35 @@ class JDocumentRendererHead extends JDocumentRenderer
 	 */
 	public function render($head, $params = array(), $content = null)
 	{
-		return $this->fetchHead($this->_doc);
+		ob_start();
+		echo $this->fetchHead($this->_doc);
+		$buffer = ob_get_contents();
+		ob_end_clean();
+
+		return $buffer;
 	}
 
 	/**
 	 * Generates the head HTML and return the results as a string
 	 *
-	 * @param   JDocument  $document  The document for which the head will be created
+	 * @param   JDocument  &$document  The document for which the head will be created
 	 *
 	 * @return  string  The head hTML
 	 *
 	 * @since   11.1
 	 */
-	public function fetchHead($document)
+	public function fetchHead(&$document)
 	{
-		// Convert the tagids to titles
-		if (isset($document->_metaTags['standard']['tags']))
-		{
-			$tagsHelper = new JHelperTags;
-			$document->_metaTags['standard']['tags'] = implode(', ', $tagsHelper->getTagNames($document->_metaTags['standard']['tags']));
-		}
-
-		// Trigger the onBeforeCompileHead event
+		// Trigger the onBeforeCompileHead event (skip for installation, since it causes an error)
 		$app = JFactory::getApplication();
 		$app->triggerEvent('onBeforeCompileHead');
-
 		// Get line endings
 		$lnEnd = $document->_getLineEnd();
 		$tab = $document->_getTab();
 		$tagEnd = ' />';
 		$buffer = '';
 
-		// Generate charset when using HTML5 (should happen first)
-		if ($document->isHtml5())
-		{
-			$buffer .= $tab . '<meta charset="' . $document->getCharset() . '" />' . $lnEnd;
-		}
-
-		// Generate base tag (need to happen early)
+		// Generate base tag (need to happen first)
 		$base = $document->getBase();
 		if (!empty($base))
 		{
@@ -82,8 +73,9 @@ class JDocumentRendererHead extends JDocumentRenderer
 		{
 			foreach ($tag as $name => $content)
 			{
-				if ($type == 'http-equiv' && !($document->isHtml5() && $name == 'content-type'))
+				if ($type == 'http-equiv')
 				{
+					$content .= '; charset=' . $document->getCharset();
 					$buffer .= $tab . '<meta http-equiv="' . $name . '" content="' . htmlspecialchars($content) . '" />' . $lnEnd;
 				}
 				elseif ($type == 'standard' && !empty($content))
@@ -123,23 +115,15 @@ class JDocumentRendererHead extends JDocumentRenderer
 		// Generate stylesheet links
 		foreach ($document->_styleSheets as $strSrc => $strAttr)
 		{
-			$buffer .= $tab . '<link rel="stylesheet" href="' . $strSrc . '"';
-
-			if (!is_null($strAttr['mime']) && (!$document->isHtml5() || $strAttr['mime'] != 'text/css'))
-			{
-				$buffer .= ' type="' . $strAttr['mime'] . '"';
-			}
-
+			$buffer .= $tab . '<link rel="stylesheet" href="' . $strSrc . '" type="' . $strAttr['mime'] . '"';
 			if (!is_null($strAttr['media']))
 			{
-				$buffer .= ' media="' . $strAttr['media'] . '"';
+				$buffer .= ' media="' . $strAttr['media'] . '" ';
 			}
-
 			if ($temp = JArrayHelper::toString($strAttr['attribs']))
 			{
 				$buffer .= ' ' . $temp;
 			}
-
 			$buffer .= $tagEnd . $lnEnd;
 		}
 
@@ -168,25 +152,18 @@ class JDocumentRendererHead extends JDocumentRenderer
 		foreach ($document->_scripts as $strSrc => $strAttr)
 		{
 			$buffer .= $tab . '<script src="' . $strSrc . '"';
-			$defaultMimes = array(
-				'text/javascript', 'application/javascript', 'text/x-javascript', 'application/x-javascript'
-			);
-
-			if (!is_null($strAttr['mime']) && (!$document->isHtml5() || !in_array($strAttr['mime'], $defaultMimes)))
+			if (!is_null($strAttr['mime']))
 			{
 				$buffer .= ' type="' . $strAttr['mime'] . '"';
 			}
-
 			if ($strAttr['defer'])
 			{
 				$buffer .= ' defer="defer"';
 			}
-
 			if ($strAttr['async'])
 			{
 				$buffer .= ' async="async"';
 			}
-
 			$buffer .= '></script>' . $lnEnd;
 		}
 

@@ -13,7 +13,7 @@ defined('JPATH_PLATFORM') or die;
  * XCache session storage handler
  *
  * @package     Joomla.Platform
- * @subpackage  Session
+ * @subpackage  Cache
  * @since       11.1
  */
 class JSessionStorageXcache extends JSessionStorage
@@ -24,13 +24,12 @@ class JSessionStorageXcache extends JSessionStorage
 	 * @param   array  $options  Optional parameters.
 	 *
 	 * @since   11.1
-	 * @throws  RuntimeException
 	 */
 	public function __construct($options = array())
 	{
-		if (!self::isSupported())
+		if (!$this->test())
 		{
-			throw new RuntimeException('XCache Extension is not available', 404);
+			return JError::raiseError(404, JText::_('JLIB_SESSION_XCACHE_EXTENSION_NOT_AVAILABLE'));
 		}
 
 		parent::__construct($options);
@@ -99,10 +98,8 @@ class JSessionStorageXcache extends JSessionStorage
 	 * Test to see if the SessionHandler is available.
 	 *
 	 * @return boolean  True on success, false otherwise.
-	 *
-	 * @since   12.1
 	 */
-	static public function isSupported()
+	static public function test()
 	{
 		return (extension_loaded('xcache'));
 	}

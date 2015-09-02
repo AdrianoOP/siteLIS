@@ -1,10 +1,7 @@
 <?php
 /**
- * @package     Joomla.Administrator
- * @subpackage  com_search
- *
- * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('_JEXEC') or die;
@@ -12,18 +9,15 @@ defined('_JEXEC') or die;
 /**
  * View class for a list of search terms.
  *
- * @package     Joomla.Administrator
- * @subpackage  com_search
- * @since       1.5
+ * @package		Joomla.Administrator
+ * @subpackage	com_search
+ * @since		1.5
  */
 class SearchViewSearches extends JViewLegacy
 {
 	protected $enabled;
-
 	protected $items;
-
 	protected $pagination;
-
 	protected $state;
 
 	/**
@@ -35,11 +29,9 @@ class SearchViewSearches extends JViewLegacy
 		$this->pagination	= $this->get('Pagination');
 		$this->state		= $this->get('State');
 		$this->enabled		= $this->state->params->get('enabled');
-		$this->canDo		= JHelperContent::getActions('com_search');
 
 		// Check for errors.
-		if (count($errors = $this->get('Errors')))
-		{
+		if (count($errors = $this->get('Errors'))) {
 			JError::raiseError(500, implode("\n", $errors));
 			return false;
 		}
@@ -51,24 +43,22 @@ class SearchViewSearches extends JViewLegacy
 	/**
 	 * Add the page title and toolbar.
 	 *
-	 * @since   1.6
+	 * @since	1.6
 	 */
 	protected function addToolbar()
 	{
-		$canDo	= $this->canDo;
+		$canDo	= SearchHelper::getActions();
 
-		JToolbarHelper::title(JText::_('COM_SEARCH_MANAGER_SEARCHES'), 'search');
+		JToolBarHelper::title(JText::_('COM_SEARCH_MANAGER_SEARCHES'), 'search.png');
 
-		if ($canDo->get('core.edit.state'))
-		{
-			JToolbarHelper::custom('searches.reset', 'refresh.png', 'refresh_f2.png', 'JSEARCH_RESET', false);
+		if ($canDo->get('core.edit.state')) {
+			JToolBarHelper::custom('searches.reset', 'refresh.png', 'refresh_f2.png', 'JSEARCH_RESET', false);
 		}
-		JToolbarHelper::divider();
-		if ($canDo->get('core.admin'))
-		{
-			JToolbarHelper::preferences('com_search');
+		JToolBarHelper::divider();
+		if ($canDo->get('core.admin')) {
+			JToolBarHelper::preferences('com_search');
 		}
-		JToolbarHelper::divider();
-		JToolbarHelper::help('JHELP_COMPONENTS_SEARCH');
+		JToolBarHelper::divider();
+		JToolBarHelper::help('JHELP_COMPONENTS_SEARCH');
 	}
 }

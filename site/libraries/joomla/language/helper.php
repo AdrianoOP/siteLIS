@@ -24,7 +24,7 @@ class JLanguageHelper
 	 * @param   string   $actualLanguage  Client key for the area
 	 * @param   string   $basePath        Base path to use
 	 * @param   boolean  $caching         True if caching is used
-	 * @param   boolean  $installed       Get only installed languages
+	 * @param   array    $installed       An array of arrays (text, value, selected)
 	 *
 	 * @return  array  List of system languages
 	 *
@@ -36,17 +36,16 @@ class JLanguageHelper
 
 		// Cache activation
 		$langs = JLanguage::getKnownLanguages($basePath);
-
 		if ($installed)
 		{
-			$db = JFactory::getDbo();
-			$query = $db->getQuery(true)
-				->select('element')
-				->from('#__extensions')
-				->where('type=' . $db->quote('language'))
-				->where('state=0')
-				->where('enabled=1')
-				->where('client_id=' . ($basePath == JPATH_ADMINISTRATOR ? 1 : 0));
+			$db = JFactory::getDBO();
+			$query = $db->getQuery(true);
+			$query->select('element');
+			$query->from('#__extensions');
+			$query->where('type=' . $db->quote('language'));
+			$query->where('state=0');
+			$query->where('enabled=1');
+			$query->where('client_id=' . ($basePath == JPATH_ADMINISTRATOR ? 1 : 0));
 			$db->setQuery($query);
 			$installed_languages = $db->loadObjectList('element');
 		}
@@ -59,12 +58,10 @@ class JLanguageHelper
 
 				$option['text'] = $metadata['name'];
 				$option['value'] = $lang;
-
 				if ($lang == $actualLanguage)
 				{
 					$option['selected'] = 'selected="selected"';
 				}
-
 				$list[] = $option;
 			}
 		}
@@ -85,13 +82,11 @@ class JLanguageHelper
 		{
 			$browserLangs = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
 			$systemLangs = self::getLanguages();
-
 			foreach ($browserLangs as $browserLang)
 			{
 				// Slice out the part before ; on first step, the part before - on second, place into array
 				$browserLang = substr($browserLang, 0, strcspn($browserLang, ';'));
 				$primary_browserLang = substr($browserLang, 0, 2);
-
 				foreach ($systemLangs as $systemLang)
 				{
 					// Take off 3 letters iso code languages as they can't match browsers' languages and default them to en
@@ -140,24 +135,20 @@ class JLanguageHelper
 			{
 				$languages[$key] = array();
 				$knownLangs = JLanguage::getKnownLanguages(JPATH_BASE);
-
 				foreach ($knownLangs as $metadata)
 				{
 					// Take off 3 letters iso code languages as they can't match browsers' languages and default them to en
-					$obj = new stdClass;
-					$obj->lang_code = $metadata['tag'];
-					$languages[$key][] = $obj;
+					$languages[$key][] = new JObject(array('lang_code' => $metadata['tag']));
 				}
 			}
 			else
 			{
 				$cache = JFactory::getCache('com_languages', '');
-
 				if (!$languages = $cache->get('languages'))
 				{
-					$db = JFactory::getDbo();
-					$query = $db->getQuery(true)
-						->select('*')
+					$db = JFactory::getDBO();
+					$query = $db->getQuery(true);
+					$query->select('*')
 						->from('#__languages')
 						->where('published=1')
 						->order('ordering ASC');
@@ -180,7 +171,6 @@ class JLanguageHelper
 				}
 			}
 		}
-
 		return $languages[$key];
 	}
 }

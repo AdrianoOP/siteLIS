@@ -10,11 +10,11 @@
 defined('JPATH_PLATFORM') or die;
 
 /**
- * Field to select a user ID from a modal list.
+ * Field to select a user id from a modal list.
  *
  * @package     Joomla.Libraries
  * @subpackage  Form
- * @since       1.6
+ * @since       1.6.0
  */
 class JFormFieldUser extends JFormField
 {
@@ -22,7 +22,7 @@ class JFormFieldUser extends JFormField
 	 * The form field type.
 	 *
 	 * @var    string
-	 * @since  1.6
+	 * @since  1.6.0
 	 */
 	public $type = 'User';
 
@@ -31,10 +31,11 @@ class JFormFieldUser extends JFormField
 	 *
 	 * @return  string  The field input markup.
 	 *
-	 * @since   1.6
+	 * @since   1.6.0
 	 */
 	protected function getInput()
 	{
+		// Initialize variables.
 		$html = array();
 		$groups = $this->getGroups();
 		$excluded = $this->getExcluded();
@@ -43,9 +44,11 @@ class JFormFieldUser extends JFormField
 			. (isset($excluded) ? ('&amp;excluded=' . base64_encode(json_encode($excluded))) : '');
 
 		// Initialize some field attributes.
-		$attr = !empty($this->class) ? ' class="' . $this->class . '"' : '';
-		$attr .= !empty($this->size) ? ' size="' . $this->size . '"' : '';
-		$attr .= $this->required ? ' required' : '';
+		$attr = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
+		$attr .= $this->element['size'] ? ' size="' . (int) $this->element['size'] . '"' : '';
+
+		// Initialize JavaScript field attributes.
+		$onchange = (string) $this->element['onchange'];
 
 		// Load the modal behavior script.
 		JHtml::_('behavior.modal', 'a.modal_' . $this->id);
@@ -56,9 +59,8 @@ class JFormFieldUser extends JFormField
 		$script[] = '		var old_id = document.getElementById("' . $this->id . '_id").value;';
 		$script[] = '		if (old_id != id) {';
 		$script[] = '			document.getElementById("' . $this->id . '_id").value = id;';
-		$script[] = '			document.getElementById("' . $this->id . '").value = title;';
-		$script[] = '			document.getElementById("' . $this->id . '").className = document.getElementById("' . $this->id . '").className.replace(" invalid" , "");';
-		$script[] = '			' . $this->onchange;
+		$script[] = '			document.getElementById("' . $this->id . '_name").value = title;';
+		$script[] = '			' . $onchange;
 		$script[] = '		}';
 		$script[] = '		SqueezeBox.close();';
 		$script[] = '	}';
@@ -68,16 +70,8 @@ class JFormFieldUser extends JFormField
 
 		// Load the current username if available.
 		$table = JTable::getInstance('user');
-
-		if (is_numeric($this->value))
+		if ($this->value)
 		{
-			$table->load($this->value);
-		}
-		// Handle the special case for "current".
-		elseif (strtoupper($this->value) == 'CURRENT')
-		{
-			// 'CURRENT' is not a reasonable value to be placed in the html
-			$this->value = JFactory::getUser()->id;
 			$table->load($this->value);
 		}
 		else
@@ -86,22 +80,25 @@ class JFormFieldUser extends JFormField
 		}
 
 		// Create a dummy text field with the user name.
-		$html[] = '<div class="input-append">';
-		$html[] = '	<input type="text" id="' . $this->id . '" value="' . htmlspecialchars($table->name, ENT_COMPAT, 'UTF-8') . '"'
-			. ' readonly' . $attr . ' />';
+		$html[] = '<div class="fltlft">';
+		$html[] = '	<input type="text" id="' . $this->id . '_name"' . ' value="' . htmlspecialchars($table->name, ENT_COMPAT, 'UTF-8') . '"'
+			. ' disabled="disabled"' . $attr . ' />';
+		$html[] = '</div>';
 
 		// Create the user select button.
-		if ($this->readonly === false)
+		$html[] = '<div class="button2-left">';
+		$html[] = '  <div class="blank">';
+		if ($this->element['readonly'] != 'true')
 		{
-			$html[] = '		<a class="btn btn-primary modal_' . $this->id . '" title="' . JText::_('JLIB_FORM_CHANGE_USER') . '" href="' . $link . '"'
+			$html[] = '		<a class="modal_' . $this->id . '" title="' . JText::_('JLIB_FORM_CHANGE_USER') . '"' . ' href="' . $link . '"'
 				. ' rel="{handler: \'iframe\', size: {x: 800, y: 500}}">';
-			$html[] = '<i class="icon-user"></i></a>';
+			$html[] = '			' . JText::_('JLIB_FORM_CHANGE_USER') . '</a>';
 		}
-
+		$html[] = '  </div>';
 		$html[] = '</div>';
 
 		// Create the real field, hidden, that stored the user id.
-		$html[] = '<input type="hidden" id="' . $this->id . '_id" name="' . $this->name . '" value="' . $this->value . '" />';
+		$html[] = '<input type="hidden" id="' . $this->id . '_id" name="' . $this->name . '" value="' . (int) $this->value . '" />';
 
 		return implode("\n", $html);
 	}
@@ -111,7 +108,7 @@ class JFormFieldUser extends JFormField
 	 *
 	 * @return  mixed  array of filtering groups or null.
 	 *
-	 * @since   1.6
+	 * @since   1.6.0
 	 */
 	protected function getGroups()
 	{
@@ -123,7 +120,7 @@ class JFormFieldUser extends JFormField
 	 *
 	 * @return  mixed  Array of users to exclude or null to to not exclude them
 	 *
-	 * @since   1.6
+	 * @since   1.6.0
 	 */
 	protected function getExcluded()
 	{

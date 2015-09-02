@@ -1,12 +1,15 @@
-@import url("menu.css");
+@import url("menu.css");[A
 @font-face {
     font-family: fontMarilia;
     src: url(TT0246M_.TTF);
 }
+@import url(https://fonts.googleapis.com/css?family=Lora);
 /**** estilos genericos   *****/
 .clearer{
 	clear:both;
 }
+
+ tr td {border:1px solid black;}
 
 .borda{
 	border: 0.3em 0.3em 0.3em 0.3em;
@@ -39,22 +42,35 @@ body{
 }
 
 #thisDiv {
-	font-family: fontMarilia, Heveltica;
+	font-family: 'Lora', serif, Heveltica;
 	font-size: 1.5em;
 	position: absolute;
 	text-align: center;
 }
 
 #thisDiv p{
-	background-color: rgba(255,255,255,0.5);
 }
+
+.specialImageHover{
+    color: rgba(255,255,255,1);
+    text-shadow: 0px 0px 5px rgba(0,0,0,1), 0px 0px 5px rgba(0,0,0,1);
+	/*background-color: rgba(255,255,255,0.75);*/
+}
+
+.specialImageNon-Hover{
+    color: rgba(255,255,255,0.7);
+    text-shadow: 0px 0px 10px rgba(0,0,0,0.7);
+    	/*background-color: rgba(255,255,255,0.35);*/
+}
+
+
 /**** estilos genericos   *****/
 
 
 /**** Modulos do cabecalho ***/
 	/*** static header_main class ***/
 	header{
-		color: #4D6173;
+		color: #696969;
 		margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px;
 		padding-top:0px; padding-right:0px; padding-bottom:0px; padding-left:0px;
 	}
@@ -65,21 +81,21 @@ body{
 		padding-bottom: 5px;
 	}
 	.modHeaderImages img{
-		margin-left: 1.7%;
-		width: 32%;
-		height: 240px;
+		margin-left: 5%;
+		width: 30%;
+		height: 150px;
+		float: left;
 	}
 	.modHeaderImages a:first-child img{
 		margin-left: 0%;
 	}
-	.modHeaderImages a:nth-child(3) img{
+	.modHeaderImages a:last-child img{
 		float: right;
 	}
 	.modMenu{
 		width: 100%;
 		padding-left: 2%;
 		margin-left: 0%;
-		margin-bottom: 50px;
 	}
 /**** Modulos do cabecalho ***/
 
@@ -87,39 +103,66 @@ body{
 	article{
 	}
 	.corpo_main{
+	    margin-top: 15px;
+	    padding-top: 20px;
+	    border-top-style: solid;
+	    border-top-width: 2px;
+	    border-top-color: #999999;
+	    border-radius: 1px;
+	}
+	.main_article{
+		padding-left: 10em;
 	}
 	/**** Mod Main ***/
 	.modMain{
 		vertical-align: middle;
-		min-height: 450px;
+		min-height: 225px;
 	}
 	.modMainBorder{
 		border-top-style: solid;
-		border-top-width: 3px;
-		border-top-color: #4D6173;
-		border-radius: 3px;
-		margin-left: 2%;
-		margin-right: 2%;
+		border-top-width: 2px;
+		border-top-color: #999999;
+		border-radius: 1px;
+		margin-left: 0%;
+		margin-right: 0%;
 		padding-bottom: 10px;
 	}
 	
-	.modMain #logo_principal {
-		padding-top: 25px;
+	.modMain img.logo_principal {
+		margin-top: 0px;
+		padding-top: 0px;
 		float: left;
-		width: 40%;
-		padding-left: 3.5%;
-	}
-	.modMain #logo_video {
-		padding-top: 100px;
-		float: left;
-		width: 22.5%;
+		width: 27%;
 		padding-left: 5%;
 	}
-	.modMain #logo_radio {
-		padding-top: 100px;
-		float: right;
-		width: 22.5%;
-		padding-right: 3.5%;
+
+	.modMain div.mainDivRight {
+	    float: right;
+	    padding-right: 10%;
+	    text-align: right;
+	    width: 25%;
+	}
+
+	.modMain img.logo_video {
+	    width: 35%;
+	}
+	.modMain img.logo_radio {
+	    width: 35%;
+	}
+
+	.modMain div.mainDivCenter {
+		padding-top: 20px;
+		padding-left: 100px;
+		min-height: 225px;
+		float:left;
+		v-align: middle;
+		text-align: center;
+		font-size: 2em;
+		font-family: 'Lora', serif;
+		letter-spacing: 3px;
+		font-weight: 100;
+		line-height: 1.5;
+		/*text-shadow: 0px 0px 10px rgba(0,0,0,0.9);*/
 	}
 	
 	/*** modMainImages ***/
@@ -129,14 +172,15 @@ body{
 		width: 100%;
 	}
 	.modMainImages img{
-		margin-left: 1.7%;
-		width: 32%;
-		height: 230px;
+		margin-left: 5%;
+		width: 30%;
+		height: 150px;
+		float: left;
 	}
 	.modMainImages a:first-child img{
 		margin-left: 0%;
 	}
-	.modMainImages a:nth-child(3) img{
+	.modMainImages a:last-child img{
 		float: right;
 	}
 	/*** modMain end ***/
@@ -144,19 +188,22 @@ body{
 
 /**** Modulos de footer ***/
 	footer{
-		border-top-style: solid;
-		border-top-width: 3px;
-		border-top-color: #4D6173;
-		border-radius: 3px;
-		margin-left: 2%;
-		margin-right: 2%;
-		margin-top: 5px;
 	}
 	.modFooter{
 		text-align: center;
 	}
-	.modFooter	img{
+	.modFooter img{
 		height: 65px;
 		padding-right: 2%;
 	}	
 /**** Modulos de footer ***/
+
+	/* not good ;/ */
+
+	.modHeaderImages a {
+	    font-size: 1.7em;
+	}
+	
+	.modMainImages{
+	    font-size: 1em;
+	}

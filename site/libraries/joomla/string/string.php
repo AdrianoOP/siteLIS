@@ -9,10 +9,11 @@
 
 defined('JPATH_PLATFORM') or die;
 
+//
 // PHP mbstring and iconv local configuration
-
+//
 // Check if mbstring extension is loaded and attempt to load it if not present except for windows
-if (extension_loaded('mbstring'))
+if (extension_loaded('mbstring') || ((!strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' && dl('mbstring.so'))))
 {
 	// Make sure to suppress the output in case ini_set is disabled
 	@ini_set('mbstring.internal_encoding', 'UTF-8');
@@ -21,7 +22,7 @@ if (extension_loaded('mbstring'))
 }
 
 // Same for iconv
-if (function_exists('iconv'))
+if (function_exists('iconv') || ((!strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' && dl('iconv.so'))))
 {
 	// These are settings that can be set inside code
 	if (version_compare(PHP_VERSION, '5.6', '>='))
@@ -85,14 +86,11 @@ abstract class JString
 	 *
 	 * @return  array   The splitted string.
 	 *
-	 * @deprecated  12.3 (Platform) & 4.0 (CMS) - Use JStringNormalise::fromCamelCase()
 	 * @since   11.3
 	 */
 	public static function splitCamelCase($string)
 	{
-		JLog::add('JString::splitCamelCase has been deprecated. Use JStringNormalise::fromCamelCase.', JLog::WARNING, 'deprecated');
-
-		return JStringNormalise::fromCamelCase($string, true);
+		return preg_split('/(?<=[^A-Z_])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][^A-Z_])/x', $string);
 	}
 
 	/**
@@ -234,7 +232,7 @@ abstract class JString
 	 *
 	 * @return  mixed  Either string in lowercase or FALSE is UTF-8 invalid
 	 *
-	 * @see     http://www.php.net/strtolower
+	 * @see http://www.php.net/strtolower
 	 * @since   11.1
 	 */
 	public static function strtolower($str)
@@ -271,7 +269,7 @@ abstract class JString
 	 *
 	 * @return  integer  Number of UTF-8 characters in string.
 	 *
-	 * @see     http://www.php.net/strlen
+	 * @see http://www.php.net/strlen
 	 * @since   11.1
 	 */
 	public static function strlen($str)
@@ -296,7 +294,6 @@ abstract class JString
 	public static function str_ireplace($search, $replace, $str, $count = null)
 	{
 		jimport('phputf8.str_ireplace');
-
 		if ($count === false)
 		{
 			return utf8_ireplace($search, $replace, $str);
@@ -347,7 +344,6 @@ abstract class JString
 		{
 			// Get current locale
 			$locale0 = setlocale(LC_COLLATE, 0);
-
 			if (!$locale = setlocale(LC_COLLATE, $locale))
 			{
 				$locale = $locale0;
@@ -358,7 +354,7 @@ abstract class JString
 			{
 				$encoding = 'CP' . $m[1];
 			}
-			elseif (stristr($locale, 'UTF-8') || stristr($locale, 'utf8'))
+			elseif (stristr($locale, 'UTF-8'))
 			{
 				$encoding = 'UTF-8';
 			}
@@ -367,7 +363,7 @@ abstract class JString
 				$encoding = 'nonrecodable';
 			}
 
-			// If we successfully set encoding it to utf-8 or encoding is sth weird don't recode
+			// if we successfully set encoding it to utf-8 or encoding is sth weird don't recode
 			if ($encoding == 'UTF-8' || $encoding == 'nonrecodable')
 			{
 				return strcoll(utf8_strtolower($str1), utf8_strtolower($str2));
@@ -407,7 +403,6 @@ abstract class JString
 		{
 			// Get current locale
 			$locale0 = setlocale(LC_COLLATE, 0);
-
 			if (!$locale = setlocale(LC_COLLATE, $locale))
 			{
 				$locale = $locale0;
@@ -418,7 +413,7 @@ abstract class JString
 			{
 				$encoding = 'CP' . $m[1];
 			}
-			elseif (stristr($locale, 'UTF-8') || stristr($locale, 'utf8'))
+			elseif (stristr($locale, 'UTF-8'))
 			{
 				$encoding = 'UTF-8';
 			}
@@ -460,7 +455,6 @@ abstract class JString
 	public static function strcspn($str, $mask, $start = null, $length = null)
 	{
 		jimport('phputf8.strcspn');
-
 		if ($start === false && $length === false)
 		{
 			return utf8_strcspn($str, $mask);
@@ -484,7 +478,7 @@ abstract class JString
 	 * @param   string  $str     The haystack
 	 * @param   string  $search  The needle
 	 *
-	 * @return  string the sub string
+	 * @return string the sub string
 	 *
 	 * @see     http://www.php.net/stristr
 	 * @since   11.1
@@ -492,7 +486,6 @@ abstract class JString
 	public static function stristr($str, $search)
 	{
 		jimport('phputf8.stristr');
-
 		return utf8_stristr($str, $search);
 	}
 
@@ -531,7 +524,6 @@ abstract class JString
 	public static function strspn($str, $mask, $start = null, $length = null)
 	{
 		jimport('phputf8.strspn');
-
 		if ($start === null && $length === null)
 		{
 			return utf8_strspn($str, $mask);
@@ -562,7 +554,7 @@ abstract class JString
 	 */
 	public static function substr_replace($str, $repl, $start, $length = null)
 	{
-		// Loaded by library loader
+		// loaded by library loader
 		if ($length === false)
 		{
 			return utf8_substr_replace($str, $repl, $start);
@@ -597,7 +589,6 @@ abstract class JString
 		}
 
 		jimport('phputf8.trim');
-
 		if ($charlist === false)
 		{
 			return utf8_ltrim($str);
@@ -631,7 +622,6 @@ abstract class JString
 		}
 
 		jimport('phputf8.trim');
-
 		if ($charlist === false)
 		{
 			return utf8_rtrim($str);
@@ -665,7 +655,6 @@ abstract class JString
 		}
 
 		jimport('phputf8.trim');
-
 		if ($charlist === false)
 		{
 			return utf8_trim($str);
@@ -694,7 +683,6 @@ abstract class JString
 	public static function ucfirst($str, $delimiter = null, $newDelimiter = null)
 	{
 		jimport('phputf8.ucfirst');
-
 		if ($delimiter === null)
 		{
 			return utf8_ucfirst($str);
@@ -723,8 +711,24 @@ abstract class JString
 	public static function ucwords($str)
 	{
 		jimport('phputf8.ucwords');
-
 		return utf8_ucwords($str);
+	}
+
+	/**
+	 * Catch an error and throw an exception.
+	 *
+	 * @param   integer  $number   Error level
+	 * @param   string   $message  Error message
+	 *
+	 * @return  void
+	 *
+	 * @link    https://bugs.php.net/bug.php?id=48147
+	 *
+	 * @throw   ErrorException
+	 */
+	private static function _iconvErrorHandler($number, $message)
+	{
+		throw new ErrorException($message, 0, $number);
 	}
 
 	/**
@@ -744,14 +748,26 @@ abstract class JString
 	{
 		if (is_string($source))
 		{
-			switch (ICONV_IMPL)
+			set_error_handler(array(__CLASS__, '_iconvErrorHandler'), E_NOTICE);
+			try
 			{
-				case 'glibc':
-				return @iconv($from_encoding, $to_encoding . '//TRANSLIT,IGNORE', $source);
-				case 'libiconv':
-				default:
-				return iconv($from_encoding, $to_encoding . '//IGNORE//TRANSLIT', $source);
+				/*
+				 * "//TRANSLIT//IGNORE" is appended to the $to_encoding to ensure that when iconv comes
+				 * across a character that cannot be represented in the target charset, it can
+				 * be approximated through one or several similarly looking characters or ignored.
+				 */
+				$iconv = iconv($from_encoding, $to_encoding . '//TRANSLIT//IGNORE', $source);
 			}
+			catch (ErrorException $e)
+			{
+				/*
+				 * "//IGNORE" is appended to the $to_encoding to ensure that when iconv comes
+				 * across a character that cannot be represented in the target charset, it is ignored.
+				 */
+				$iconv = iconv($from_encoding, $to_encoding . '//IGNORE', $source);
+			}
+			restore_error_handler();
+			return $iconv;
 		}
 
 		return null;
@@ -768,7 +784,7 @@ abstract class JString
 	 *
 	 * @author  <hsivonen@iki.fi>
 	 * @see     http://hsivonen.iki.fi/php-utf8/
-	 * @see     JString::compliant()
+	 * @see     compliant
 	 * @since   11.1
 	 */
 	public static function valid($str)
@@ -900,7 +916,6 @@ abstract class JString
 				}
 			}
 		}
-
 		return true;
 	}
 
@@ -919,7 +934,7 @@ abstract class JString
 	 *
 	 * @return  boolean  TRUE if string is valid UTF-8
 	 *
-	 * @see     JString::valid()
+	 * @see     valid
 	 * @see     http://www.php.net/manual/en/reference.pcre.pattern.modifiers.php#54805
 	 * @since   11.1
 	 */
@@ -929,13 +944,10 @@ abstract class JString
 		{
 			return true;
 		}
-
-		/*
-		 * If even just the first character can be matched, when the /u
-		 * modifier is used, then it's valid UTF-8. If the UTF-8 is somehow
-		 * invalid, nothing at all will match, even if the string contains
-		 * some valid sequences
-		 */
+		// If even just the first character can be matched, when the /u
+		// modifier is used, then it's valid UTF-8. If the UTF-8 is somehow
+		// invalid, nothing at all will match, even if the string contains
+		// some valid sequences
 		return (preg_match('/^.{1}/us', $str, $ar) == 1);
 	}
 
@@ -954,8 +966,8 @@ abstract class JString
 		$result = false;
 
 		// Build arrays of values we need to decode before parsing
-		$entities = array('%21', '%2A', '%27', '%28', '%29', '%3B', '%3A', '%40', '%26', '%3D', '%24', '%2C', '%2F', '%3F', '%23', '%5B', '%5D');
-		$replacements = array('!', '*', "'", "(", ")", ";", ":", "@", "&", "=", "$", ",", "/", "?", "#", "[", "]");
+		$entities = array('%21', '%2A', '%27', '%28', '%29', '%3B', '%3A', '%40', '%26', '%3D', '%24', '%2C', '%2F', '%3F', '%25', '%23', '%5B', '%5D');
+		$replacements = array('!', '*', "'", "(", ")", ";", ":", "@", "&", "=", "$", ",", "/", "?", "%", "#", "[", "]");
 
 		// Create encoded URL with special URL characters decoded so it can be parsed
 		// All other characters will be encoded
@@ -969,7 +981,7 @@ abstract class JString
 		{
 			foreach ($encodedParts as $key => $value)
 			{
-				$result[$key] = urldecode(str_replace($replacements, $entities, $value));
+				$result[$key] = urldecode($value);
 			}
 		}
 

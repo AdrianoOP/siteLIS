@@ -1,10 +1,7 @@
 <?php
 /**
- * @package     Joomla.Site
- * @subpackage  com_content
- *
- * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('_JEXEC') or die;
@@ -12,33 +9,27 @@ defined('_JEXEC') or die;
 /**
  * Frontpage View class
  *
- * @package     Joomla.Site
- * @subpackage  com_content
- * @since       1.5
+ * @package		Joomla.Site
+ * @subpackage	com_content
+ * @since		1.5
  */
 class ContentViewFeatured extends JViewLegacy
 {
-	/**
-	 * Execute and display a template script.
-	 *
-	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
-	 *
-	 * @return  mixed  A string if successful, otherwise a Error object.
-	 */
-	public function display($tpl = null)
+	function display($tpl = null)
 	{
 		// Parameters
-		$app       = JFactory::getApplication();
-		$doc       = JFactory::getDocument();
-		$params    = $app->getParams();
-		$feedEmail = $app->get('feed_email', 'author');
-		$siteEmail = $app->get('mailfrom');
-		$doc->link = JRoute::_('index.php?option=com_content&view=featured');
+		$app 		= JFactory::getApplication();
+		$doc		= JFactory::getDocument();
+		$params		= $app->getParams();
+		$feedEmail	= $app->getCfg('feed_email', 'author');
+		$siteEmail	= $app->getCfg('mailfrom');
+
+		$doc->link	= JRoute::_('index.php?option=com_content&view=featured');
 
 		// Get some data from the model
-		$app->input->set('limit', $app->get('feed_limit'));
+		JRequest::setVar('limit', $app->getCfg('feed_limit'));
 		$categories = JCategories::getInstance('Content');
-		$rows       = $this->get('Items');
+		$rows		= $this->get('Items');
 		foreach ($rows as $row)
 		{
 			// strip html from feed item title
@@ -49,14 +40,11 @@ class ContentViewFeatured extends JViewLegacy
 			$row->slug = $row->alias ? ($row->id . ':' . $row->alias) : $row->id;
 
 			// Url link to article
-			$link = JRoute::_(ContentHelperRoute::getArticleRoute($row->slug, $row->catid));
+			$link = JRoute::_(ContentHelperRoute::getArticleRoute($row->slug, $row->catid, $row->language));
 
 			// Get row fulltext
-			$db = JFactory::getDbo();
-			$query = $db->getQuery(true)
-				->select($db->quoteName('fulltext'))
-				->from($db->quoteName('#__content'))
-				->where($db->quoteName('id') . ' = ' . $row->id);
+			$db = JFactory::getDBO();
+			$query = 'SELECT' .$db->quoteName('fulltext'). 'FROM #__content WHERE id ='.$row->id;
 			$db->setQuery($query);
 			$row->fulltext = $db->loadResult();
 
@@ -64,24 +52,21 @@ class ContentViewFeatured extends JViewLegacy
 			$author			= $row->created_by_alias ? $row->created_by_alias : $row->author;
 
 			// Load individual item creator class
-			$item				= new JFeedItem;
+			$item				= new JFeedItem();
 			$item->title		= $title;
 			$item->link			= $link;
 			$item->date			= $row->publish_up;
+			$item_category		= $categories->get($row->catid);
 			$item->category		= array();
 			$item->category[]	= JText::_('JFEATURED'); // All featured articles are categorized as "Featured"
-
-			for ($item_category = $categories->get($row->catid); $item_category !== null; $item_category = $item_category->getParent())
-			{
-				// Only add non-root categories
-				if ($item_category->id > 1)
-				{
+			for ($item_category = $categories->get($row->catid); $item_category !== null; $item_category = $item_category->getParent()) {
+				if ($item_category->id > 1) { // Only add non-root categories
 					$item->category[] = $item_category->title;
 				}
 			}
 
-			$item->author = $author;
 
+			$item->author = $author;
 			if ($feedEmail == 'site')
 			{
 				$item->authorEmail = $siteEmail;
@@ -94,7 +79,7 @@ class ContentViewFeatured extends JViewLegacy
 			// Add readmore link to description if introtext is shown, show_readmore is true and fulltext exists
 			if (!$params->get('feed_summary', 0) && $params->get('feed_show_readmore', 0) && $row->fulltext)
 			{
-				$description .= '<p class="feed-readmore"><a target="_blank" href ="' . $item->link . '">' . JText::_('COM_CONTENT_FEED_READMORE') . '</a></p>';
+				$description .= '<p class="feed-readmore"><a target="_blank" href ="' . $item->link . '">'.JText::_('COM_CONTENT_FEED_READMORE').'</a></p>';
 			}
 
 			// Load item description and add div

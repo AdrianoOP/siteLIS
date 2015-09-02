@@ -171,9 +171,9 @@ class JCacheStorageApc extends JCacheStorage
 	 *
 	 * @return  boolean  True on success, false otherwise.
 	 *
-	 * @since   12.1
+	 * @since   11.1
 	 */
-	public static function isSupported()
+	public static function test()
 	{
 		return extension_loaded('apc');
 	}
@@ -205,8 +205,7 @@ class JCacheStorageApc extends JCacheStorage
 
 			$lock_counter = 0;
 
-			// Loop until you find that the lock has been released.
-			// That implies that data get from other thread has finished
+			// loop until you find that the lock has been released.  that implies that data get from other thread has finished
 			while ($data_lock === false)
 			{
 
@@ -240,6 +239,8 @@ class JCacheStorageApc extends JCacheStorage
 	 */
 	public function unlock($id, $group = null)
 	{
+		$unlock = false;
+
 		$cache_id = $this->_getCacheId($id, $group) . '_lock';
 
 		$unlock = apc_delete($cache_id);

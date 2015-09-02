@@ -13,15 +13,9 @@
 
 #frame form{ text-align: right; }
 label { float:right; }
-fieldset.input p {clear: right;}
 
 /* -- message styles ----------------------------------- */
-.alert {
-	padding: 8px 8px 25px 14px;
+
+#system-message {
 	text-align: right;
-}
-.alert .close {
-	float: left;
-	left: -20px;
-	right: 0px;
 }

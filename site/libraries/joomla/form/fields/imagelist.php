@@ -20,13 +20,14 @@ JFormHelper::loadFieldClass('filelist');
  */
 class JFormFieldImageList extends JFormFieldFileList
 {
+
 	/**
 	 * The form field type.
 	 *
 	 * @var    string
 	 * @since  11.1
 	 */
-	protected $type = 'ImageList';
+	public $type = 'ImageList';
 
 	/**
 	 * Method to get the list of images field options.
@@ -39,7 +40,10 @@ class JFormFieldImageList extends JFormFieldFileList
 	protected function getOptions()
 	{
 		// Define the image file type filter.
-		$this->filter = '\.png$|\.gif$|\.jpg$|\.bmp$|\.ico$|\.jpeg$|\.psd$|\.eps$';
+		$filter = '\.png$|\.gif$|\.jpg$|\.bmp$|\.ico$|\.jpeg$|\.psd$|\.eps$';
+
+		// Set the form field element attribute for file type filter.
+		$this->element->addAttribute('filter', $filter);
 
 		// Get the field options.
 		return parent::getOptions();

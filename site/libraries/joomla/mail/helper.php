@@ -32,8 +32,6 @@ abstract class JMailHelper
 	 */
 	public static function cleanLine($value)
 	{
-		$value = JStringPunycode::emailToPunycode($value);
-
 		return trim(preg_replace('/(%0A|%0D|\n+|\r+)/i', '', $value));
 	}
 
@@ -95,7 +93,6 @@ abstract class JMailHelper
 		{
 			return false;
 		}
-
 		return $address;
 	}
 
@@ -117,7 +114,6 @@ abstract class JMailHelper
 
 		// Check Length of domain
 		$domainLen = strlen($domain);
-
 		if ($domainLen < 1 || $domainLen > 255)
 		{
 			return false;
@@ -125,20 +121,19 @@ abstract class JMailHelper
 
 		/*
 		 * Check the local address
-		 * We're a bit more conservative about what constitutes a "legal" address, that is, A-Za-z0-9!#$%&\'*+/=?^_`{|}~-
-		 * Also, the last character in local cannot be a period ('.')
+		 * We're a bit more conservative about what constitutes a "legal" address, that is, a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-
+		 * The first and last character in local cannot be a period ('.')
+		 * Also, period should not appear 2 or more times consecutively
 		 */
-		$allowed = 'A-Za-z0-9!#&*+=?_-';
+		$allowed = 'a-zA-Z0-9.!#$%&’*+\/=?^_`{|}~-';
 		$regex = "/^[$allowed][\.$allowed]{0,63}$/";
-
-		if (!preg_match($regex, $local) || substr($local, -1) == '.')
+		if (!preg_match($regex, $local) || substr($local, -1) == '.' || $local[0] == '.' || preg_match('/\.\./', $local))
 		{
 			return false;
 		}
 
 		// No problem if the domain looks like an IP address, ish
 		$regex = '/^[0-9\.]+$/';
-
 		if (preg_match($regex, $domain))
 		{
 			return true;
@@ -146,7 +141,6 @@ abstract class JMailHelper
 
 		// Check Lengths
 		$localLen = strlen($local);
-
 		if ($localLen < 1 || $localLen > 64)
 		{
 			return false;
@@ -155,11 +149,8 @@ abstract class JMailHelper
 		// Check the domain
 		$domain_array = explode(".", rtrim($domain, '.'));
 		$regex = '/^[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/';
-
 		foreach ($domain_array as $domain)
 		{
-			// Convert domain to punycode
-			$domain = JStringPunycode::toPunycode($domain);
 
 			// Must be something
 			if (!$domain)
@@ -181,7 +172,6 @@ abstract class JMailHelper
 
 			// Check for a dash at the end of the domain
 			$length = strlen($domain) - 1;
-
 			if (strpos($domain, '-', $length) === $length)
 			{
 				return false;

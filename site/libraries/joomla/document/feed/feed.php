@@ -175,7 +175,7 @@ class JDocumentFeed extends JDocument
 	{
 		parent::__construct($options);
 
-		// Set document type
+		//set document type
 		$this->_type = 'feed';
 	}
 
@@ -188,19 +188,20 @@ class JDocumentFeed extends JDocument
 	 * @return  The rendered data
 	 *
 	 * @since  11.1
-	 * @throws Exception
 	 * @todo   Make this cacheable
 	 */
 	public function render($cache = false, $params = array())
 	{
+		global $option;
+
 		// Get the feed type
-		$type = JFactory::getApplication()->input->get('type', 'rss');
+		$type = JRequest::getCmd('type', 'rss');
 
 		// Instantiate feed renderer and set the mime encoding
 		$renderer = $this->loadRenderer(($type) ? $type : 'rss');
 		if (!is_a($renderer, 'JDocumentRenderer'))
 		{
-			throw new Exception(JText::_('JGLOBAL_RESOURCE_NOT_FOUND'), 404);
+			JError::raiseError(404, JText::_('JGLOBAL_RESOURCE_NOT_FOUND'));
 		}
 		$this->setMimeEncoding($renderer->getContentType());
 
@@ -225,13 +226,13 @@ class JDocumentFeed extends JDocument
 	/**
 	 * Adds an JFeedItem to the feed.
 	 *
-	 * @param   JFeedItem  $item  The feeditem to add to the feed.
+	 * @param   JFeedItem  &$item  The feeditem to add to the feed.
 	 *
 	 * @return  JDocumentFeed  instance of $this to allow chaining
 	 *
 	 * @since   11.1
 	 */
-	public function addItem(JFeedItem $item)
+	public function addItem(&$item)
 	{
 		$item->source = $this->link;
 		$this->items[] = $item;
@@ -247,8 +248,9 @@ class JDocumentFeed extends JDocument
  * @subpackage  Document
  * @since       11.1
  */
-class JFeedItem
+class JFeedItem extends JObject
 {
+
 	/**
 	 * Title item element
 	 *
@@ -372,13 +374,13 @@ class JFeedItem
 	/**
 	 * Set the JFeedEnclosure for this item
 	 *
-	 * @param   JFeedEnclosure  $enclosure  The JFeedEnclosure to add to the feed.
+	 * @param   object  $enclosure  The JFeedItem to add to the feed.
 	 *
 	 * @return  JFeedItem instance of $this to allow chaining
 	 *
 	 * @since   11.1
 	 */
-	public function setEnclosure(JFeedEnclosure $enclosure)
+	public function setEnclosure($enclosure)
 	{
 		$this->enclosure = $enclosure;
 
@@ -393,8 +395,9 @@ class JFeedItem
  * @subpackage  Document
  * @since       11.1
  */
-class JFeedEnclosure
+class JFeedEnclosure extends JObject
 {
+
 	/**
 	 * URL enclosure element
 	 *
@@ -433,8 +436,9 @@ class JFeedEnclosure
  * @subpackage  Document
  * @since       11.1
  */
-class JFeedImage
+class JFeedImage extends JObject
 {
+
 	/**
 	 * Title image attribute
 	 *

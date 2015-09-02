@@ -19,60 +19,46 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  Filter
  * @since       11.1
  */
-class JFilterInput
+class JFilterInput extends JObject
 {
 	/**
-	 * A container for JFilterInput instances.
-	 *
-	 * @var    array
+	 * @var    array  A container for JFilterInput instances.
 	 * @since  11.3
 	 */
 	protected static $instances = array();
 
 	/**
-	 * The array of permitted tags (white list).
-	 *
-	 * @var    array
+	 * @var    array  An array of permitted tags.
 	 * @since  11.1
 	 */
 	public $tagsArray;
 
 	/**
-	 * The array of permitted tag attributes (white list).
-	 *
-	 * @var    array
+	 * @var    array  An array of permitted tag attributes.
 	 * @since  11.1
 	 */
 	public $attrArray;
 
 	/**
-	 * The method for sanitising tags: WhiteList method = 0 (default), BlackList method = 1
-	 *
-	 * @var    integer
+	 * @var    integer  Method for tags: WhiteList method = 0 (default), BlackList method = 1
 	 * @since  11.1
 	 */
 	public $tagsMethod;
 
 	/**
-	 * The method for sanitising attributes: WhiteList method = 0 (default), BlackList method = 1
-	 *
-	 * @var    integer
+	 * @var    integer  Method for attributes: WhiteList method = 0 (default), BlackList method = 1
 	 * @since  11.1
 	 */
 	public $attrMethod;
 
 	/**
-	 * A flag for XSS checks. Only auto clean essentials = 0, Allow clean blacklisted tags/attr = 1
-	 *
-	 * @var    integer
+	 * @var    integer  Only auto clean essentials = 0, Allow clean blacklisted tags/attr = 1
 	 * @since  11.1
 	 */
 	public $xssAuto;
 
 	/**
-	 * The list of the default blacklisted tags.
-	 *
-	 * @var    array
+	 * @var    array  A list of the default blacklisted tags.
 	 * @since  11.1
 	 */
 	public $tagBlacklist = array(
@@ -101,9 +87,7 @@ class JFilterInput
 	);
 
 	/**
-	 * The list of the default blacklisted tag attributes. All event handlers implicit.
-	 *
-	 * @var    array
+	 * @var    array     A list of the default blacklisted tag attributes.  All event handlers implicit.
 	 * @since   11.1
 	 */
 	public $attrBlacklist = array(
@@ -169,23 +153,7 @@ class JFilterInput
 	 * specified bad code.
 	 *
 	 * @param   mixed   $source  Input string/array-of-string to be 'cleaned'
-	 * @param   string  $type    The return type for the variable:
-	 *                           INT:       An integer,
-	 *                           UINT:      An unsigned integer,
-	 *                           FLOAT:     A floating point number,
-	 *                           BOOLEAN:   A boolean value,
-	 *                           WORD:      A string containing A-Z or underscores only (not case sensitive),
-	 *                           ALNUM:     A string containing A-Z or 0-9 only (not case sensitive),
-	 *                           CMD:       A string containing A-Z, 0-9, underscores, periods or hyphens (not case sensitive),
-	 *                           BASE64:    A string containing A-Z, 0-9, forward slashes, plus or equals (not case sensitive),
-	 *                           STRING:    A fully decoded and sanitised string (default),
-	 *                           HTML:      A sanitised string,
-	 *                           ARRAY:     An array,
-	 *                           PATH:      A sanitised file path,
-	 *                           USERNAME:  Do not use (use an application specific filter),
-	 *                           RAW:       The raw string is returned with no filtering,
-	 *                           unknown:   An unknown filter will act like STRING. If the input is an array it will return an
-	 *                                      array of fully decoded and sanitised strings.
+	 * @param   string  $type    Return type for the variable (INT, UINT, FLOAT, BOOLEAN, WORD, ALNUM, CMD, BASE64, STRING, ARRAY, PATH, NONE)
 	 *
 	 * @return  mixed  'Cleaned' version of input parameter
 	 *
@@ -260,17 +228,13 @@ class JFilterInput
 				$result = (string) preg_replace('/[\x00-\x1F\x7F<>"\'%&]/', '', $source);
 				break;
 
-			case 'RAW':
-				$result = $source;
-				break;
-
 			default:
 				// Are we dealing with an array?
 				if (is_array($source))
 				{
 					foreach ($source as $key => $value)
 					{
-						// Filter element for XSS and other 'bad' code etc.
+						// filter element for XSS and other 'bad' code etc.
 						if (is_string($value))
 						{
 							$source[$key] = $this->_remove($this->_decode($value));
@@ -283,7 +247,7 @@ class JFilterInput
 					// Or a string?
 					if (is_string($source) && !empty($source))
 					{
-						// Filter source for XSS and other 'bad' code etc.
+						// filter source for XSS and other 'bad' code etc.
 						$result = $this->_remove($this->_decode($source));
 					}
 					else
@@ -353,12 +317,10 @@ class JFilterInput
 	{
 		// First, pre-process this for illegal characters inside attribute values
 		$source = $this->_escapeAttributeValues($source);
-
 		// In the beginning we don't really have a tag, so everything is postTag
 		$preTag = null;
 		$postTag = $source;
 		$currentSpace = false;
-
 		// Setting to null to deal with undefined variables
 		$attr = '';
 
@@ -375,7 +337,6 @@ class JFilterInput
 
 			// Check for mal-formed tag where we have a second '<' before the first '>'
 			$nextOpenTag = (strlen($postTag) > $tagOpen_start) ? strpos($postTag, '<', $tagOpen_start + 1) : false;
-
 			if (($nextOpenTag !== false) && ($nextOpenTag < $tagOpen_end))
 			{
 				// At this point we have a mal-formed tag -- remove the offending open
@@ -394,7 +355,7 @@ class JFilterInput
 
 			// Do we have a nested tag?
 			$tagOpen_nested = strpos($fromTagOpen, '<');
-
+			$tagOpen_nested_end = strpos(substr($postTag, $tagOpen_end), '>');
 			if (($tagOpen_nested !== false) && ($tagOpen_nested < $tagOpen_end))
 			{
 				$preTag .= substr($postTag, 0, ($tagOpen_nested + 1));
@@ -435,7 +396,6 @@ class JFilterInput
 			{
 				$postTag = substr($postTag, ($tagLength + 2));
 				$tagOpen_start = strpos($postTag, '<');
-
 				// Strip tag
 				continue;
 			}
@@ -532,7 +492,6 @@ class JFilterInput
 					// Open or single tag
 					$attrSet = $this->_cleanAttributes($attrSet);
 					$preTag .= '<' . $tagName;
-
 					for ($i = 0, $count = count($attrSet); $i < $count; $i++)
 					{
 						$preTag .= ' ' . $attrSet[$i];
@@ -580,10 +539,10 @@ class JFilterInput
 	 */
 	protected function _cleanAttributes($attrSet)
 	{
+		// Initialise variables.
 		$newSet = array();
 
 		$count = count($attrSet);
-
 		// Iterate through attribute pairs
 		for ($i = 0; $i < $count; $i++)
 		{
@@ -595,7 +554,6 @@ class JFilterInput
 
 			// Split into name/value pairs
 			$attrSubSet = explode('=', trim($attrSet[$i]), 2);
-
 			// Take the last attribute in case there is an attribute with no value
 			$attrSubSet_0 = explode(' ', trim($attrSubSet[0]));
 			$attrSubSet[0] = array_pop($attrSubSet_0);
@@ -613,18 +571,14 @@ class JFilterInput
 			// XSS attribute value filtering
 			if (isset($attrSubSet[1]))
 			{
-				// Trim leading and trailing spaces
+				// trim leading and trailing spaces
 				$attrSubSet[1] = trim($attrSubSet[1]);
-
-				// Strips unicode, hex, etc
+				// strips unicode, hex, etc
 				$attrSubSet[1] = str_replace('&#', '', $attrSubSet[1]);
-
 				// Strip normal newline within attr value
 				$attrSubSet[1] = preg_replace('/[\n\r]/', '', $attrSubSet[1]);
-
 				// Strip double quotes
 				$attrSubSet[1] = str_replace('"', '', $attrSubSet[1]);
-
 				// Convert single quotes from either side to doubles (Single quotes shouldn't be used to pad attr values)
 				if ((substr($attrSubSet[1], 0, 1) == "'") && (substr($attrSubSet[1], (strlen($attrSubSet[1]) - 1), 1) == "'"))
 				{
@@ -688,29 +642,24 @@ class JFilterInput
 		if (!is_array($ttr))
 		{
 			// Entity decode
-			$trans_tbl = get_html_translation_table(HTML_ENTITIES, ENT_COMPAT, 'ISO-8859-1');
-
+			if (version_compare(PHP_VERSION, '5.3.4', '>='))
+			{
+				$trans_tbl = get_html_translation_table(HTML_ENTITIES, ENT_COMPAT, 'ISO-8859-1');
+			}
+			else
+			{
+				$trans_tbl = get_html_translation_table(HTML_ENTITIES, ENT_COMPAT);
+			}
 			foreach ($trans_tbl as $k => $v)
 			{
 				$ttr[$v] = utf8_encode($k);
 			}
 		}
-
 		$source = strtr($source, $ttr);
-
 		// Convert decimal
-		$source = preg_replace_callback('/&#(\d+);/m', function($m)
-		{
-			return utf8_encode(chr($m[1]));
-		}, $source
-		);
-
+		$source = preg_replace_callback('/&#(\d+);/m', "callbackJFilterInputConvertDecimal", $source); // decimal notation
 		// Convert hex
-		$source = preg_replace_callback('/&#x([a-f0-9]+);/mi', function($m)
-		{
-			return utf8_encode(chr('0x' . $m[1]));
-		}, $source
-		);
+		$source = preg_replace_callback('/&#x([a-f0-9]+);/mi', "callbackJFilterInputConvertHex", $source); // hex notation
 
 		return $source;
 	}
@@ -730,12 +679,11 @@ class JFilterInput
 		$remainder = $source;
 		$badChars = array('<', '"', '>');
 		$escapedChars = array('&lt;', '&quot;', '&gt;');
-
 		// Process each portion based on presence of =" and "<space>, "/>, or ">
 		// See if there are any more attributes to process
 		while (preg_match('#<[^>]*?=\s*?(\"|\')#s', $remainder, $matches, PREG_OFFSET_CAPTURE))
 		{
-			// Get the portion before the attribute value
+			// get the portion before the attribute value
 			$quotePosition = $matches[0][1];
 			$nextBefore = $quotePosition + strlen($matches[0][0]);
 
@@ -744,7 +692,7 @@ class JFilterInput
 			$quote = substr($matches[0][0], -1);
 			$pregMatch = ($quote == '"') ? '#(\"\s*/\s*>|\"\s*>|\"\s+|\"$)#' : "#(\'\s*/\s*>|\'\s*>|\'\s+|\'$)#";
 
-			// Get the portion after attribute value
+			// get the portion after attribute value
 			if (preg_match($pregMatch, substr($remainder, $nextBefore), $matches, PREG_OFFSET_CAPTURE))
 			{
 				// We have a closing quote
@@ -755,10 +703,8 @@ class JFilterInput
 				// No closing quote
 				$nextAfter = strlen($remainder);
 			}
-
 			// Get the actual attribute value
 			$attributeValue = substr($remainder, $nextBefore, $nextAfter - $nextBefore);
-
 			// Escape bad chars
 			$attributeValue = str_replace($badChars, $escapedChars, $attributeValue);
 			$attributeValue = $this->_stripCSSExpressions($attributeValue);
@@ -783,7 +729,6 @@ class JFilterInput
 	{
 		// Strip any comments out (in the form of /*...*/)
 		$test = preg_replace('#\/\*.*\*\/#U', '', $source);
-
 		// Test for :expression
 		if (!stripos($test, ':expression'))
 		{
@@ -801,7 +746,36 @@ class JFilterInput
 				$return = $test;
 			}
 		}
-
 		return $return;
+	}
+}
+
+if (! function_exists('callbackJFilterInputConvertDecimal'))
+{
+	/**
+	 * Decimal decode callback for JFilterInput::_decode.
+	 *
+	 * @param   $matches
+	 *
+	 * @return  string
+	 */
+	function callbackJFilterInputConvertDecimal($matches)
+	{
+		return utf8_encode(chr($matches[1]));
+	}
+}
+
+if (! function_exists('callbackJFilterInputConvertHex'))
+{
+	/**
+	 * Hex decode callback for JFilterInput::_decode.
+	 *
+	 * @param   $matches
+	 *
+	 * @return  string
+	 */
+	function callbackJFilterInputConvertHex($matches)
+	{
+		return utf8_encode(chr('0x' . $matches[1]));
 	}
 }

@@ -11,38 +11,38 @@
  * @since		1.5
  */
 
-(function($) {
+(function() {
 var ImageManager = this.ImageManager = {
 	initialize: function()
 	{
 		o = this._getUriObject(window.self.location.href);
-		q = this._getQueryObject(o.query);
-		this.editor = decodeURIComponent(q['e_name']);
+		//console.log(o);
+		q = new Hash(this._getQueryObject(o.query));
+		this.editor = decodeURIComponent(q.get('e_name'));
 
 		// Setup image manager fields object
 		this.fields			= new Object();
-		this.fields.url		= document.getElementById("f_url");
-		this.fields.alt		= document.getElementById("f_alt");
-		this.fields.align	= document.getElementById("f_align");
-		this.fields.title	= document.getElementById("f_title");
-		this.fields.caption	= document.getElementById("f_caption");
-		this.fields.c_class	= document.getElementById("f_caption_class");
+		this.fields.url		= document.id("f_url");
+		this.fields.alt		= document.id("f_alt");
+		this.fields.align	= document.id("f_align");
+		this.fields.title	= document.id("f_title");
+		this.fields.caption	= document.id("f_caption");
 
 		// Setup image listing objects
-		this.folderlist = document.getElementById('folderlist');
+		this.folderlist = document.id('folderlist');
 
 		this.frame		= window.frames['imageframe'];
 		this.frameurl	= this.frame.location.href;
 
 		// Setup imave listing frame
-		this.imageframe = document.getElementById('imageframe');
+		this.imageframe = document.id('imageframe');
 		this.imageframe.manager = this;
-		$(this.imageframe).on('load', function(){ ImageManager.onloadimageview(); });
+		this.imageframe.addEvent('load', function(){ ImageManager.onloadimageview(); });
 
 		// Setup folder up button
-		this.upbutton = document.getElementById('upbutton');
-		$(this.upbutton).off('click');
-		$(this.upbutton).on('click', function(){ ImageManager.upFolder(); });
+		this.upbutton = document.id('upbutton');
+		this.upbutton.removeEvents('click');
+		this.upbutton.addEvent('click', function(){ ImageManager.upFolder(); });
 	},
 
 	onloadimageview: function()
@@ -53,31 +53,28 @@ var ImageManager = this.ImageManager = {
 		var folder = this.getImageFolder();
 		for(var i = 0; i < this.folderlist.length; i++)
 		{
-			if (folder == this.folderlist.options[i].value) {
+			if(folder == this.folderlist.options[i].value) {
 				this.folderlist.selectedIndex = i;
-				if (this.folderlist.className.test(/\bchzn-done\b/)) {
-					$(this.folderlist).trigger('liszt:updated');
-				}
 				break;
 			}
 		}
 
-		a = this._getUriObject($('#uploadForm').attr('action'));
-		q = this._getQueryObject(a.query);
-		q['folder'] = folder;
+		a = this._getUriObject(document.id('uploadForm').getProperty('action'));
+		//console.log(a);
+		q = new Hash(this._getQueryObject(a.query));
+		q.set('folder', folder);
 		var query = [];
-		for (var k in q) {
-			var v = q[k];
-			if (q.hasOwnProperty(k) && v !== null) {
-				query.push(k+'='+v);
+		q.each(function(v, k){
+			if (v !== null) {
+				this.push(k+'='+v);
 			}
-		}
+		}, query);
 		a.query = query.join('&');
 		var portString = '';
 		if (typeof(a.port) !== 'undefined' && a.port != 80) {
 			portString = ':'+a.port;
 		}
-		$('#uploadForm').attr('action', a.scheme+'://'+a.domain+portString+a.path+'?'+a.query);
+		document.id('uploadForm').setProperty('action', a.scheme+'://'+a.domain+portString+a.path+'?'+a.query);
 	},
 
 	getImageFolder: function()
@@ -90,16 +87,13 @@ var ImageManager = this.ImageManager = {
 
 	onok: function()
 	{
-		var tag		= '';
-		var extra	= '';
-
+		extra = '';
 		// Get the image tag field information
-		var url		= this.fields.url.value;
-		var alt		= this.fields.alt.value;
-		var align	= this.fields.align.value;
-		var title	= this.fields.title.value;
-		var caption	= this.fields.caption.value;
-		var c_class	= this.fields.c_class.value;
+		var url		= this.fields.url.get('value');
+		var alt		= this.fields.alt.get('value');
+		var align	= this.fields.align.get('value');
+		var title	= this.fields.title.get('value');
+		var caption	= this.fields.caption.get('value');
 
 		if (url != '') {
 			// Set alt attribute
@@ -109,28 +103,19 @@ var ImageManager = this.ImageManager = {
 				extra = extra + 'alt="" ';
 			}
 			// Set align attribute
-			if (align != '' && caption == '') {
-				extra = extra + 'class="pull-'+align+'" ';
+			if (align != '') {
+				extra = extra + 'align="'+align+'" ';
 			}
-			// Set title attribute
+			// Set align attribute
 			if (title != '') {
 				extra = extra + 'title="'+title+'" ';
 			}
-
-			tag = '<img src="'+url+'" '+extra+'/>';
-
-			// Process caption
+			// Set align attribute
 			if (caption != '') {
-				var figclass = '';
-				var captionclass = '';
-				if (align != '') {
-					figclass = ' class="pull-'+align+'"';
-				}
-				if (c_class != '') {
-					captionclass = ' class="'+c_class+'"';
-				}
-				tag = '<figure'+figclass+'>'+tag+'<figcaption'+captionclass+'>'+caption+'</figcaption></figure>';
+				extra = extra + 'class="caption" ';
 			}
+
+			var tag = "<img src=\""+url+"\" "+extra+"/>";
 		}
 
 		window.parent.jInsertEditorText(tag, this.editor);
@@ -139,13 +124,12 @@ var ImageManager = this.ImageManager = {
 
 	setFolder: function(folder,asset,author)
 	{
+		//this.showMessage('Loading');
+
 		for(var i = 0; i < this.folderlist.length; i++)
 		{
-			if (folder == this.folderlist.options[i].value) {
+			if(folder == this.folderlist.options[i].value) {
 				this.folderlist.selectedIndex = i;
-				if (this.folderlist.className.test(/\bchzn-done\b/)) {
-					$(this.folderlist).trigger('liszt:updated');
-				}
 				break;
 			}
 		}
@@ -153,14 +137,14 @@ var ImageManager = this.ImageManager = {
 	},
 
 	getFolder: function() {
-		return this.folderlist.value;
+		return this.folderlist.get('value');
 	},
 
 	upFolder: function()
 	{
 		var currentFolder = this.getFolder();
 
-		if (currentFolder.length < 2) {
+		if(currentFolder.length < 2) {
 			return false;
 		}
 
@@ -179,7 +163,7 @@ var ImageManager = this.ImageManager = {
 		{
 			var thisFolder = this.folderlist.options[i].value;
 
-			if (thisFolder == search)
+			if(thisFolder == search)
 			{
 				this.folderlist.selectedIndex = i;
 				var newFolder = this.folderlist.options[i].value;
@@ -191,7 +175,7 @@ var ImageManager = this.ImageManager = {
 
 	populateFields: function(file)
 	{
-		$("#f_url").val(image_base_path+file);
+		document.id("f_url").value = image_base_path+file;
 	},
 
 	showMessage: function(text)
@@ -199,7 +183,7 @@ var ImageManager = this.ImageManager = {
 		var message  = document.id('message');
 		var messages = document.id('messages');
 
-		if (message.firstChild)
+		if(message.firstChild)
 			message.removeChild(message.firstChild);
 
 		message.appendChild(document.createTextNode(text));
@@ -242,7 +226,7 @@ var ImageManager = this.ImageManager = {
 	_getQueryObject: function(q) {
 		var vars = q.split(/[&;]/);
 		var rs = {};
-		if (vars.length) vars.forEach(function(val) {
+		if (vars.length) vars.each(function(val) {
 			var keys = val.split('=');
 			if (keys.length && keys.length == 2) rs[encodeURIComponent(keys[0])] = encodeURIComponent(keys[1]);
 		});
@@ -250,18 +234,14 @@ var ImageManager = this.ImageManager = {
 	},
 
 	_getUriObject: function(u){
-		var bitsAssociate = {}, bits = u.match(/^(?:([^:\/?#.]+):)?(?:\/\/)?(([^:\/?#]*)(?::(\d*))?)((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[\?#]|$)))*\/?)?([^?#\/]*))?(?:\?([^#]*))?(?:#(.*))?/);
-		['uri', 'scheme', 'authority', 'domain', 'port', 'path', 'directory', 'file', 'query', 'fragment'].forEach(function(key, index) {
-			bitsAssociate[key] = bits[index];
-		});
-
+		var bits = u.match(/^(?:([^:\/?#.]+):)?(?:\/\/)?(([^:\/?#]*)(?::(\d*))?)((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[\?#]|$)))*\/?)?([^?#\/]*))?(?:\?([^#]*))?(?:#(.*))?/);
 		return (bits)
-			? bitsAssociate
+			? bits.associate(['uri', 'scheme', 'authority', 'domain', 'port', 'path', 'directory', 'file', 'query', 'fragment'])
 			: null;
 	}
 };
-})(jQuery);
+})(document.id);
 
-jQuery(function(){
+window.addEvent('domready', function(){
 	ImageManager.initialize();
 });

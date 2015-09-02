@@ -87,8 +87,7 @@ abstract class JHtmlQuery
 				{
 					// Translate the title for Types
 					$key = FinderHelperLanguage::branchPlural($title);
-					if ($lang->hasKey($key))
-					{
+					if ($lang->hasKey($key)) {
 						$title = JText::_($key);
 					}
 
@@ -99,9 +98,9 @@ abstract class JHtmlQuery
 					}
 
 					// Add the node to the explanation.
-					$parts[] = '<span class="query-taxonomy">'
-						. JText::sprintf('COM_FINDER_QUERY_TAXONOMY_NODE', $title, JText::_(FinderHelperLanguage::branchSingular($branch)))
-						. '</span>';
+					$bv = JString::strtolower($branch);
+					$nv = JString::strtolower($title);
+					$parts[] = '<span class="query-taxonomy">' . JText::sprintf('COM_FINDER_QUERY_TAXONOMY_NODE', $title, JText::_(FinderHelperLanguage::branchSingular($branch))) . '</span>';
 				}
 			}
 		}
@@ -139,7 +138,7 @@ abstract class JHtmlQuery
 			{
 				if (isset($token->suggestion))
 				{
-					$suggested = str_ireplace($token->term, $token->suggestion, $suggested);
+					$suggested = str_replace($token->term, $token->suggestion, $suggested);
 				}
 			}
 
@@ -148,7 +147,7 @@ abstract class JHtmlQuery
 			{
 				if (isset($token->suggestion))
 				{
-					$suggested = str_ireplace($token->term, $token->suggestion, $suggested);
+					$suggested = str_replace($token->term, $token->suggestion, $suggested);
 				}
 			}
 

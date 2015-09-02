@@ -1,46 +1,35 @@
 <?php
 /**
- * @package     Joomla.Administrator
- * @subpackage  com_modules
- *
- * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @package		Joomla.Administrator
+ * @subpackage	com_modules
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+// No direct access.
 defined('_JEXEC') or die;
 
+// Include the component HTML helpers.
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
-
-JHtml::_('bootstrap.popover');
-$document = JFactory::getDocument();
+JHtml::_('behavior.tooltip');
 ?>
 
-<h2><?php echo JText::_('COM_MODULES_TYPE_CHOOSE')?></h2>
-<ul id="new-modules-list" class="list list-striped">
+<h2 class="modal-title"><?php echo JText::_('COM_MODULES_TYPE_CHOOSE')?></h2>
+
+<ul id="new-modules-list">
 <?php foreach ($this->items as &$item) : ?>
-	<?php
+	<li>
+		<?php
 		// Prepare variables for the link.
 
 		$link	= 'index.php?option=com_modules&task=module.add&eid='. $item->extension_id;
 		$name	= $this->escape($item->name);
-		$desc	= JHTML::_('string.truncate', ($this->escape($item->desc)), 200);
-		$short_desc	= JHTML::_('string.truncate', ($this->escape($item->desc)), 90);
-	?>
-	<?php if ($document->direction != "rtl") : ?>
-	<li>
-		<a href="<?php echo JRoute::_($link);?>">
-			<strong><?php echo $name; ?></strong>
-		</a>
-		<small class="hasPopover" data-placement="right" title="<?php echo $name; ?>" data-content="<?php echo $desc; ?>"><?php echo $short_desc; ?></small>
+		$desc	= $this->escape($item->desc);
+		?>
+		<span class="editlinktip hasTip" title="<?php echo $name.' :: '.$desc; ?>">
+			<a href="<?php echo JRoute::_($link);?>" target="_top">
+				<?php echo $name; ?></a></span>
 	</li>
-	<?php else : ?>
-	<li>
-		<small rel="popover" data-placement="left" title="<?php echo $name; ?>" data-content="<?php echo $desc; ?>"><?php echo $short_desc; ?></small>
-		<a href="<?php echo JRoute::_($link);?>">
-			<strong><?php echo $name; ?></strong>
-		</a>
-	</li>
-	<?php endif?>
 <?php endforeach; ?>
 </ul>
 <div class="clr"></div>

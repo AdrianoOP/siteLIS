@@ -19,17 +19,13 @@ defined('JPATH_PLATFORM') or die;
 class JCacheController
 {
 	/**
-	 * JCache object
-	 *
 	 * @var    JCache
 	 * @since  11.1
 	 */
 	public $cache;
 
 	/**
-	 * Array of options
-	 *
-	 * @var    array
+	 * @var    array  Array of options
 	 * @since  11.1
 	 */
 	public $options;
@@ -81,11 +77,10 @@ class JCacheController
 	 * @return  JCache  A JCache object
 	 *
 	 * @since   11.1
-	 * @throws  RuntimeException
 	 */
 	public static function getInstance($type = 'output', $options = array())
 	{
-		self::addIncludePath(JPATH_PLATFORM . '/joomla/cache/controller');
+		JCacheController::addIncludePath(JPATH_PLATFORM . '/joomla/cache/controller');
 
 		$type = strtolower(preg_replace('/[^A-Z0-9_\.-]/i', '', $type));
 
@@ -96,13 +91,13 @@ class JCacheController
 			// Search for the class file in the JCache include paths.
 			jimport('joomla.filesystem.path');
 
-			if ($path = JPath::find(self::addIncludePath(), strtolower($type) . '.php'))
+			if ($path = JPath::find(JCacheController::addIncludePath(), strtolower($type) . '.php'))
 			{
 				include_once $path;
 			}
 			else
 			{
-				throw new RuntimeException('Unable to load Cache Controller: ' . $type, 500);
+				JError::raiseError(500, 'Unable to load Cache Controller: ' . $type);
 			}
 		}
 
@@ -175,6 +170,7 @@ class JCacheController
 	 */
 	public function get($id, $group = null)
 	{
+		$data = false;
 		$data = $this->cache->get($id, $group);
 
 		if ($data === false)
@@ -196,8 +192,7 @@ class JCacheController
 		// Check again because we might get it from second attempt
 		if ($data !== false)
 		{
-			// Trim to fix unserialize errors
-			$data = unserialize(trim($data));
+			$data = unserialize(trim($data)); // trim to fix unserialize errors
 		}
 		return $data;
 	}
@@ -205,16 +200,15 @@ class JCacheController
 	/**
 	 * Store data to cache by id and group
 	 *
-	 * @param   mixed    $data        The data to store
-	 * @param   string   $id          The cache data id
-	 * @param   string   $group       The cache data group
-	 * @param   boolean  $wrkarounds  True to use wrkarounds
+	 * @param   mixed   $data   The data to store
+	 * @param   string  $id     The cache data id
+	 * @param   string  $group  The cache data group
 	 *
-	 * @return  boolean  True if cache stored
+	 * @return  boolean  True if cache was stored
 	 *
 	 * @since   11.1
 	 */
-	public function store($data, $id, $group = null, $wrkarounds = true)
+	public function store($data, $id, $group = null)
 	{
 		$locktest = new stdClass;
 		$locktest->locked = null;

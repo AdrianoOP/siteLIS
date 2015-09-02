@@ -61,13 +61,13 @@ class JCacheStorageWincache extends JCacheStorage
 		parent::getAll();
 
 		$allinfo = wincache_ucache_info();
-		$keys    = $allinfo['ucache_entries'];
-		$secret  = $this->_hash;
-		$data    = array();
+		$keys = $allinfo['cache_entries'];
+		$secret = $this->_hash;
+		$data = array();
 
 		foreach ($keys as $key)
 		{
-			$name    = $key['key_name'];
+			$name = $key['key_name'];
 			$namearr = explode('-', $name);
 			if ($namearr !== false && $namearr[0] == $secret && $namearr[1] == 'cache')
 			{
@@ -183,10 +183,8 @@ class JCacheStorageWincache extends JCacheStorage
 	 * Test to see if the cache storage is available.
 	 *
 	 * @return boolean  True on success, false otherwise.
-	 *
-	 * @since   12.1
 	 */
-	public static function isSupported()
+	public static function test()
 	{
 		$test = extension_loaded('wincache') && function_exists('wincache_ucache_get') && !strcmp(ini_get('wincache.ucenabled'), '1');
 		return $test;

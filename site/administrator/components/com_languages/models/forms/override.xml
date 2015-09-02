@@ -4,6 +4,7 @@
 		<field
 			name="key"
 			type="text"
+			class="inputbox"
 			label="COM_LANGUAGES_OVERRIDE_FIELD_KEY_LABEL"
 			description="COM_LANGUAGES_OVERRIDE_FIELD_KEY_DESC"
 			size="60"
@@ -13,6 +14,7 @@
 		<field
 			name="override"
 			type="textarea"
+			class="inputbox"
 			label="COM_LANGUAGES_OVERRIDE_FIELD_OVERRIDE_LABEL"
 			description="COM_LANGUAGES_OVERRIDE_FIELD_OVERRIDE_DESC"
 			cols="50"
@@ -22,6 +24,7 @@
 		<field
 			name="both"
 			type="checkbox"
+			class="inputbox"
 			label="COM_LANGUAGES_OVERRIDE_FIELD_BOTH_LABEL"
 			description="COM_LANGUAGES_OVERRIDE_FIELD_BOTH_DESC"
 			value="true"
@@ -30,13 +33,15 @@
 		<field
 			name="searchstring"
 			type="text"
+			class="inputbox"
 			label="COM_LANGUAGES_OVERRIDE_FIELD_SEARCHSTRING_LABEL"
 			description="COM_LANGUAGES_OVERRIDE_FIELD_SEARCHSTRING_DESC"
 			size="50" />
 
 		<field
 			name="searchtype"
-			type="list"
+			type="radio"
+			class="inputbox"
 			label="COM_LANGUAGES_OVERRIDE_FIELD_SEARCHTYPE_LABEL"
 			description="COM_LANGUAGES_OVERRIDE_FIELD_SEARCHTYPE_DESC"
 			default="value">

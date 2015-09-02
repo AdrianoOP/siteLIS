@@ -9,6 +9,9 @@
 
 defined('JPATH_PLATFORM') or die;
 
+jimport('joomla.filesystem.file');
+jimport('joomla.filesystem.folder');
+
 /**
  * File system helper
  *
@@ -218,7 +221,7 @@ class JFilesystemHelper
 
 		if (!$streams)
 		{
-			$streams = array_merge(stream_get_wrappers(), self::getJStreams());
+			$streams = array_merge(stream_get_wrappers(), JFilesystemHelper::getJStreams());
 		}
 
 		return $streams;
@@ -260,23 +263,11 @@ class JFilesystemHelper
 	 */
 	public static function getJStreams()
 	{
-		static $streams = array();
+		static $streams;
 
 		if (!$streams)
 		{
-			$files = new DirectoryIterator(__DIR__ . '/streams');
-
-			/* @type  $file  DirectoryIterator */
-			foreach ($files as $file)
-			{
-				// Only load for php files.
-				if (!$file->isFile() || $file->getExtension() !== 'php')
-				{
-					continue;
-				}
-
-				$streams[] = $file->getBasename('.php');
-			}
+			$streams = array_map(array('JFile', 'stripExt'), JFolder::files(dirname(__FILE__) . '/streams', '.php'));
 		}
 
 		return $streams;
@@ -293,6 +284,6 @@ class JFilesystemHelper
 	 */
 	public static function isJoomlaStream($streamname)
 	{
-		return in_array($streamname, self::getJStreams());
+		return in_array($streamname, JFilesystemHelper::getJStreams());
 	}
 }

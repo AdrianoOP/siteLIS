@@ -4,7 +4,7 @@
  * @subpackage  com_users
  *
  * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
 defined('_JEXEC') or die;
@@ -21,15 +21,13 @@ class UsersTableNote extends JTable
 	/**
 	 * Constructor
 	 *
-	 * @param  JDatabaseDriver  &$db  Database object
+	 * @param  JDatabase  &$db  Database object
 	 *
 	 * @since  2.5
 	 */
 	public function __construct(&$db)
 	{
 		parent::__construct('#__user_notes', 'id', $db);
-
-		JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_users.note'));
 	}
 
 	/**
@@ -43,7 +41,8 @@ class UsersTableNote extends JTable
 	 */
 	public function store($updateNulls = false)
 	{
-		$date = JFactory::getDate()->toSql();
+		// Initialise variables.
+		$date = JFactory::getDate()->toMySQL();
 		$userId = JFactory::getUser()->get('id');
 
 		if (empty($this->id))
@@ -79,6 +78,7 @@ class UsersTableNote extends JTable
 	 */
 	public function publish($pks = null, $state = 1, $userId = 0)
 	{
+		// Initialise variables.
 		$k = $this->_tbl_key;
 
 		// Sanitize input.
@@ -101,9 +101,9 @@ class UsersTableNote extends JTable
 			}
 		}
 
-		$query = $this->_db->getQuery(true)
-			->update($this->_db->quoteName($this->_tbl))
-			->set($this->_db->quoteName('state') . ' = ' . (int) $state);
+		$query = $this->_db->getQuery(true);
+		$query->update($this->_db->quoteName($this->_tbl));
+		$query->set($this->_db->quoteName('state') . ' = ' . (int) $state);
 
 		// Build the WHERE clause for the primary keys.
 		$query->where($k . '=' . implode(' OR ' . $k . '=', $pks));
@@ -121,14 +121,12 @@ class UsersTableNote extends JTable
 
 		// Update the publishing state for rows with the given primary keys.
 		$this->_db->setQuery($query);
+		$this->_db->query();
 
-		try
+		// Check for a database error.
+		if ($this->_db->getErrorNum())
 		{
-			$this->_db->execute();
-		}
-		catch (RuntimeException $e)
-		{
-			$this->setError($this->_db->getMessage());
+			$this->setError($this->_db->getErrorMsg());
 			return false;
 		}
 
@@ -136,7 +134,7 @@ class UsersTableNote extends JTable
 		if ($checkin && (count($pks) == $this->_db->getAffectedRows()))
 		{
 			// Checkin the rows.
-			foreach ($pks as $pk)
+			foreach($pks as $pk)
 			{
 				$this->checkin($pk);
 			}

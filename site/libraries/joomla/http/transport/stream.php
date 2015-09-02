@@ -7,7 +7,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
-defined('JPATH_PLATFORM') or die;
+defined('JPATH_PLATFORM') or die();
 
 /**
  * HTTP transport class for using PHP streams.
@@ -27,19 +27,13 @@ class JHttpTransportStream implements JHttpTransport
 	/**
 	 * Constructor.
 	 *
-	 * @param   JRegistry  $options  Client options object.
+	 * @param   JRegistry  &$options  Client options object.
 	 *
 	 * @since   11.3
 	 * @throws  RuntimeException
 	 */
-	public function __construct(JRegistry $options)
+	public function __construct(JRegistry &$options)
 	{
-		// Verify that URLs can be used with fopen();
-		if (!ini_get('allow_url_fopen'))
-		{
-			throw new RuntimeException('Cannot use a stream transport when "allow_url_fopen" is disabled.');
-		}
-
 		// Verify that fopen() is available.
 		if (!self::isSupported())
 		{
@@ -62,14 +56,13 @@ class JHttpTransportStream implements JHttpTransport
 	 * @return  JHttpResponse
 	 *
 	 * @since   11.3
-	 * @throws  RuntimeException
 	 */
 	public function request($method, JUri $uri, $data = null, array $headers = null, $timeout = null, $userAgent = null)
 	{
 		// Create the stream context options array with the required method offset.
 		$options = array('method' => strtoupper($method));
 
-		// If data exists let's encode it and make sure our Content-Type header is set.
+		// If data exists let's encode it and make sure our Content-type header is set.
 		if (isset($data))
 		{
 			// If the data is a scalar value simply add it to the stream context options.
@@ -83,13 +76,12 @@ class JHttpTransportStream implements JHttpTransport
 				$options['content'] = http_build_query($data);
 			}
 
-			if (!isset($headers['Content-Type']))
+			if (!isset($headers['Content-type']))
 			{
-				$headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=utf-8';
+				$headers['Content-type'] = 'application/x-www-form-urlencoded';
 			}
 
-			// Add the relevant headers.
-			$headers['Content-Length'] = strlen($options['content']);
+			$headers['Content-length'] = strlen($options['content']);
 		}
 
 		// Build the headers string for the request.
@@ -121,20 +113,8 @@ class JHttpTransportStream implements JHttpTransport
 		// Ignore HTTP errors so that we can capture them.
 		$options['ignore_errors'] = 1;
 
-		// Follow redirects.
-		$options['follow_location'] = (int) $this->options->get('follow_location', 1);
-
 		// Create the stream context for the request.
-		$context = stream_context_create(
-			array(
-				'http' => $options,
-				'ssl' => array(
-					'verify_peer'   => true,
-					'cafile'        => __DIR__ . '/cacert.pem',
-					'verify_depth'  => 5,
-				)
-			)
-		);
+		$context = stream_context_create(array('http' => $options));
 
 		// Capture PHP errors
 		$php_errormsg = '';
@@ -184,7 +164,6 @@ class JHttpTransportStream implements JHttpTransport
 		}
 
 		return $this->getResponse($headers, $content);
-
 	}
 
 	/**
@@ -214,7 +193,6 @@ class JHttpTransportStream implements JHttpTransport
 		{
 			$return->code = (int) $code;
 		}
-
 		// No valid response code was detected.
 		else
 		{
@@ -232,13 +210,13 @@ class JHttpTransportStream implements JHttpTransport
 	}
 
 	/**
-	 * Method to check if http transport stream available for use
+	 * method to check if http transport stream available for using
 	 *
 	 * @return bool true if available else false
 	 *
 	 * @since   12.1
 	 */
-	public static function isSupported()
+	static public function isSupported()
 	{
 		return function_exists('fopen') && is_callable('fopen') && ini_get('allow_url_fopen');
 	}

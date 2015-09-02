@@ -72,7 +72,7 @@ class FinderControllerIndexer extends JControllerLegacy
 		try
 		{
 			// Trigger the onStartIndex event.
-			JEventDispatcher::getInstance()->trigger('onStartIndex');
+			JDispatcher::getInstance()->trigger('onStartIndex');
 
 			// Get the indexer state.
 			$state = FinderIndexer::getState();
@@ -168,6 +168,7 @@ class FinderControllerIndexer extends JControllerLegacy
 		$admin = clone(JFactory::getApplication());
 
 		// Get the site app.
+		include_once JPATH_SITE . '/includes/application.php';
 		$site = JApplication::getInstance('site');
 
 		// Swap the app.
@@ -178,10 +179,10 @@ class FinderControllerIndexer extends JControllerLegacy
 		try
 		{
 			// Trigger the onBeforeIndex event.
-			JEventDispatcher::getInstance()->trigger('onBeforeIndex');
+			JDispatcher::getInstance()->trigger('onBeforeIndex');
 
 			// Trigger the onBuildIndex event.
-			JEventDispatcher::getInstance()->trigger('onBuildIndex');
+			JDispatcher::getInstance()->trigger('onBuildIndex');
 
 			// Get the indexer state.
 			$state = FinderIndexer::getState();
@@ -233,8 +234,8 @@ class FinderControllerIndexer extends JControllerLegacy
 
 		try
 		{
-			// Optimize the index
-			FinderIndexer::getInstance()->optimize();
+			// Optimize the index.
+			FinderIndexer::optimize();
 
 			// Get the indexer state.
 			$state = FinderIndexer::getState();
@@ -278,13 +279,14 @@ class FinderControllerIndexer extends JControllerLegacy
 			}
 		}
 
+		$backtrace = null;
+
 		// Send the assigned error code if we are catching an exception.
 		if ($data instanceof Exception)
 		{
-			$app = JFactory::getApplication();
 			JLog::add($data->getMessage(), JLog::ERROR);
-			$app->setHeader('status', $data->getCode());
-			$app->sendHeaders();
+			JResponse::setHeader('status', $data->getCode());
+			JResponse::sendHeaders();
 		}
 
 		// Create the response object.

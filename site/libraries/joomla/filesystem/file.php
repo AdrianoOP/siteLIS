@@ -66,7 +66,7 @@ class JFile
 
 		$regex = array('#(\.){2,}#', '#[^A-Za-z0-9\.\_\- ]#', '#^\.#');
 
-		return trim(preg_replace($regex, '', $file));
+		return preg_replace($regex, '', $file);
 	}
 
 	/**
@@ -93,7 +93,7 @@ class JFile
 		// Check src path
 		if (!is_readable($src))
 		{
-			JLog::add(JText::sprintf('JLIB_FILESYSTEM_ERROR_JFILE_FIND_COPY', $src), JLog::WARNING, 'jerror');
+			JError::raiseWarning(21, JText::sprintf('JLIB_FILESYSTEM_ERROR_JFILE_FIND_COPY', $src));
 
 			return false;
 		}
@@ -104,7 +104,7 @@ class JFile
 
 			if (!$stream->copy($src, $dest))
 			{
-				JLog::add(JText::sprintf('JLIB_FILESYSTEM_ERROR_JFILE_STREAMS', $src, $dest, $stream->getError()), JLog::WARNING, 'jerror');
+				JError::raiseWarning(21, JText::sprintf('JLIB_FILESYSTEM_ERROR_JFILE_STREAMS', $src, $dest, $stream->getError()));
 
 				return false;
 			}
@@ -113,12 +113,14 @@ class JFile
 		}
 		else
 		{
+			// Initialise variables.
 			$FTPOptions = JClientHelper::getCredentials('ftp');
 
 			if ($FTPOptions['enabled'] == 1)
 			{
 				// Connect the FTP client
-				$ftp = JClientFtp::getInstance($FTPOptions['host'], $FTPOptions['port'], array(), $FTPOptions['user'], $FTPOptions['pass']);
+				jimport('joomla.client.ftp');
+				$ftp = JFTP::getInstance($FTPOptions['host'], $FTPOptions['port'], null, $FTPOptions['user'], $FTPOptions['pass']);
 
 				// If the parent folder doesn't exist we must create it
 				if (!file_exists(dirname($dest)))
@@ -129,24 +131,22 @@ class JFile
 
 				// Translate the destination path for the FTP account
 				$dest = JPath::clean(str_replace(JPATH_ROOT, $FTPOptions['root'], $dest), '/');
-
 				if (!$ftp->store($src, $dest))
 				{
+
 					// FTP connector throws an error
 					return false;
 				}
-
 				$ret = true;
 			}
 			else
 			{
 				if (!@ copy($src, $dest))
 				{
-					JLog::add(JText::_('JLIB_FILESYSTEM_ERROR_COPY_FAILED'), JLog::WARNING, 'jerror');
+					JError::raiseWarning(21, JText::_('JLIB_FILESYSTEM_ERROR_COPY_FAILED'));
 
 					return false;
 				}
-
 				$ret = true;
 			}
 
@@ -165,6 +165,8 @@ class JFile
 	 */
 	public static function delete($file)
 	{
+		// Initialise variables.
+		jimport('joomla.client.helper');
 		$FTPOptions = JClientHelper::getCredentials('ftp');
 
 		if (is_array($file))
@@ -180,18 +182,19 @@ class JFile
 		if ($FTPOptions['enabled'] == 1)
 		{
 			// Connect the FTP client
-			$ftp = JClientFtp::getInstance($FTPOptions['host'], $FTPOptions['port'], array(), $FTPOptions['user'], $FTPOptions['pass']);
+			jimport('joomla.client.ftp');
+			$ftp = JFTP::getInstance($FTPOptions['host'], $FTPOptions['port'], null, $FTPOptions['user'], $FTPOptions['pass']);
 		}
 
 		foreach ($files as $file)
 		{
 			$file = JPath::clean($file);
-
+			
 			if (!is_file($file))
 			{
 				continue;
 			}
-
+			
 			// Try making the file writable first. If it's read-only, it can't be deleted
 			// on Windows, even if the parent folder is writable
 			@chmod($file, 0777);
@@ -205,7 +208,6 @@ class JFile
 			elseif ($FTPOptions['enabled'] == 1)
 			{
 				$file = JPath::clean(str_replace(JPATH_ROOT, $FTPOptions['root'], $file), '/');
-
 				if (!$ftp->delete($file))
 				{
 					// FTP connector throws an error
@@ -216,7 +218,7 @@ class JFile
 			else
 			{
 				$filename = basename($file);
-				JLog::add(JText::sprintf('JLIB_FILESYSTEM_DELETE_FAILED', $filename), JLog::WARNING, 'jerror');
+				JError::raiseWarning('SOME_ERROR_CODE', JText::sprintf('JLIB_FILESYSTEM_DELETE_FAILED', $filename));
 
 				return false;
 			}
@@ -248,6 +250,7 @@ class JFile
 		// Check src path
 		if (!is_readable($src))
 		{
+
 			return JText::_('JLIB_FILESYSTEM_CANNOT_FIND_SOURCE_FILE');
 		}
 
@@ -257,7 +260,7 @@ class JFile
 
 			if (!$stream->move($src, $dest))
 			{
-				JLog::add(JText::sprintf('JLIB_FILESYSTEM_ERROR_JFILE_MOVE_STREAMS', $stream->getError()), JLog::WARNING, 'jerror');
+				JError::raiseWarning(21, JText::sprintf('JLIB_FILESYSTEM_ERROR_JFILE_MOVE_STREAMS', $stream->getError()));
 
 				return false;
 			}
@@ -266,12 +269,15 @@ class JFile
 		}
 		else
 		{
+			// Initialise variables.
+			jimport('joomla.client.helper');
 			$FTPOptions = JClientHelper::getCredentials('ftp');
 
 			if ($FTPOptions['enabled'] == 1)
 			{
 				// Connect the FTP client
-				$ftp = JClientFtp::getInstance($FTPOptions['host'], $FTPOptions['port'], array(), $FTPOptions['user'], $FTPOptions['pass']);
+				jimport('joomla.client.ftp');
+				$ftp = JFTP::getInstance($FTPOptions['host'], $FTPOptions['port'], null, $FTPOptions['user'], $FTPOptions['pass']);
 
 				// Translate path for the FTP account
 				$src = JPath::clean(str_replace(JPATH_ROOT, $FTPOptions['root'], $src), '/');
@@ -280,7 +286,7 @@ class JFile
 				// Use FTP rename to simulate move
 				if (!$ftp->rename($src, $dest))
 				{
-					JLog::add(JText::_('JLIB_FILESYSTEM_ERROR_RENAME_FILE'), JLog::WARNING, 'jerror');
+					JError::raiseWarning(21, JText::_('JLIB_FILESYSTEM_ERROR_RENAME_FILE'));
 
 					return false;
 				}
@@ -289,7 +295,7 @@ class JFile
 			{
 				if (!@ rename($src, $dest))
 				{
-					JLog::add(JText::_('JLIB_FILESYSTEM_ERROR_RENAME_FILE'), JLog::WARNING, 'jerror');
+					JError::raiseWarning(21, JText::_('JLIB_FILESYSTEM_ERROR_RENAME_FILE'));
 
 					return false;
 				}
@@ -311,14 +317,11 @@ class JFile
 	 * @return  mixed  Returns file contents or boolean False if failed
 	 *
 	 * @since   11.1
-	 * @deprecated  13.3 (Platform) & 4.0 (CMS) - Use the native file_get_contents() instead.
 	 */
 	public static function read($filename, $incpath = false, $amount = 0, $chunksize = 8192, $offset = 0)
 	{
-		JLog::add(__METHOD__ . ' is deprecated. Use native file_get_contents() syntax.', JLog::WARNING, 'deprecated');
-
+		// Initialise variables.
 		$data = null;
-
 		if ($amount && $chunksize > $amount)
 		{
 			$chunksize = $amount;
@@ -326,7 +329,7 @@ class JFile
 
 		if (false === $fh = fopen($filename, 'rb', $incpath))
 		{
-			JLog::add(JText::sprintf('JLIB_FILESYSTEM_ERROR_READ_UNABLE_TO_OPEN_FILE', $filename), JLog::WARNING, 'jerror');
+			JError::raiseWarning(21, JText::sprintf('JLIB_FILESYSTEM_ERROR_READ_UNABLE_TO_OPEN_FILE', $filename));
 
 			return false;
 		}
@@ -352,19 +355,15 @@ class JFile
 		else
 		{
 			$data = '';
-
-			/*
-			 * While it's:
-			 * 1: Not the end of the file AND
-			 * 2a: No Max Amount set OR
-			 * 2b: The length of the data is less than the max amount we want
-			 */
+			// While it's:
+			// 1: Not the end of the file AND
+			// 2a: No Max Amount set OR
+			// 2b: The length of the data is less than the max amount we want
 			while (!feof($fh) && (!$amount || strlen($data) < $amount))
 			{
 				$data .= fread($fh, $chunksize);
 			}
 		}
-
 		fclose($fh);
 
 		return $data;
@@ -389,24 +388,18 @@ class JFile
 		if (!file_exists(dirname($file)))
 		{
 			jimport('joomla.filesystem.folder');
-
-			if (JFolder::create(dirname($file)) == false)
-			{
-				return false;
-			}
+			JFolder::create(dirname($file));
 		}
 
 		if ($use_streams)
 		{
 			$stream = JFactory::getStream();
-
 			// Beef up the chunk size to a meg
-			$stream->set('chunksize', (1024 * 1024));
+			$stream->set('chunksize', (1024 * 1024 * 1024));
 
 			if (!$stream->writeFile($file, $buffer))
 			{
-				JLog::add(JText::sprintf('JLIB_FILESYSTEM_ERROR_WRITE_STREAMS', $file, $stream->getError()), JLog::WARNING, 'jerror');
-
+				JError::raiseWarning(21, JText::sprintf('JLIB_FILESYSTEM_ERROR_WRITE_STREAMS', $file, $stream->getError()));
 				return false;
 			}
 
@@ -414,12 +407,14 @@ class JFile
 		}
 		else
 		{
+			// Initialise variables.
 			$FTPOptions = JClientHelper::getCredentials('ftp');
 
 			if ($FTPOptions['enabled'] == 1)
 			{
 				// Connect the FTP client
-				$ftp = JClientFtp::getInstance($FTPOptions['host'], $FTPOptions['port'], array(), $FTPOptions['user'], $FTPOptions['pass']);
+				jimport('joomla.client.ftp');
+				$ftp = JFTP::getInstance($FTPOptions['host'], $FTPOptions['port'], null, $FTPOptions['user'], $FTPOptions['pass']);
 
 				// Translate path for the FTP account and use FTP write buffer to file
 				$file = JPath::clean(str_replace(JPATH_ROOT, $FTPOptions['root'], $file), '/');
@@ -466,8 +461,7 @@ class JFile
 
 			if (!$stream->upload($src, $dest))
 			{
-				JLog::add(JText::sprintf('JLIB_FILESYSTEM_ERROR_UPLOAD', $stream->getError()), JLog::WARNING, 'jerror');
-
+				JError::raiseWarning(21, JText::sprintf('JLIB_FILESYSTEM_ERROR_UPLOAD', $stream->getError()));
 				return false;
 			}
 
@@ -475,13 +469,15 @@ class JFile
 		}
 		else
 		{
+			// Initialise variables.
 			$FTPOptions = JClientHelper::getCredentials('ftp');
 			$ret = false;
 
 			if ($FTPOptions['enabled'] == 1)
 			{
 				// Connect the FTP client
-				$ftp = JClientFtp::getInstance($FTPOptions['host'], $FTPOptions['port'], array(), $FTPOptions['user'], $FTPOptions['pass']);
+				jimport('joomla.client.ftp');
+				$ftp = JFTP::getInstance($FTPOptions['host'], $FTPOptions['port'], null, $FTPOptions['user'], $FTPOptions['pass']);
 
 				// Translate path for the FTP account
 				$dest = JPath::clean(str_replace(JPATH_ROOT, $FTPOptions['root'], $dest), '/');
@@ -494,7 +490,7 @@ class JFile
 				}
 				else
 				{
-					JLog::add(JText::_('JLIB_FILESYSTEM_ERROR_WARNFS_ERR02'), JLog::WARNING, 'jerror');
+					JError::raiseWarning(21, JText::_('JLIB_FILESYSTEM_ERROR_WARNFS_ERR02'));
 				}
 			}
 			else
@@ -508,12 +504,12 @@ class JFile
 					}
 					else
 					{
-						JLog::add(JText::_('JLIB_FILESYSTEM_ERROR_WARNFS_ERR01'), JLog::WARNING, 'jerror');
+						JError::raiseWarning(21, JText::_('JLIB_FILESYSTEM_ERROR_WARNFS_ERR01'));
 					}
 				}
 				else
 				{
-					JLog::add(JText::_('JLIB_FILESYSTEM_ERROR_WARNFS_ERR02'), JLog::WARNING, 'jerror');
+					JError::raiseWarning(21, JText::_('JLIB_FILESYSTEM_ERROR_WARNFS_ERR02'));
 				}
 			}
 
@@ -543,22 +539,20 @@ class JFile
 	 * @return  string  filename
 	 *
 	 * @since   11.1
-	 * @deprecated  13.3 (Platform) & 4.0 (CMS) - Use basename() instead.
 	 */
 	public static function getName($file)
 	{
-		JLog::add(__METHOD__ . ' is deprecated. Use native basename() syntax.', JLog::WARNING, 'deprecated');
-
 		// Convert back slashes to forward slashes
 		$file = str_replace('\\', '/', $file);
 		$slash = strrpos($file, '/');
-
 		if ($slash !== false)
 		{
+
 			return substr($file, $slash + 1);
 		}
 		else
 		{
+
 			return $file;
 		}
 	}

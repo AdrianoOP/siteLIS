@@ -8,13 +8,14 @@
 		/>
 
 		<field name="title" type="text"
-			required="true"
+			class="inputbox" required="true"
 			description="COM_USERS_GROUP_FIELD_TITLE_DESC"
 			label="COM_USERS_GROUP_FIELD_TITLE_LABEL"
 			size="40"
 		/>
 
 		<field name="parent_id" type="groupparent"
+			class="inputbox"
 			description="COM_USERS_GROUP_FIELD_PARENT_DESC"
 			label="COM_USERS_GROUP_FIELD_PARENT_LABEL"
 			required="true"

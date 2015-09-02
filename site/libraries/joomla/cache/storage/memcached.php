@@ -20,26 +20,20 @@ defined('JPATH_PLATFORM') or die;
 class JCacheStorageMemcached extends JCacheStorage
 {
 	/**
-	 * Memcached connection object
-	 *
 	 * @var    Memcached
 	 * @since  12.1
 	 */
 	protected static $_db = null;
 
 	/**
-	 * Persistent session flag
-	 *
 	 * @var    boolean
 	 * @since  12.1
 	 */
 	protected $_persistent = false;
 
 	/**
-	 * Payload compression level
-	 *
-	 * @var    integer
-	 * @since  12.1
+	 * @var
+	 * @since   12.1
 	 */
 	protected $_compress = 0;
 
@@ -65,7 +59,6 @@ class JCacheStorageMemcached extends JCacheStorage
 	 * @return  object   memcached connection object
 	 *
 	 * @since   12.1
-	 * @throws  RuntimeException
 	 */
 	protected function getConnection()
 	{
@@ -75,8 +68,8 @@ class JCacheStorageMemcached extends JCacheStorage
 		}
 
 		$config = JFactory::getConfig();
-		$this->_persistent = $config->get('memcached_persist', true);
-		$this->_compress = $config->get('memcached_compress', false) == false ? 0 : Memcached::OPT_COMPRESSION;
+		$this->_persistent = $config->get('memcache_persist', true);
+		$this->_compress = $config->get('memcache_compress', false) == false ? 0 : Memcached::OPT_COMPRESSION;
 
 		/*
 		 * This will be an array of loveliness
@@ -84,8 +77,8 @@ class JCacheStorageMemcached extends JCacheStorage
 		 * $servers	= (isset($params['servers'])) ? $params['servers'] : array();
 		 */
 		$server = array();
-		$server['host'] = $config->get('memcached_server_host', 'localhost');
-		$server['port'] = $config->get('memcached_server_port', 11211);
+		$server['host'] = $config->get('memcache_server_host', 'localhost');
+		$server['port'] = $config->get('memcache_server_port', 11211);
 
 		// Create the memcache connection
 		if ($this->_persistent)
@@ -101,7 +94,7 @@ class JCacheStorageMemcached extends JCacheStorage
 
 		if ($memcachedtest == false)
 		{
-			throw new RuntimeException('Could not connect to memcached server', 404);
+			return JError::raiseError(404, "Could not connect to memcached server");
 		}
 
 		self::$_db->setOption(Memcached::OPT_COMPRESSION, $this->_compress);
@@ -309,10 +302,8 @@ class JCacheStorageMemcached extends JCacheStorage
 	 * Test to see if the cache storage is available.
 	 *
 	 * @return  boolean  True on success, false otherwise.
-	 *
-	 * @since   12.1
 	 */
-	public static function isSupported()
+	public static function test()
 	{
 		if ((extension_loaded('memcached') && class_exists('Memcached')) != true)
 		{
@@ -320,8 +311,8 @@ class JCacheStorageMemcached extends JCacheStorage
 		}
 
 		$config = JFactory::getConfig();
-		$host = $config->get('memcached_server_host', 'localhost');
-		$port = $config->get('memcached_server_port', 11211);
+		$host = $config->get('memcache_server_host', 'localhost');
+		$port = $config->get('memcache_server_port', 11211);
 
 		$memcached = new Memcached;
 		$memcachedtest = @$memcached->addServer($host, $port);

@@ -39,15 +39,7 @@ class JDocumentJSON extends JDocument
 		parent::__construct($options);
 
 		// Set mime type
-		if (isset($_SERVER['HTTP_ACCEPT']) AND strpos($_SERVER['HTTP_ACCEPT'], 'application/json') === false AND strpos($_SERVER['HTTP_ACCEPT'], 'text/html') !== false)
-		{
-			// Internet Explorer < 10
-			$this->_mime = 'text/plain';
-		}
-		else
-		{
-			$this->_mime = 'application/json';
-		}
+		$this->_mime = 'application/json';
 
 		// Set document type
 		$this->_type = 'json';
@@ -65,14 +57,8 @@ class JDocumentJSON extends JDocument
 	 */
 	public function render($cache = false, $params = array())
 	{
-		$app = JFactory::getApplication();
-
-		$app->allowCache(false);
-		if ($this->_mime == 'application/json')
-		{
-			// Browser other than Internet Explorer < 10
-			$app->setHeader('Content-Disposition', 'attachment; filename="' . $this->getName() . '.json"', true);
-		}
+		JResponse::allowCache(false);
+		JResponse::setHeader('Content-disposition', 'attachment; filename="' . $this->getName() . '.json"', true);
 
 		parent::render();
 

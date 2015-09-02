@@ -26,124 +26,26 @@ class JFormFieldRules extends JFormField
 	 * @var    string
 	 * @since  11.1
 	 */
-	protected $type = 'Rules';
-
-	/**
-	 * The section.
-	 *
-	 * @var    string
-	 * @since  3.2
-	 */
-	protected $section;
-
-	/**
-	 * The component.
-	 *
-	 * @var    string
-	 * @since  3.2
-	 */
-	protected $component;
-
-	/**
-	 * The assetField.
-	 *
-	 * @var    string
-	 * @since  3.2
-	 */
-	protected $assetField;
-
-	/**
-	 * Method to get certain otherwise inaccessible properties from the form field object.
-	 *
-	 * @param   string  $name  The property name for which to the the value.
-	 *
-	 * @return  mixed  The property value or null.
-	 *
-	 * @since   3.2
-	 */
-	public function __get($name)
-	{
-		switch ($name)
-		{
-			case 'section':
-			case 'component':
-			case 'assetField':
-				return $this->$name;
-		}
-
-		return parent::__get($name);
-	}
-
-	/**
-	 * Method to set certain otherwise inaccessible properties of the form field object.
-	 *
-	 * @param   string  $name   The property name for which to the the value.
-	 * @param   mixed   $value  The value of the property.
-	 *
-	 * @return  void
-	 *
-	 * @since   3.2
-	 */
-	public function __set($name, $value)
-	{
-		switch ($name)
-		{
-			case 'section':
-			case 'component':
-			case 'assetField':
-				$this->$name = (string) $value;
-				break;
-
-			default:
-				parent::__set($name, $value);
-		}
-	}
-
-	/**
-	 * Method to attach a JForm object to the field.
-	 *
-	 * @param   SimpleXMLElement  $element  The SimpleXMLElement object representing the <field /> tag for the form field object.
-	 * @param   mixed             $value    The form field value to validate.
-	 * @param   string            $group    The field name group control value. This acts as as an array container for the field.
-	 *                                      For example if the field has name="foo" and the group value is set to "bar" then the
-	 *                                      full field name would end up being "bar[foo]".
-	 *
-	 * @return  boolean  True on success.
-	 *
-	 * @see     JFormField::setup()
-	 * @since   3.2
-	 */
-	public function setup(SimpleXMLElement $element, $value, $group = null)
-	{
-		$return = parent::setup($element, $value, $group);
-
-		if ($return)
-		{
-			$this->section    = $this->element['section'] ? (string) $this->element['section'] : '';
-			$this->component  = $this->element['component'] ? (string) $this->element['component'] : '';
-			$this->assetField = $this->element['asset_field'] ? (string) $this->element['asset_field'] : 'asset_id';
-		}
-
-		return $return;
-	}
+	public $type = 'Rules';
 
 	/**
 	 * Method to get the field input markup for Access Control Lists.
 	 * Optionally can be associated with a specific component and section.
 	 *
+	 * TODO: Add access check.
+	 *
 	 * @return  string  The field input markup.
 	 *
 	 * @since   11.1
-	 * @todo:   Add access check.
 	 */
 	protected function getInput()
 	{
-		JHtml::_('bootstrap.tooltip');
+		JHtml::_('behavior.tooltip');
 
 		// Initialise some field attributes.
-		$section = $this->section;
-		$component = $this->component;
-		$assetField = $this->assetField;
+		$section = $this->element['section'] ? (string) $this->element['section'] : '';
+		$component = $this->element['component'] ? (string) $this->element['component'] : '';
+		$assetField = $this->element['asset_field'] ? (string) $this->element['asset_field'] : 'asset_id';
 
 		// Get the actions for the asset.
 		$actions = JAccess::getActions($component, $section);
@@ -163,12 +65,17 @@ class JFormFieldRules extends JFormField
 		{
 			// Need to find the asset id by the name of the component.
 			$db = JFactory::getDbo();
-			$query = $db->getQuery(true)
-				->select($db->quoteName('id'))
-				->from($db->quoteName('#__assets'))
-				->where($db->quoteName('name') . ' = ' . $db->quote($component));
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName('id'));
+			$query->from($db->quoteName('#__assets'));
+			$query->where($db->quoteName('name') . ' = ' . $db->quote($component));
 			$db->setQuery($query);
 			$assetId = (int) $db->loadResult();
+
+			if ($error = $db->getErrorMsg())
+			{
+				JError::raiseNotice(500, $error);
+			}
 		}
 		else
 		{
@@ -176,6 +83,11 @@ class JFormFieldRules extends JFormField
 			// Note that for global configuration, com_config injects asset_id = 1 into the form.
 			$assetId = $this->form->getValue($assetField);
 		}
+
+		// Use the compact form for the content rules (deprecated).
+		//if (!empty($component) && $section != 'component') {
+		//	return JHtml::_('rules.assetFormWidget', $actions, $assetId, $assetId ? null : $component, $this->name, $this->id);
+		//}
 
 		// Full width format.
 
@@ -185,52 +97,38 @@ class JFormFieldRules extends JFormField
 		// Get the available user groups.
 		$groups = $this->getUserGroups();
 
+		// Build the form control.
+		$curLevel = 0;
+
 		// Prepare output
 		$html = array();
-
-		// Description
+		$html[] = '<div id="permissions-sliders" class="pane-sliders">';
 		$html[] = '<p class="rule-desc">' . JText::_('JLIB_RULES_SETTINGS_DESC') . '</p>';
-
-		// Begin tabs
-		$html[] = '<div id="permissions-sliders" class="tabbable tabs-left">';
-
-		// Building tab nav
-		$html[] = '<ul class="nav nav-tabs">';
-
-		foreach ($groups as $group)
-		{
-			// Initial Active Tab
-			$active = "";
-
-			if ($group->value == 1)
-			{
-				$active = "active";
-			}
-
-			$html[] = '<li class="' . $active . '">';
-			$html[] = '<a href="#permission-' . $group->value . '" data-toggle="tab">';
-			$html[] = str_repeat('<span class="level">&ndash;</span> ', $curLevel = $group->level) . $group->text;
-			$html[] = '</a>';
-			$html[] = '</li>';
-		}
-
-		$html[] = '</ul>';
-
-		$html[] = '<div class="tab-content">';
+		$html[] = '<ul id="rules">';
 
 		// Start a row for each user group.
 		foreach ($groups as $group)
 		{
-			// Initial Active Pane
-			$active = "";
+			$difLevel = $group->level - $curLevel;
 
-			if ($group->value == 1)
+			if ($difLevel > 0)
 			{
-				$active = " active";
+				$html[] = '<li><ul>';
+			}
+			elseif ($difLevel < 0)
+			{
+				$html[] = str_repeat('</ul></li>', -$difLevel);
 			}
 
-			$html[] = '<div class="tab-pane' . $active . '" id="permission-' . $group->value . '">';
-			$html[] = '<table class="table table-striped">';
+			$html[] = '<li>';
+
+			$html[] = '<div class="panel">';
+			$html[] = '<h3 class="pane-toggler title"><a href="javascript:void(0);"><span>';
+			$html[] = str_repeat('<span class="level">|&ndash;</span> ', $curLevel = $group->level) . $group->text;
+			$html[] = '</span></a></h3>';
+			$html[] = '<div class="pane-slider content pane-hide">';
+			$html[] = '<div class="mypanel">';
+			$html[] = '<table class="group-rules">';
 			$html[] = '<thead>';
 			$html[] = '<tr>';
 
@@ -244,7 +142,6 @@ class JFormFieldRules extends JFormField
 
 			// The calculated setting is not shown for the root group of global configuration.
 			$canCalculateSettings = ($group->parent_id || !empty($component));
-
 			if ($canCalculateSettings)
 			{
 				$html[] = '<th id="aclactionth' . $group->value . '">';
@@ -260,15 +157,15 @@ class JFormFieldRules extends JFormField
 			{
 				$html[] = '<tr>';
 				$html[] = '<td headers="actions-th' . $group->value . '">';
-				$html[] = '<label for="' . $this->id . '_' . $action->name . '_' . $group->value . '" class="hasTooltip" title="'
-					. htmlspecialchars(JText::_($action->title) . ' ' . JText::_($action->description), ENT_COMPAT, 'UTF-8') . '">';
+				$html[] = '<label class="hasTip" for="' . $this->id . '_' . $action->name . '_' . $group->value . '" title="'
+					. htmlspecialchars(JText::_($action->title) . '::' . JText::_($action->description), ENT_COMPAT, 'UTF-8') . '">';
 				$html[] = JText::_($action->title);
 				$html[] = '</label>';
 				$html[] = '</td>';
 
 				$html[] = '<td headers="settings-th' . $group->value . '">';
 
-				$html[] = '<select class="input-small" name="' . $this->name . '[' . $action->name . '][' . $group->value . ']" id="' . $this->id . '_' . $action->name
+				$html[] = '<select name="' . $this->name . '[' . $action->name . '][' . $group->value . ']" id="' . $this->id . '_' . $action->name
 					. '_' . $group->value . '" title="'
 					. JText::sprintf('JLIB_RULES_SELECT_ALLOW_DENY_GROUP', JText::_($action->title), trim($group->text)) . '">';
 
@@ -310,29 +207,29 @@ class JFormFieldRules extends JFormField
 					{
 						if ($inheritedRule === null)
 						{
-							$html[] = '<span class="label label-important">' . JText::_('JLIB_RULES_NOT_ALLOWED') . '</span>';
+							$html[] = '<span class="icon-16-unset">' . JText::_('JLIB_RULES_NOT_ALLOWED') . '</span>';
 						}
 						elseif ($inheritedRule === true)
 						{
-							$html[] = '<span class="label label-success">' . JText::_('JLIB_RULES_ALLOWED') . '</span>';
+							$html[] = '<span class="icon-16-allowed">' . JText::_('JLIB_RULES_ALLOWED') . '</span>';
 						}
 						elseif ($inheritedRule === false)
 						{
 							if ($assetRule === false)
 							{
-								$html[] = '<span class="label label-important">' . JText::_('JLIB_RULES_NOT_ALLOWED') . '</span>';
+								$html[] = '<span class="icon-16-denied">' . JText::_('JLIB_RULES_NOT_ALLOWED') . '</span>';
 							}
 							else
 							{
-								$html[] = '<span class="label"><i class="icon-lock icon-white"></i> ' . JText::_('JLIB_RULES_NOT_ALLOWED_LOCKED')
-									. '</span>';
+								$html[] = '<span class="icon-16-denied"><span class="icon-16-locked">' . JText::_('JLIB_RULES_NOT_ALLOWED_LOCKED')
+									. '</span></span>';
 							}
 						}
 					}
 					elseif (!empty($component))
 					{
-						$html[] = '<span class="label label-success"><i class="icon-lock icon-white"></i> ' . JText::_('JLIB_RULES_ALLOWED_ADMIN')
-							. '</span>';
+						$html[] = '<span class="icon-16-allowed"><span class="icon-16-locked">' . JText::_('JLIB_RULES_ALLOWED_ADMIN')
+							. '</span></span>';
 					}
 					else
 					{
@@ -340,18 +237,18 @@ class JFormFieldRules extends JFormField
 						// The admin rights can be changed.
 						if ($action->name === 'core.admin')
 						{
-							$html[] = '<span class="label label-success">' . JText::_('JLIB_RULES_ALLOWED') . '</span>';
+							$html[] = '<span class="icon-16-allowed">' . JText::_('JLIB_RULES_ALLOWED') . '</span>';
 						}
 						elseif ($inheritedRule === false)
 						{
 							// Other actions cannot be changed.
-							$html[] = '<span class="label label-important"><i class="icon-lock icon-white"></i> '
-								. JText::_('JLIB_RULES_NOT_ALLOWED_ADMIN_CONFLICT') . '</span>';
+							$html[] = '<span class="icon-16-denied"><span class="icon-16-locked">'
+								. JText::_('JLIB_RULES_NOT_ALLOWED_ADMIN_CONFLICT') . '</span></span>';
 						}
 						else
 						{
-							$html[] = '<span class="label label-success"><i class="icon-lock icon-white"></i> ' . JText::_('JLIB_RULES_ALLOWED_ADMIN')
-								. '</span>';
+							$html[] = '<span class="icon-16-allowed"><span class="icon-16-locked">' . JText::_('JLIB_RULES_ALLOWED_ADMIN')
+								. '</span></span>';
 						}
 					}
 
@@ -363,12 +260,14 @@ class JFormFieldRules extends JFormField
 
 			$html[] = '</tbody>';
 			$html[] = '</table></div>';
+
+			$html[] = '</div></div>';
+			$html[] = '</li>';
+
 		}
 
-		$html[] = '</div></div>';
-
-		$html[] = '<div class="alert">';
-
+		$html[] = str_repeat('</ul></li>', $curLevel);
+		$html[] = '</ul><div class="rule-notes">';
 		if ($section == 'component' || $section == null)
 		{
 			$html[] = JText::_('JLIB_RULES_SETTING_NOTES');
@@ -377,8 +276,19 @@ class JFormFieldRules extends JFormField
 		{
 			$html[] = JText::_('JLIB_RULES_SETTING_NOTES_ITEM');
 		}
+		$html[] = '</div></div>';
 
-		$html[] = '</div>';
+		$js = "window.addEvent('domready', function(){ new Fx.Accordion($$('div#permissions-sliders.pane-sliders .panel h3.pane-toggler'),"
+			. "$$('div#permissions-sliders.pane-sliders .panel div.pane-slider'), {onActive: function(toggler, i) {toggler.addClass('pane-toggler-down');"
+			. "toggler.removeClass('pane-toggler');i.addClass('pane-down');i.removeClass('pane-hide');Cookie.write('jpanesliders_permissions-sliders"
+			. $component
+			. "',$$('div#permissions-sliders.pane-sliders .panel h3').indexOf(toggler));},"
+			. "onBackground: function(toggler, i) {toggler.addClass('pane-toggler');toggler.removeClass('pane-toggler-down');i.addClass('pane-hide');"
+			. "i.removeClass('pane-down');}, duration: 300, display: "
+			. JRequest::getInt('jpanesliders_permissions-sliders' . $component, 0, 'cookie') . ", show: "
+			. JRequest::getInt('jpanesliders_permissions-sliders' . $component, 0, 'cookie') . ", alwaysHide:true, opacity: false}); });";
+
+		JFactory::getDocument()->addScriptDeclaration($js);
 
 		return implode("\n", $html);
 	}
@@ -392,11 +302,12 @@ class JFormFieldRules extends JFormField
 	 */
 	protected function getUserGroups()
 	{
-		$db = JFactory::getDbo();
-		$query = $db->getQuery(true)
-			->select('a.id AS value, a.title AS text, COUNT(DISTINCT b.id) AS level, a.parent_id')
+		// Initialise variables.
+		$db = JFactory::getDBO();
+		$query = $db->getQuery(true);
+		$query->select('a.id AS value, a.title AS text, COUNT(DISTINCT b.id) AS level, a.parent_id')
 			->from('#__usergroups AS a')
-			->join('LEFT', $db->quoteName('#__usergroups') . ' AS b ON a.lft > b.lft AND a.rgt < b.rgt')
+			->leftJoin($db->quoteName('#__usergroups') . ' AS b ON a.lft > b.lft AND a.rgt < b.rgt')
 			->group('a.id, a.title, a.lft, a.rgt, a.parent_id')
 			->order('a.lft ASC');
 		$db->setQuery($query);

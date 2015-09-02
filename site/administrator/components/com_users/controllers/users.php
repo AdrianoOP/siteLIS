@@ -7,7 +7,10 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+// No direct access.
 defined('_JEXEC') or die;
+
+jimport('joomla.application.component.controlleradmin');
 
 /**
  * Users list controller class.
@@ -38,8 +41,8 @@ class UsersControllerUsers extends JControllerAdmin
 	{
 		parent::__construct($config);
 
-		$this->registerTask('block', 'changeBlock');
-		$this->registerTask('unblock', 'changeBlock');
+		$this->registerTask('block',		'changeBlock');
+		$this->registerTask('unblock',		'changeBlock');
 	}
 
 	/**
@@ -51,7 +54,7 @@ class UsersControllerUsers extends JControllerAdmin
 	 *
 	 * @return  object  The model.
 	 *
-	 * @since   1.6
+	 * @since	1.6
 	 */
 	public function getModel($name = 'User', $prefix = 'UsersModel', $config = array('ignore_request' => true))
 	{
@@ -70,10 +73,11 @@ class UsersControllerUsers extends JControllerAdmin
 		// Check for request forgeries.
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
-		$ids    = $this->input->get('cid', array(), 'array');
-		$values = array('block' => 1, 'unblock' => 0);
-		$task   = $this->getTask();
-		$value  = JArrayHelper::getValue($values, $task, 0, 'int');
+		// Initialise variables.
+		$ids	= JRequest::getVar('cid', array(), '', 'array');
+		$values	= array('block' => 1, 'unblock' => 0);
+		$task	= $this->getTask();
+		$value	= JArrayHelper::getValue($values, $task, 0, 'int');
 
 		if (empty($ids))
 		{
@@ -117,7 +121,8 @@ class UsersControllerUsers extends JControllerAdmin
 		// Check for request forgeries.
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
-		$ids = $this->input->get('cid', array(), 'array');
+		// Initialise variables.
+		$ids	= JRequest::getVar('cid', array(), '', 'array');
 
 		if (empty($ids))
 		{

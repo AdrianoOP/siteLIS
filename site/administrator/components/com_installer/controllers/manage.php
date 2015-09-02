@@ -1,78 +1,64 @@
 <?php
 /**
- * @package     Joomla.Administrator
- * @subpackage  com_installer
- *
- * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @package		Joomla.Administrator
+ * @subpackage	com_installer
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+ * @license		GNU General Public License, see LICENSE.php
  */
 
 defined('_JEXEC') or die;
 
 /**
- * Installer Manage Controller
- *
- * @package     Joomla.Administrator
- * @subpackage  com_installer
- * @since       1.6
+ * @package		Joomla.Administrator
+ * @subpackage	com_installer
  */
 class InstallerControllerManage extends JControllerLegacy
 {
 	/**
 	 * Constructor.
 	 *
-	 * @param   array  $config  An optional associative array of configuration settings.
-	 *
-	 * @see     JController
-	 * @since   1.6
+	 * @param	array An optional associative array of configuration settings.
+	 * @see		JController
+	 * @since	1.6
 	 */
 	public function __construct($config = array())
 	{
 		parent::__construct($config);
 
-		$this->registerTask('unpublish', 'publish');
-		$this->registerTask('publish',   'publish');
+		$this->registerTask('unpublish',		'publish');
+		$this->registerTask('publish',			'publish');
 	}
 
 	/**
 	 * Enable/Disable an extension (if supported).
 	 *
-	 * @return  void
-	 *
-	 * @since   1.6
+	 * @since	1.6
 	 */
 	public function publish()
 	{
 		// Check for request forgeries.
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
-		$ids    = $this->input->get('cid', array(), 'array');
-		$values = array('publish' => 1, 'unpublish' => 0);
-		$task   = $this->getTask();
-		$value  = JArrayHelper::getValue($values, $task, 0, 'int');
+		// Initialise variables.
+		$user	= JFactory::getUser();
+		$ids	= JRequest::getVar('cid', array(), '', 'array');
+		$values	= array('publish' => 1, 'unpublish' => 0);
+		$task	= $this->getTask();
+		$value	= JArrayHelper::getValue($values, $task, 0, 'int');
 
-		if (empty($ids))
-		{
+		if (empty($ids)) {
 			JError::raiseWarning(500, JText::_('COM_INSTALLER_ERROR_NO_EXTENSIONS_SELECTED'));
-		}
-		else
-		{
+		} else {
 			// Get the model.
 			$model	= $this->getModel('manage');
 
 			// Change the state of the records.
-			if (!$model->publish($ids, $value))
-			{
+			if (!$model->publish($ids, $value)) {
 				JError::raiseWarning(500, implode('<br />', $model->getErrors()));
-			}
-			else
-			{
-				if ($value == 1)
-				{
+			} else {
+				if ($value == 1) {
 					$ntext = 'COM_INSTALLER_N_EXTENSIONS_PUBLISHED';
-				}
-				elseif ($value == 0)
-				{
+				} elseif ($value == 0) {
 					$ntext = 'COM_INSTALLER_N_EXTENSIONS_UNPUBLISHED';
 				}
 				$this->setMessage(JText::plural($ntext, count($ids)));
@@ -85,20 +71,19 @@ class InstallerControllerManage extends JControllerLegacy
 	/**
 	 * Remove an extension (Uninstall).
 	 *
-	 * @return  void
-	 *
-	 * @since   1.5
+	 * @return	void
+	 * @since	1.5
 	 */
 	public function remove()
 	{
 		// Check for request forgeries
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
-		$eid   = $this->input->get('cid', array(), 'array');
-		$model = $this->getModel('manage');
+		$eid	= JRequest::getVar('cid', array(), '', 'array');
+		$model	= $this->getModel('manage');
 
 		JArrayHelper::toInteger($eid, array());
-		$model->remove($eid);
+		$result = $model->remove($eid);
 		$this->setRedirect(JRoute::_('index.php?option=com_installer&view=manage', false));
 	}
 
@@ -107,20 +92,18 @@ class InstallerControllerManage extends JControllerLegacy
 	 *
 	 * Useful for debugging and testing purposes when the XML file might change.
 	 *
-	 * @return  void
-	 *
-	 * @since   1.6
+	 * @since	1.6
 	 */
-	public function refresh()
+	function refresh()
 	{
 		// Check for request forgeries
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
-		$uid   = $this->input->get('cid', array(), 'array');
-		$model = $this->getModel('manage');
+		$uid	= JRequest::getVar('cid', array(), '', 'array');
+		$model	= $this->getModel('manage');
 
 		JArrayHelper::toInteger($uid, array());
-		$model->refresh($uid);
+		$result = $model->refresh($uid);
 		$this->setRedirect(JRoute::_('index.php?option=com_installer&view=manage', false));
 	}
 }

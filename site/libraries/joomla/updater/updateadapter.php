@@ -21,36 +21,32 @@ jimport('joomla.base.adapterinstance');
 class JUpdateAdapter extends JAdapterInstance
 {
 	/**
-	 * Resource handle for the XML Parser
-	 *
-	 * @var    resource
-	 * @since  12.1
+	 * @var    string
+	 * @since  11.1
 	 */
-	protected $xmlParser;
+	protected $xml_parser;
 
 	/**
-	 * Element call stack
-	 *
 	 * @var    array
-	 * @since  12.1
+	 * @since 11.1
 	 */
-	protected $stack = array('base');
+	protected $_stack = array('base');
 
 	/**
 	 * ID of update site
 	 *
 	 * @var    string
-	 * @since  12.1
+	 * @since  11.1
 	 */
-	protected $updateSiteId = 0;
+	protected $_update_site_id = 0;
 
 	/**
 	 * Columns in the extensions table to be updated
 	 *
 	 * @var    array
-	 * @since  12.1
+	 * @since  11.1
 	 */
-	protected $updatecols = array('NAME', 'ELEMENT', 'TYPE', 'FOLDER', 'CLIENT', 'VERSION', 'DESCRIPTION', 'INFOURL');
+	protected $_updatecols = array('NAME', 'ELEMENT', 'TYPE', 'FOLDER', 'CLIENT', 'VERSION', 'DESCRIPTION', 'INFOURL');
 
 	/**
 	 * Gets the reference to the current direct parent
@@ -61,7 +57,7 @@ class JUpdateAdapter extends JAdapterInstance
 	 */
 	protected function _getStackLocation()
 	{
-		return implode('->', $this->stack);
+		return implode('->', $this->_stack);
 	}
 
 	/**
@@ -73,6 +69,6 @@ class JUpdateAdapter extends JAdapterInstance
 	 */
 	protected function _getLastTag()
 	{
-		return $this->stack[count($this->stack) - 1];
+		return $this->_stack[count($this->_stack) - 1];
 	}
 }

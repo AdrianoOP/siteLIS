@@ -9,6 +9,8 @@
 
 defined('JPATH_PLATFORM') or die;
 
+jimport('joomla.utilities.date');
+
 /**
  * Joomla! Log Entry class
  *
@@ -46,12 +48,12 @@ class JLogEntry
 	 * The priority of the message to be logged.
 	 * @var    string
 	 * @since  11.1
-	 * @see    JLogEntry::$priorities
+	 * @see    $priorities
 	 */
 	public $priority = JLog::INFO;
 
 	/**
-	 * List of available log priority levels [Based on the Syslog default levels].
+	 * List of available log priority levels [Based on the SysLog default levels].
 	 * @var    array
 	 * @since  11.1
 	 */

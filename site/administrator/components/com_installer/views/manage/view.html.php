@@ -1,62 +1,51 @@
 <?php
 /**
- * @package     Joomla.Administrator
- * @subpackage  com_installer
- *
- * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @package		Joomla.Administrator
+ * @subpackage	com_installer
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('_JEXEC') or die;
 
-include_once __DIR__ . '/../default/view.php';
+include_once dirname(__FILE__).'/../default/view.php';
 
 /**
  * Extension Manager Manage View
  *
- * @package     Joomla.Administrator
- * @subpackage  com_installer
- * @since       1.6
+ * @package		Joomla.Administrator
+ * @subpackage	com_installer
+ * @since		1.6
  */
 class InstallerViewManage extends InstallerViewDefault
 {
 	protected $items;
-
 	protected $pagination;
-
 	protected $form;
-
 	protected $state;
 
 	/**
-	 * Display the view
-	 *
-	 * @param   string  $tpl  Template
-	 *
-	 * @return  mixed|void
-	 *
-	 * @since   1.6
+	 * @since	1.6
 	 */
-	public function display($tpl = null)
+	function display($tpl=null)
 	{
 		// Get data from the model
-		$this->state      = $this->get('State');
-		$this->items      = $this->get('Items');
-		$this->pagination = $this->get('Pagination');
+		$this->state		= $this->get('State');
+		$this->items		= $this->get('Items');
+		$this->pagination	= $this->get('Pagination');
+		$this->form			= $this->get('Form');
 
 		// Check for errors.
-		if (count($errors = $this->get('Errors')))
-		{
+		if (count($errors = $this->get('Errors'))) {
 			JError::raiseError(500, implode("\n", $errors));
 			return false;
 		}
 
-		// Check if there are no matching items
-		if (!count($this->items))
-		{
+		//Check if there are no matching items
+		if(!count($this->items)){
 			JFactory::getApplication()->enqueueMessage(
-				JText::_('COM_INSTALLER_MSG_MANAGE_NOEXTENSION'),
-				'warning'
+				JText::_('COM_INSTALLER_MSG_MANAGE_NOEXTENSION')
+				, 'warning'
 			);
 		}
 
@@ -70,55 +59,56 @@ class InstallerViewManage extends InstallerViewDefault
 	/**
 	 * Add the page title and toolbar.
 	 *
-	 * @return  void
-	 *
-	 * @since   1.6
+	 * @since	1.6
 	 */
 	protected function addToolbar()
 	{
-		$canDo	= JHelperContent::getActions('com_installer');
-		if ($canDo->get('core.edit.state'))
-		{
-			JToolbarHelper::publish('manage.publish', 'JTOOLBAR_ENABLE', true);
-			JToolbarHelper::unpublish('manage.unpublish', 'JTOOLBAR_DISABLE', true);
-			JToolbarHelper::divider();
+		$canDo	= InstallerHelper::getActions();
+		if ($canDo->get('core.edit.state')) {
+			JToolBarHelper::publish('manage.publish', 'JTOOLBAR_ENABLE', true);
+			JToolBarHelper::unpublish('manage.unpublish', 'JTOOLBAR_DISABLE', true);
+			JToolBarHelper::divider();
 		}
-		JToolbarHelper::custom('manage.refresh', 'refresh', 'refresh', 'JTOOLBAR_REFRESH_CACHE', true);
-		JToolbarHelper::divider();
-		if ($canDo->get('core.delete'))
-		{
-			JToolbarHelper::deleteList('', 'manage.remove', 'JTOOLBAR_UNINSTALL');
-			JToolbarHelper::divider();
+		JToolBarHelper::custom('manage.refresh', 'refresh', 'refresh', 'JTOOLBAR_REFRESH_CACHE', true);
+		JToolBarHelper::divider();
+		if ($canDo->get('core.delete')) {
+			JToolBarHelper::deleteList('', 'manage.remove', 'JTOOLBAR_UNINSTALL');
+			JToolBarHelper::divider();
 		}
-
-		JToolbarHelper::help('JHELP_EXTENSIONS_EXTENSION_MANAGER_MANAGE');
-
-		JHtmlSidebar::setAction('index.php?option=com_installer&view=manage');
-
-		JHtmlSidebar::addFilter(
-			JText::_('COM_INSTALLER_VALUE_CLIENT_SELECT'),
-			'filter_client_id',
-			JHtml::_('select.options', array('0' => 'JSITE', '1' => 'JADMINISTRATOR'), 'value', 'text', $this->state->get('filter.client_id'), true)
-		);
-
-		JHtmlSidebar::addFilter(
-			JText::_('COM_INSTALLER_VALUE_STATE_SELECT'),
-			'filter_status',
-			JHtml::_('select.options', array('0' => 'JDISABLED', '1' => 'JENABLED', '2' => 'JPROTECTED', '3' => 'JUNPROTECTED'), 'value', 'text', $this->state->get('filter.status'), true)
-		);
-
-		JHtmlSidebar::addFilter(
-			JText::_('COM_INSTALLER_VALUE_TYPE_SELECT'),
-			'filter_type',
-			JHtml::_('select.options', InstallerHelper::getExtensionTypes(), 'value', 'text', $this->state->get('filter.type'), true)
-		);
-
-		JHtmlSidebar::addFilter(
-			JText::_('COM_INSTALLER_VALUE_FOLDER_SELECT'),
-			'filter_group',
-			JHtml::_('select.options', array_merge(InstallerHelper::getExtensionGroupes(), array('*' => JText::_('COM_INSTALLER_VALUE_FOLDER_NONAPPLICABLE'))), 'value', 'text', $this->state->get('filter.group'), true)
-		);
-
 		parent::addToolbar();
+		JToolBarHelper::help('JHELP_EXTENSIONS_EXTENSION_MANAGER_MANAGE');
+	}
+
+	/**
+	 * Creates the content for the tooltip which shows compatibility information
+	 *
+	 * @var  string  $system_data  System_data information
+	 *
+	 * @since  2.5.28
+	 *
+	 * @return  string  Content for tooltip
+	 */
+	protected function createCompatibilityInfo($system_data)
+	{
+		$system_data = json_decode($system_data);
+
+		if (empty($system_data->compatibility))
+		{
+			return '';
+		}
+
+		$compatibility = $system_data->compatibility;
+
+		$info = JText::sprintf('COM_INSTALLER_COMPATIBILITY_TOOLTIP_INSTALLED',
+					$compatibility->installed->version,
+					implode(', ', $compatibility->installed->value)
+				)
+				. '<br/>'
+				. JText::sprintf('COM_INSTALLER_COMPATIBILITY_TOOLTIP_AVAILABLE',
+					$compatibility->available->version,
+					implode(', ', $compatibility->available->value)
+				);
+
+		return $info;
 	}
 }

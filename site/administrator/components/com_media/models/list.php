@@ -1,10 +1,7 @@
 <?php
 /**
- * @package     Joomla.Administrator
- * @subpackage  com_media
- *
- * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('_JEXEC') or die;
@@ -15,20 +12,18 @@ jimport('joomla.filesystem.file');
 /**
  * Media Component List Model
  *
- * @package     Joomla.Administrator
- * @subpackage  com_media
- * @since       1.5
+ * @package		Joomla.Administrator
+ * @subpackage	com_media
+ * @since 1.5
  */
 class MediaModelList extends JModelLegacy
 {
-	public function getState($property = null, $default = null)
+	function getState($property = null, $default = null)
 	{
 		static $set;
 
-		if (!$set)
-		{
-			$input  = JFactory::getApplication()->input;
-			$folder = $input->get('folder', '', 'path');
+		if (!$set) {
+			$folder = JRequest::getVar('folder', '', '', 'path');
 			$this->setState('folder', $folder);
 
 			$parent = str_replace("\\", "/", dirname($folder));
@@ -40,21 +35,21 @@ class MediaModelList extends JModelLegacy
 		return parent::getState($property, $default);
 	}
 
-	public function getImages()
+	function getImages()
 	{
 		$list = $this->getList();
 
 		return $list['images'];
 	}
 
-	public function getFolders()
+	function getFolders()
 	{
 		$list = $this->getList();
 
 		return $list['folders'];
 	}
 
-	public function getDocuments()
+	function getDocuments()
 	{
 		$list = $this->getList();
 
@@ -67,13 +62,12 @@ class MediaModelList extends JModelLegacy
 	 * @param string $listFolder The image directory to display
 	 * @since 1.5
 	 */
-	public function getList()
+	function getList()
 	{
 		static $list;
 
 		// Only process the list once per request
-		if (is_array($list))
-		{
+		if (is_array($list)) {
 			return $list;
 		}
 
@@ -81,17 +75,15 @@ class MediaModelList extends JModelLegacy
 		$current = $this->getState('folder');
 
 		// If undefined, set to empty
-		if ($current == 'undefined')
-		{
+		if ($current == 'undefined') {
 			$current = '';
 		}
 
-		if (strlen($current) > 0)
-		{
+		// Initialise variables.
+		if (strlen($current) > 0) {
 			$basePath = COM_MEDIA_BASE.'/'.$current;
 		}
-		else
-		{
+		else {
 			$basePath = COM_MEDIA_BASE;
 		}
 
@@ -111,13 +103,11 @@ class MediaModelList extends JModelLegacy
 		}
 
 		// Iterate over the files if they exist
-		if ($fileList !== false)
-		{
+		if ($fileList !== false) {
 			foreach ($fileList as $file)
 			{
-				if (is_file($basePath.'/'.$file) && substr($file, 0, 1) != '.' && strtolower($file) !== 'index.html')
-				{
-					$tmp = new JObject;
+				if (is_file($basePath.'/'.$file) && substr($file, 0, 1) != '.' && strtolower($file) !== 'index.html') {
+					$tmp = new JObject();
 					$tmp->name = $file;
 					$tmp->title = $file;
 					$tmp->path = str_replace(DIRECTORY_SEPARATOR, '/', JPath::clean($basePath . '/' . $file));
@@ -142,8 +132,7 @@ class MediaModelList extends JModelLegacy
 							$tmp->type		= @$info[2];
 							$tmp->mime		= @$info['mime'];
 
-							if (($info[0] > 60) || ($info[1] > 60))
-							{
+							if (($info[0] > 60) || ($info[1] > 60)) {
 								$dimensions = MediaHelper::imageResize($info[0], $info[1], 60);
 								$tmp->width_60 = $dimensions[0];
 								$tmp->height_60 = $dimensions[1];
@@ -153,8 +142,7 @@ class MediaModelList extends JModelLegacy
 								$tmp->height_60 = $tmp->height;
 							}
 
-							if (($info[0] > 16) || ($info[1] > 16))
-							{
+							if (($info[0] > 16) || ($info[1] > 16)) {
 								$dimensions = MediaHelper::imageResize($info[0], $info[1], 16);
 								$tmp->width_16 = $dimensions[0];
 								$tmp->height_16 = $dimensions[1];
@@ -179,11 +167,10 @@ class MediaModelList extends JModelLegacy
 		}
 
 		// Iterate over the folders if they exist
-		if ($folderList !== false)
-		{
+		if ($folderList !== false) {
 			foreach ($folderList as $folder)
 			{
-				$tmp = new JObject;
+				$tmp = new JObject();
 				$tmp->name = basename($folder);
 				$tmp->path = str_replace(DIRECTORY_SEPARATOR, '/', JPath::clean($basePath . '/' . $folder));
 				$tmp->path_relative = str_replace($mediaBase, '', $tmp->path);
